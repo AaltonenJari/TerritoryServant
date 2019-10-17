@@ -4,24 +4,33 @@
   <meta charset="utf-8">
   <title>Alueet - seuranta ja merkitseminen</title>
   <link rel="stylesheet" type="text/css" href="<?php echo base_url("assets/css/navbar.css"); ?>">
-  <link rel="stylesheet" type="text/css" href="<?php echo base_url("assets/css/territory.css"); ?>">
+  <link rel="stylesheet" type="text/css" href="<?php echo base_url("assets/css/terr_maintenance.css"); ?>">
   
-  <script src="<?php echo base_url("assets/javascript/territorysearch.js"); ?>"></script> 
+  <script src="<?php echo base_url("assets/javascript/terrUpdSearch.js"); ?>"></script> 
   <script src="<?php echo base_url("assets/javascript/territoriesToPDF.js"); ?>"></script> 
 </head>
 
 <body>
 
   <div id="wrapper">
+    <!-- Asetetaan navigointipalkki ja tämä sivu aktiiviseksi -->
+    <?php $sivu_tunnus = "4"; ?>
+    <?php $session_data = array(
+            'sivutunnus' => $sivu_tunnus
+            );
+          $this->session->set_userdata($session_data);
+    ?>
     <?php $this->load->view('common/navbar.php')?>
 
+    <!-- Asetetaan sivun pääotsikko -->
     <h1>Alueet - Ylläpito</h1>
 
     <div id="filterArea" class="filterArea">
       <table id="selectortable">
         <tr>
-          <th width="90%">Etsi / Rajaa</th>
-          <th width="10%">Alkutilaan</th>
+          <th width="20%">Etsi / Rajaa</th>
+          <th width="60%"></th>
+          <th width="20%">Alkutilaan</th>
         </tr>
   		<tr>
           <td>
@@ -31,6 +40,9 @@
       		<input type="hidden" id="displayBaseUrl" value="<?php echo $display_baseurl; ?>" />
 
 	        <input type="hidden" id="filter_param" value="<?php echo $filter; ?>"/>
+          </td>
+          <td>
+            <a href="<?php echo base_url("index.php/maintenance_controller/insert"); ?>" target="_parent" class="btn-add"><button>Lisää uusi</button></a>
           </td>
           <td>
             <a href="<?php echo base_url("index.php/maintenance_controller/maintain"); ?>" target="_parent" class="btn-clear"><button>CLR</button></a>

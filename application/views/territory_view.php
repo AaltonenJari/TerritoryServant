@@ -13,6 +13,7 @@
 <body>
 
   <div id="wrapper">
+    <!-- Asetetaan navigointipalkki ja tämä sivu aktiiviseksi -->
     <?php if ($frontpage == "1") { $sivu_tunnus = "1"; } else { $sivu_tunnus = "2"; } ?>
     <?php $session_data = array(
             'sivutunnus' => $sivu_tunnus
@@ -21,6 +22,7 @@
     ?>
     <?php $this->load->view('common/navbar.php')?>
 
+    <!-- Asetetaan sivun pääotsikko -->
     <?php if ($frontpage == "1") { ?>
       <h1>Tervetuloa käyttämään alueohjelmaa!</h1>
       <h2>Suosittele seuraavia alueita.</h2>

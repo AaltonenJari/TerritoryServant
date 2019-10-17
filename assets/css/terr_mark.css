@@ -4,6 +4,11 @@
   margin:50px auto
 }
 
+table {
+  width: 100%;
+  font-family: sans-serif;
+}
+
 #fugo{
   float:right
 }
@@ -47,8 +52,6 @@ input {
   height:30px;
 }
 
-   
-
 input#submit{
   margin-top:20px;
   font-size:18px;
@@ -62,4 +65,8 @@ input#submit{
 
 input#submit:hover{
   background:linear-gradient(#36caf0 5%,#22abe9 100%)
+}
+
+#cardbuttons tr td:nth-child(3) {
+  text-align: right;
 }

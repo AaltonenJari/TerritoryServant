@@ -56,13 +56,17 @@
       <li>
         <div class="dropdown">
           <?php if ($sivu_tunnus == "5") { $dropbtn_classes = $dropbtn_classes_base . " active"; } else { $dropbtn_classes = $dropbtn_classes_base; } ?>
-          <button class="<?php echo $dropbtn_classes; ?>">Asetukset</button>
+          <a href="#" >
+            <button class="<?php echo $dropbtn_classes; ?>">Asetukset</button>
+          </a>
         </div>
       </li>
       <li>
         <div class="dropdown">
           <?php if ($sivu_tunnus == "6") { $dropbtn_classes = $dropbtn_classes_base . " active"; } else { $dropbtn_classes = $dropbtn_classes_base; } ?>
-          <button class="<?php echo $dropbtn_classes; ?>">Tietoja</button>
+          <a href="#" >
+            <button class="<?php echo $dropbtn_classes; ?>">Tietoja</button>
+          </a>
         </div>
       </li>
     </ul>

@@ -1,6 +1,6 @@
 /* Set a fixed scrollable wrapper */
 .tableWrapEvent {
-  height: 480px;
+  height: 446px;
   border: 1px solid black;
   overflow: auto;
 }

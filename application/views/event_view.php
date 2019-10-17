@@ -14,6 +14,7 @@
 <body>
 
   <div id="wrapper">
+    <!-- Asetetaan navigointipalkki ja tämä sivu aktiiviseksi -->
     <?php $sivu_tunnus = "3"; ?>
     <?php $session_data = array(
             'sivutunnus' => $sivu_tunnus
@@ -22,6 +23,7 @@
     ?>
     <?php $this->load->view('common/navbar.php')?>
     
+    <!-- Asetetaan sivun pääotsikko -->
     <h1>Alueet - Historia</h1>
         
 	<div id="content">

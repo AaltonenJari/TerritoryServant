@@ -24,7 +24,7 @@ class Maintenance_model extends CI_Model
         // Results query
         $query = $this->db->select($fetch_columns)
         ->from('alue');
-        //Järjestys
+        //Jï¿½rjestys
         switch ($sort_by) {
             case "alue_code":
                 $query = $this->db->order_by("alue_id", $sort_order);
@@ -62,22 +62,45 @@ class Maintenance_model extends CI_Model
         $res2 = $query->get()->result();
         return ($res2[0]->count);
     }
+
+    public function terrExists($terr_nbr) {
+        $query = $this->db->select('COUNT(*) as count', FALSE)
+        ->from('alue');
+        $this->db->where('alue_code', $terr_nbr);
         
-    public function insert($data) {
+        $res2 = $query->get()->result();
+        return ($res2[0]->count);
+    }
+    
+    function get_alue_row($columns, $terr_nbr)
+    {
+        // Results query
+        $query = $this->db->select($columns)
+        ->from('alue');
+        
+        $this->db->where('alue_code', $terr_nbr);
+        
+        $reault_array = $this->db->get()->result_array();
+        
+        return $reault_array[0];
+    }
+    
+    public function insert ($data) {
         if ($this->db->insert("alue", $data)) {
             return true;
         }
     }
     
-    public function delete($alue_code) {
-        if ($this->db->delete("alue", "alue_code = ".$alue_code)) {
-            return true;
-        }
+    public function delete($terr_nbr) 
+    {
+        $this->db->where('alue_code',$terr_nbr); 
+        $result = $this->db->delete('alue');
     }
     
-    public function update($data,$old_alue_code) {
+    public function update($data, $old_terr_nbr) 
+    {
         $this->db->set($data);
-        $this->db->where("alue_code", $old_alue_code);
+        $this->db->where("alue_code", $old_terr_nbr);
         $this->db->update("alue", $data);
     }
     

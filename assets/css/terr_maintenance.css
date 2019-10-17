@@ -1,6 +1,6 @@
 /* Set a fixed scrollable wrapper */
 .tableWrap {
-  height: 480px;
+  height: 450px;
   border: 1px solid black;
   overflow: auto;
 }
@@ -78,7 +78,15 @@ table {
   text-align: left;
 }
 
-#selectortable th:nth-child(4) {
+#selectortable tr th:nth-child(2) {
+  text-align: center;
+}
+
+#selectortable tr td:nth-child(2) {
+  text-align: center;
+}
+
+#selectortable tr th:nth-child(3) {
   text-align: right;
 }
 
@@ -145,6 +153,7 @@ h2 {
   font-weight: bold;
 }
 
+
 button {
   padding:8px 5px 5px 5px; 
   font-family: "Arial", Times, serif;
@@ -153,7 +162,7 @@ button {
 }
 
 .btn-clear {
-	float: right;
+  float: right;
 }
 
 #btPrint {

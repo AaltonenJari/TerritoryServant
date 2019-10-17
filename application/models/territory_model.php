@@ -39,7 +39,6 @@ class Territory_model extends CI_Model {
             ->from('alue');
         
         
-        
         $this->db->join('(SELECT ee.event_alue, event_user, ee.event_date FROM alue_events ee JOIN (SELECT event_alue, MAX(event_date) AS max_date FROM alue_events WHERE event_type = "2" GROUP BY event_alue) groupedee ON ee.event_alue = groupedee.event_alue AND ee.event_date = groupedee.max_date) e', 'alue.alue_id = e.event_alue');
         $this->db->join('person', 'e.event_user = person.person_id');
         
@@ -126,7 +125,8 @@ class Territory_model extends CI_Model {
         return $ret;
     }
 
-    function search_frontpage($fields, $sort_by, $sort_order, $chkbox_sel, $date_sel) {
+    function search_frontpage($fields, $sort_by, $sort_order, $chkbox_sel, $date_sel) 
+    {
         $sort_order = ($sort_order == 'desc') ? 'desc' : 'asc';
         
         $sort_columns = array();
@@ -231,8 +231,6 @@ class Territory_model extends CI_Model {
         } // switch
         
         
-        
-        
         $ret['rows'] = $query->get()->result();
         
         //count query
@@ -241,7 +239,8 @@ class Territory_model extends CI_Model {
         return $ret;
     }
     
-	function getRowCount($chkbox_sel, $date_sel) {
+	function getRowCount($chkbox_sel, $date_sel) 
+	{
 		$query = $this->db->select('COUNT(*) as count', FALSE)
             ->from('alue');
 
@@ -281,8 +280,8 @@ class Territory_model extends CI_Model {
         return ($res2[0]->count);
 	}
 	
-	function get_alue_row($columns, $alue_numero) {
-	    
+	function get_alue_row($columns, $alue_numero) 
+	{
 	    // Results query
 	    $query = $this->db->select($columns)
 	    ->from('alue');
@@ -295,10 +294,10 @@ class Territory_model extends CI_Model {
 	    $reault_array = $this->db->get()->result_array();
 	    
 	    return $reault_array[0];
-	    
 	}
 	
-	public function update_alue($data) {
+	public function update_alue($data) 
+	{
 	    print_r($data);
 	    
 	}

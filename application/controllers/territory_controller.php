@@ -246,7 +246,6 @@ class Territory_controller extends CI_Controller
         
         $this->Territory_model->update_alue($data);
         
-      //  $this->load->view('Stud_view',$data);
     }
     
     public function check_territory() 
