@@ -41,15 +41,9 @@ class Event_model extends CI_Model
         return ($res[0]->count);
     }
     
-    function search_event_data($alue_id) 
+    function search_event_data($fields, $alue_id) 
     {
         $limit = 25;
-        $fields = array(
-            'alue_code'		=> 'alue_koodi',
-            'event_type'	=> 'event_tyyppi',
-            'event_date'	=> 'event_date',
-            'CONCAT(person_name, " ", person_lastname)'	=> 'person_nimi'
-        );
         
         $fetch_columns = array();
         foreach ($fields as $field_name => $field_display) {
@@ -100,6 +94,13 @@ class Event_model extends CI_Model
         
         return $ret;
     }
+    
+    public function insert ($data) {
+        if ($this->db->insert("alue_events", $data)) {
+            return true;
+        }
+    }
+    
     
     function get_terr_codes() 
     {

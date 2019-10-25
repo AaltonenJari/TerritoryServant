@@ -21,7 +21,7 @@ class Territory_model extends CI_Model {
         
         $sort_columns = array();
         foreach ($fields as $field_name => $field_display) {
-            if ($field_display == "nimi") {
+            if ($field_display == "sukunimi") {
                 $sort_columns[] = "name";
             } else {
                 $sort_columns[] = $field_name;
@@ -38,8 +38,7 @@ class Territory_model extends CI_Model {
         $query = $this->db->select($fetch_columns)
             ->from('alue');
         
-        
-        $this->db->join('(SELECT ee.event_alue, event_user, ee.event_date FROM alue_events ee JOIN (SELECT event_alue, MAX(event_date) AS max_date FROM alue_events WHERE event_type = "2" GROUP BY event_alue) groupedee ON ee.event_alue = groupedee.event_alue AND ee.event_date = groupedee.max_date) e', 'alue.alue_id = e.event_alue');
+        $this->db->join('(SELECT ee.event_alue, event_user, ee.event_date FROM alue_events ee JOIN (SELECT event_alue, MAX(event_id) AS max_event_id FROM alue_events GROUP BY event_alue) groupedee ON ee.event_alue = groupedee.event_alue AND ee.event_id = groupedee.max_event_id) e', 'alue.alue_id = e.event_alue');
         $this->db->join('person', 'e.event_user = person.person_id');
         
         // lainassa = false
@@ -102,6 +101,9 @@ class Territory_model extends CI_Model {
                 break;
                 
             case "event_date":
+                $query = $this->db->order_by("lainassa", "DESC");
+                $query = $this->db->order_by($sort_by, $sort_order);
+                $query = $this->db->order_by("alue_id", "ASC");
                 break;
                 
             case "name":
@@ -148,9 +150,7 @@ class Territory_model extends CI_Model {
         $query = $this->db->select($fetch_columns)
         ->from('alue');
         
-        
-        
-        $this->db->join('(SELECT ee.event_alue, event_user, ee.event_date FROM alue_events ee JOIN (SELECT event_alue, MAX(event_date) AS max_date FROM alue_events WHERE event_type = "2" GROUP BY event_alue) groupedee ON ee.event_alue = groupedee.event_alue AND ee.event_date = groupedee.max_date) e', 'alue.alue_id = e.event_alue');
+        $this->db->join('(SELECT ee.event_alue, event_user, ee.event_date FROM alue_events ee JOIN (SELECT event_alue, MAX(event_id) AS max_event_id FROM alue_events GROUP BY event_alue) groupedee ON ee.event_alue = groupedee.event_alue AND ee.event_id = groupedee.max_event_id) e', 'alue.alue_id = e.event_alue');
         $this->db->join('person', 'e.event_user = person.person_id');
         
         // lainassa = false
@@ -216,6 +216,9 @@ class Territory_model extends CI_Model {
                 break;
                 
             case "event_date":
+                $query = $this->db->order_by("lainassa", "DESC");
+                $query = $this->db->order_by($sort_by, $sort_order);
+                $query = $this->db->order_by("alue_id", "ASC");
                 break;
                 
             case "name":
@@ -286,19 +289,63 @@ class Territory_model extends CI_Model {
 	    $query = $this->db->select($columns)
 	    ->from('alue');
 	    
-	    $this->db->join('(SELECT ee.event_alue, event_user, ee.event_date FROM alue_events ee JOIN (SELECT event_alue, MAX(event_date) AS max_date FROM alue_events WHERE event_type = "2" GROUP BY event_alue) groupedee ON ee.event_alue = groupedee.event_alue AND ee.event_date = groupedee.max_date) e', 'alue.alue_id = e.event_alue');
+	    $this->db->join('(SELECT ee.event_alue, event_user, ee.event_date FROM alue_events ee JOIN (SELECT event_alue, MAX(event_id) AS max_event_id FROM alue_events GROUP BY event_alue) groupedee ON ee.event_alue = groupedee.event_alue AND ee.event_id = groupedee.max_event_id) e', 'alue.alue_id = e.event_alue');
 	    $this->db->join('person', 'e.event_user = person.person_id');
 	    
 	    $this->db->where('alue_code', $alue_numero);
 	        
-	    $reault_array = $this->db->get()->result_array();
+	    $result_array = $this->db->get()->result_array();
 	    
-	    return $reault_array[0];
+	    return $result_array[0];
 	}
 	
-	public function update_alue($data) 
+	function get_name_id($first_name, $last_name) 
 	{
-	    print_r($data);
+	    $name_id = -1;
+	    // Results query
+	    $query = $this->db->select('person_id')
+	    ->from('person');
 	    
+	    $this->db->where('person_name', $first_name);
+	    $this->db->where('person_lastname', $last_name);
+	    
+	    $result_array = $this->db->get()->result_array();
+	    if (!empty($result_array)) {
+	        $name_id = $result_array[0]['person_id'];
+	    } else {
+	        $name_id = -1;
+	    }
+	    return $name_id;
+	}
+	
+	function get_terr_id($terr_code)
+	{
+	    $terr_id = -1;
+	    // Results query
+	    $query = $this->db->select('alue_id')
+	    ->from('alue');
+	    
+	    $this->db->where('alue_code', $terr_code);
+	    
+	    $result_array = $this->db->get()->result_array();
+	    if (!empty($result_array)) {
+	        $terr_id = $result_array[0]['alue_id'];
+	    } else {
+	        $terr_id = -1;
+	    }
+	    return $terr_id;
+	}
+	
+	public function insert_person ($data) {
+	    if ($this->db->insert("person", $data)) {
+	        return true;
+	    }
+	}
+	
+	public function update($data, $old_terr_nbr) 
+	{
+	    $this->db->set($data);
+	    $this->db->where("alue_code", $old_terr_nbr);
+	    $this->db->update("alue", $data);
 	}
 }

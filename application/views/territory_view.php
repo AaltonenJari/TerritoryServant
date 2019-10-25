@@ -34,8 +34,8 @@
       <table id="selectortable">
         <tr>
           <th width="50%">Etsi / Rajaa</th>
-          <th width="15%">Rajaa lainassa</th>
-          <th width="20%">Rajaa merkintäpvm</th>
+          <th width="10%">Rajaa lainassa</th>
+          <th width="25%">Rajaa käyty pvm</th>
           <th width="15%">Alkutilaan</th>
         </tr>
   		<tr>
@@ -103,8 +103,9 @@
 	    				    >
      			    	  </td>
  	    				<?php } else if ($field_name == "alue_code") { ?>
+ 	    				  <?php $terr_url = base_url("index.php/Territory_controller/update") . "/" . $alue->$field_name; ?>
     			    	  <td id="<?php echo $field_name_data; ?>"> 
-    			    	      	<a id="<?php echo $alue->$field_name; ?>" href="<?php echo base_url("index.php/Territory_controller/update") . "/"  . $alue->$field_name; ?>">
+    			    	      	<a id="<?php echo $alue->$field_name; ?>" href="#" onClick='jsFunction3("<?php echo $terr_url; ?>")'>
     			    	    <?php echo $alue->$field_name; ?> 
    				    	   </a>
     			    	  
@@ -167,6 +168,10 @@ function jsFunction2() {
 	  location.replace(newUrl);
 	}
 
-
+function jsFunction3(param) {
+	var newUrl = param + "\\" + document.getElementById("filter_param").value;
+	  //alert(newUrl);
+	  location.replace(newUrl);
+}
 </script>
 </html>

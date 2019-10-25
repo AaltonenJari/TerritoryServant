@@ -10,6 +10,7 @@ class Territory_controller extends CI_Controller
         // Load the alue model to make it available
         // to *all* of the controller's actions
         $this->load->model('Territory_model');
+        $this->load->model('Event_model');
     }
     
     public function display($sort_by = 'alue_code', $sort_order = 'asc', $chkbox_sel = '0', $date_sel = '0', $filter = '') 
@@ -19,7 +20,8 @@ class Territory_controller extends CI_Controller
             'alue_detail'	=> 'alue_nimi',
             'alue_location'	=> 'lisätieto',
             'lainassa'		=> 'lainassa',
-            'alue_lastdate'	=> 'merkintäpvm',
+            'alue_lastdate'	=> 'käyty',
+            'event_date'	=> 'otettu',
             'name'	=> 'kenellä'
         );
         
@@ -30,13 +32,18 @@ class Territory_controller extends CI_Controller
             'lainassa'		=> 'alue_lainassa',
             'alue_lastdate'	=> 'alue_muutospvm',
             'event_date'	=> 'event_lastdate',
-            'CONCAT(person_name, " ", person_lastname)'	=> 'nimi'
+            'person_name'	=> 'etunimi',
+            'person_lastname'	=> 'sukunimi'
         );
         
         //Korjaa ääkköset takaisin
         $filter = urldecode($filter);
         
-        $results = $this->Territory_model->search($data['database_fields'], $sort_by, $sort_order, $chkbox_sel, $date_sel);
+        if ($this->session->userdata('frontpage') == 1) {
+            $results = $this->Territory_model->search_frontpage($data['database_fields'], $sort_by, $sort_order, $chkbox_sel, $date_sel);
+        } else {
+            $results = $this->Territory_model->search($data['database_fields'], $sort_by, $sort_order, $chkbox_sel, $date_sel);
+        }
         
         $data['alueet'] = $this->create_terr_displayrows($results,$chkbox_sel);
         
@@ -80,7 +87,8 @@ class Territory_controller extends CI_Controller
             'alue_detail'	=> 'alue_nimi',
             'alue_location'	=> 'lisätieto',
             'lainassa'		=> 'lainassa',
-            'alue_lastdate'	=> 'merkintäpvm',
+            'alue_lastdate'	=> 'käyty',
+            'event_date'	=> 'otettu',
             'name'	=> 'kenellä'
         );
         
@@ -91,7 +99,8 @@ class Territory_controller extends CI_Controller
             'lainassa'		=> 'alue_lainassa',
             'alue_lastdate'	=> 'alue_muutospvm',
             'event_date'	=> 'event_lastdate',
-            'CONCAT(person_name, " ", person_lastname)'	=> 'nimi'
+            'person_name'	=> 'etunimi',
+            'person_lastname'	=> 'sukunimi'
         );
         
         //Korjaa ääkköset takaisin
@@ -158,16 +167,33 @@ class Territory_controller extends CI_Controller
                         $resultrow->alue_lastdate = $alue_lastdate->format('j.n.Y');
                         break;
                         
-                    case "event_date":
+                    case "person_name":
                         break;
                         
-                    case "CONCAT(person_name, \" \", person_lastname)":
+                    case "person_lastname":
                         if ($aluerivi->lainassa == "1") {
-                            $resultrow->name = $value;
+                            if ($this->session->userdata('name_presentation') == "0") {
+                                //0 = firstname lsatname, 1 = lastmame, firstname; (default)
+                                $name_delim = ' ';
+                                $resultrow->name = $aluerivi->person_name . $name_delim . $value;
+                            } else {
+                                $name_delim = ', ';
+                                $resultrow->name = $value . $name_delim . $aluerivi->person_name;
+                            }
                         } else {
                             $resultrow->name = "";
                         }
-                        
+                        break;
+                    
+                    case "event_date":
+                        if ($aluerivi->lainassa == "1") {
+                            $alue_eventdate = new DateTime($value);
+                            $resultrow->event_date = $alue_eventdate->format('j.n.Y');
+                        } else {
+                            $resultrow->event_date = "";
+                        }
+                        break;
+                    
                         break;
                         
                     default:
@@ -179,15 +205,22 @@ class Territory_controller extends CI_Controller
         return $r;
     }
     
-    public function update ($alue_numero) 
+    public function update ($alue_numero, $filter = '') 
     {
+        //State variables of territory_view
+        $territory_view_state_data = array(
+            'filter'          => $filter
+        );
+        $this->session->set_userdata($territory_view_state_data);
+        
         $columns = array(
             'alue_code',
             'alue_detail',
             'alue_location',
             'lainassa',
             'alue_lastdate',
-            'CONCAT(person_name, " ", person_lastname)'
+            'person_name',
+            'person_lastname'
         );
         
         $alue_rivi = $this->Territory_model->get_alue_row($columns, $alue_numero);
@@ -213,57 +246,168 @@ class Territory_controller extends CI_Controller
                     break;
                     
                 case "alue_lastdate":
-                    $resultrow->alue_lastdate = $value;
+                    $alue_lastdate = new DateTime($value);
+                    $resultrow->alue_lastdate = $alue_lastdate->format('j.n.Y');
                     break;
                     
-                case "CONCAT(person_name, \" \", person_lastname)":
-                    $resultrow->name = $value;
+                case "person_name":
                     break;
                     
+                case "person_lastname":
+                    if ($alue_rivi['lainassa'] == "1") {
+                        if ($this->session->userdata('name_presentation') == "0") {
+                            //0 = firstname lsatname, 1 = lastmame, firstname; (default)
+                            $name_delim = ' ';
+                            $resultrow->name = $alue_rivi['person_name'] . $name_delim . $value;
+                        } else {
+                            $name_delim = ', ';
+                            $resultrow->name = $value . $name_delim . $alue_rivi['person_name'];
+                        }
+                        
+                    } else {
+                        $resultrow->name = "";
+                    }
+                    break;
+                
                 default:
                     break;
             } // switch
         } // foreach aluerivi
         
-        // print_r($resultrow);
         $this->load->view('terr_mark', $resultrow);
         
     }
     
     public function update_alue()
     {
-        echo "Update alue";
+        $alue_kayty = false;
+        $alue_id = $this->Territory_model->get_terr_id($this->input->post('alue_code'));
         
-        $data = array(
-            'alue_code' => $this->input->post('alue_code'),
-            'lainassa_old' => $this->input->post('lainassa_old'),
-            'dlainassa' => $this->session->userdata('lainassa_uusi'),
-            'lastdate_old' => $this->input->post('lastdate_old'),
-            'merkpvm' => $this->input->post('dmerk'),
-            'jnimi_old' => $this->input->post('jnimi_old'),
-            'jnimi' => $this->input->post('djnimi')
-        );
+        //Hae henkilön tunnus taulusta person
+        $person_id_old = $this->get_person_id($this->input->post('jnimi_old'));
+        $person_id_new = $this->get_person_id($this->input->post('djnimi'));
         
-        $this->Territory_model->update_alue($data);
+        $alue_lastdate = new DateTime($this->input->post('dmerk'));
+        $new_lastdate = $alue_lastdate->format('Y-m-d');
         
+        if ($this->session->userdata('lainassa_uusi') == "0") {  //palautus
+            $event_data_new = array(
+                'event_type' => "2",
+                'event_date' => $new_lastdate,
+                'event_user' => $person_id_old,
+                'event_alue' => $alue_id
+            );
+            
+            $this->Event_model->insert($event_data_new);
+            $alue_kayty = true;
+        } else { //lainaus
+            if ($this->input->post('lainassa_old') == "1") { //Alueen vaihto
+                //Lisää alueen palautumistapahtuma
+                $event_data_old = array(
+                    'event_type' => "2",
+                    'event_date' => $new_lastdate,
+                    'event_user' => $person_id_old,
+                    'event_alue' => $alue_id
+                );
+                
+                $this->Event_model->insert($event_data_old);
+                $alue_kayty = true;
+            }
+            $event_data_new = array(
+                'event_type' => "1",
+                'event_date' => $new_lastdate,
+                'event_user' => $person_id_new,
+                'event_alue' => $alue_id
+            );
+            
+            $this->Event_model->insert($event_data_new);
+        }
+               
+        if ($alue_kayty) {
+            $data = array(
+                'lainassa' => $this->session->userdata('lainassa_uusi'),
+                'alue_lastdate' => $new_lastdate
+            );
+        } else {
+            $data = array(
+                'lainassa' => $this->session->userdata('lainassa_uusi')
+            );
+        }
+        
+            $this->Territory_model->update($data, $this->input->post('alue_code'));
+ 
+        //Palataan päänäytölle siinä tilassa, kuin se oli ennen päivitystä
+        $this->display($this->session->userdata('sort_by'),
+            $this->session->userdata('sort_order'),
+            $this->session->userdata('chkbox_sel'),
+            $this->session->userdata('date_sel'),
+            $this->session->userdata('filter'));
+        
+    }
+    
+    public function get_person_id($name) 
+    {
+        $person_id = 0;
+        
+        //Jos nimi ei ole tyhjä, haetaan id
+        if (!empty($name)) {
+            $nimet = preg_split("/[, ]+/", $name);
+
+            if ($this->session->userdata('name_presentation') == "0") {
+                //0 = firstname lsatname, 1 = lastmame, firstname; (default)
+                $etunimi = $nimet[0];
+                $sukunimi = $nimet[1];
+            } else {
+                $etunimi = $nimet[1];
+                $sukunimi = $nimet[0];
+            }
+            
+            $data = array(
+                'person_name' => $etunimi,
+                'person_lastname' => $sukunimi,
+                'person_group' => '0'
+            );
+            
+            //Onko nimi kannassa?
+            $person_id = $this->Territory_model->get_name_id($etunimi, $sukunimi);
+            if ($person_id < 0) {
+                //Ei, lisätään
+                $this->Territory_model->insert_person ($data);
+                $person_id = $this->Territory_model->get_name_id($etunimi, $sukunimi);
+            }
+        }
+        
+        return $person_id;
     }
     
     public function check_territory() 
     {
-        // set validation rules
-        $rules = array(
-            array('field' => 'djnimi',
-                'label' => 'Kenellä',
-                'rules' => 'callback_verify_alue')
-        ) ;
-        
-        $this->form_validation->set_rules($rules);
-        
-        if ($this->form_validation->run() == false) {
-            $this->update($this->input->post('alue_code'));
-        } else {
-            $this->update_alue();
+        $action = $this->input->post('action');
+        if ($action == 'Päivitä') {
+            // set validation rules
+            $rules = array(
+                array('field' => 'djnimi',
+                    'label' => 'Kenellä',
+                    'rules' => 'callback_verify_alue')
+            ) ;
+            // check input data
+            $this->form_validation->set_rules($rules);
+            
+            if ($this->form_validation->run() == false) {
+                $this->update($this->input->post('alue_code'));
+            } else {
+                $this->update_alue();
+            }
         }
+        if ($action == 'Paluu') {
+            //Palataan päänäytölle siinä tilassa, missä se oli ennen päivitystä
+            $this->display($this->session->userdata('sort_by'),
+                $this->session->userdata('sort_order'),
+                $this->session->userdata('chkbox_sel'),
+                $this->session->userdata('date_sel'),
+                $this->session->userdata('filter'));
+        }
+        
         return;
     }
     
@@ -282,25 +426,46 @@ class Territory_controller extends CI_Controller
         
         $this->session->set_userdata($session_data);
         $lainassa_vanha = $this->input->post('lainassa_old');
+
         $julistaja_uusi = $this->input->post('djnimi');
+        $julistaja_vanha = $this->input->post('jnimi_old');
         
-        if ($lainassa_vanha == '0' && $lainassa_uusi == 0) {
-            $this->form_validation->set_message('verify_alue','Palautat palautunutta korttia. Yritä uudelleen');
-            $this->session->set_flashdata('error', 'väärä lainassa-koodi');
+        $pvm_uusi = $this->input->post('dmerk');
+        $pvm_vanha = $this->input->post('lastdate_old');
+        
+        if ($lainassa_vanha == '0' && $lainassa_uusi == '0') {
+            $this->form_validation->set_message('verify_alue','väärä lainassa-koodi!');
+            $this->session->set_flashdata('error', 'Palautat palautunutta korttia. Yritä uudelleen.');
             return false;
-        } else if ($lainassa_uusi == 1 && empty($julistaja_uusi)) {
-                $this->form_validation->set_message('verify_alue','Lainaajan nimi tyhjä. Yritä uudelleen');
-                $this->session->set_flashdata('error', 'Lainaajan nimi tyhjä');
+        } else if ($lainassa_uusi == '1' && empty($julistaja_uusi)) {
+                $this->form_validation->set_message('verify_alue','Lainaajan nimi tyhjä!');
+                $this->session->set_flashdata('error', 'Lainaajan nimi tyhjä. Yritä uudelleen.');
                 return false;
-        } else {
+        } else if ($lainassa_vanha == '1' && $lainassa_uusi == '1'
+                   && $julistaja_vanha == $julistaja_uusi
+                   && $pvm_vanha == $pvm_uusi) {
+                $this->form_validation->set_message('verify_alue','Kortti on jo merkitty!');
+                $this->session->set_flashdata('error', 'Et voi merkitä korttia samana päivänä samalle henkilölle uudelleen');
+                return false;
+        }
+        else {
             return true;
         }
     }
-    
     
     public function index()
     {
         $this->display_frontpage();
     }
     
+    public function close_method()
+    {
+        $this->session->unset_userdata('initialized');
+        
+        echo  "<script type='text/javascript'>";
+        echo  "window.open('', '_self', '');";
+       // echo "window.open('', '_parent', '');";
+        echo "window.close();";
+        echo "</script>";
+    }
 }

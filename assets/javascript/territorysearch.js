@@ -23,7 +23,11 @@
         	    "\\" + document.getElementById("selChkBoxOld").value + 
            	    "\\" + document.getElementById("selDateOld").value;
 
-           	document.getElementById("merkintäpvm").href = document.getElementById("merkintäpvmold").value +
+           	document.getElementById("käyty").href = document.getElementById("käytyold").value +
+        	    "\\" + document.getElementById("selChkBoxOld").value + 
+           	    "\\" + document.getElementById("selDateOld").value;
+
+           	document.getElementById("otettu").href = document.getElementById("otettuold").value +
         	    "\\" + document.getElementById("selChkBoxOld").value + 
            	    "\\" + document.getElementById("selDateOld").value;
 
@@ -44,8 +48,11 @@
                 document.getElementById("lainassa").href =
                     document.getElementById("lainassa").href + 
                     "\\" + _input.value;
-                document.getElementById("merkintäpvm").href =
-                    document.getElementById("merkintäpvm").href + 
+                document.getElementById("käyty").href =
+                    document.getElementById("käyty").href + 
+                    "\\" + _input.value;
+               document.getElementById("otettu").href =
+                    document.getElementById("otettu").href + 
                     "\\" + _input.value;
                 document.getElementById("kenellä").href =
                     document.getElementById("kenellä").href + 

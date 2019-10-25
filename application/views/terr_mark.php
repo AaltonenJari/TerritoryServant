@@ -73,11 +73,13 @@
             } else {
                 echo form_label('Palautettu: '); 
             }
-           ?>
+          ?>
         </td>
         <td>
-          <?php echo form_label($alue_lastdate); ?>
-          <?php echo form_hidden('lastdate_old', $alue_lastdate);  ?>
+          <?php 
+            echo form_label($alue_lastdate);
+            echo form_hidden('lastdate_old', $alue_lastdate);
+          ?>
         </td>
       </tr>
       
@@ -86,8 +88,10 @@
           <?php echo form_label('Merkintäpvm:'); ?>
         </td>
         <td>
-          <?php $attributes = 'id="dmerk" placeholder="Merkintäpvm"';
-          echo form_input('dmerk', set_value('dmerk', date("Y-m-d")), $attributes); ?>
+          <?php 
+            $attributes = 'id="dmerk" placeholder="Merkintäpvm"';
+            echo form_input('dmerk', set_value('dmerk', date("j.n.Y")), $attributes);
+           ?>
         </td>
       </tr>
       <tr>
@@ -95,10 +99,11 @@
           <?php echo form_label('Kenellä:'); ?>
         </td>
         <td>
-          <?php $attributes = 'id="djnimi" placeholder="Nimi"';
-          echo form_input('djnimi', set_value('djnimi', $name), $attributes); ?>
-          
-          <?php echo form_hidden('jnimi_old', $name);  ?>
+          <?php 
+            $attributes = 'id="djnimi" placeholder="Nimi"';
+            echo form_input('djnimi', set_value('djnimi', $name), $attributes); 
+            echo form_hidden('jnimi_old', $name); 
+          ?>
          </td>
       </tr>
 
@@ -112,8 +117,24 @@
      
     </table>
     
-    <?php echo form_submit(array('id' => 'submit', 'value' => 'Päivitä')); ?>
-    <?php echo $this->session->flashdata("error");	?>
+    <table id="cardbuttons">
+      <tr>
+        <td width="30%">
+          <?php echo form_submit(array('id' => 'submit', 'name' => 'action', 'value' => 'Päivitä')); ?>
+        </td>
+        <td width="30%">
+        </td>
+        <td width="40%">
+          <?php echo form_submit(array('id' => 'submit', 'name' => 'action', 'value' => 'Paluu')); ?>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="3">
+          <?php echo $this->session->flashdata("error");	?>
+        </td>
+       </tr>
+    </table>
+    
     
     <?php echo form_close(); ?>
 
@@ -127,9 +148,16 @@ $(function() {
 
 $("#dmerk").datepicker(
     {
-        dateFormat: 'yy-mm-dd'
+        dateFormat: 'dd.mm.yy'
     }
 );
+
+$('input[type="checkbox"]').click(function() {
+    if (!this.checked) {
+        $('#djnimi').val('');
+    }
+
+});
 </script>         
          
 </html>

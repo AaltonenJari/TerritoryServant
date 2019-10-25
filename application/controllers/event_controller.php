@@ -12,13 +12,7 @@ class Event_controller extends CI_Controller
 
         // Load the model 
         $this->load->model('Event_model');
-        
-        $session_data = array(
-            'event_date_order' => "DESC",
-            'archive_time' => "-12 years"
-        );
-        $this->session->set_userdata($session_data);
-    }
+     }
     
     public function display($code = 'A', $offset = 0) 
 	{
@@ -35,8 +29,17 @@ class Event_controller extends CI_Controller
         
         $results = $this->Event_model->search_headers($data['database_fields'], $code, $limit, $offset);
         
+        $event_fields = array(
+            'alue_code'		=> 'alue_koodi',
+            'event_type'	=> 'event_tyyppi',
+            'event_date'	=> 'event_date',
+            'person_name'	=> 'etunimi',
+            'person_lastname'	=> 'sukunimi'
+        );
+        
         $event_hdrs = array();
         $events_data = array();
+        
         foreach ($results['rows'] as $aluerivi) 
         {
             $resultrow = new stdClass;
@@ -48,7 +51,7 @@ class Event_controller extends CI_Controller
 
                     case "alue_id":
                         //Hae alueen tapahtumat tunnuksella
-                        $event_results = $this->Event_model->search_event_data($value);
+                        $event_results = $this->Event_model->search_event_data($event_fields, $value);
                         $events_alue = $this->tabulate_alue_events($event_results);
                         $events_data[] = $events_alue;
                         break;
@@ -181,8 +184,19 @@ class Event_controller extends CI_Controller
                         }
                         break;
                         
-                    case "CONCAT(person_name, \" \", person_lastname)":
-                        $event_result_row->name = $value;
+                    case "person_name":
+                        break;
+                        
+                    case "person_lastname":
+                        if ($this->session->userdata('name_presentation') == "0") {
+                            //0 = firstname lsatname, 1 = lastmame, firstname; (default)
+                            $name_delim = ' ';
+                            $event_result_row->name = $event_row->person_name . $name_delim . $value;
+                        } else {
+                            $name_delim = ', ';
+                            $event_result_row->name =  $value . $name_delim . $event_row->person_name;
+                        }
+                        
                         if ($this->session->userdata('event_date_order') == "DESC") {
                             if ($event_row->event_type == "1") {
                                 $e[] = $event_result_row;
@@ -222,8 +236,19 @@ class Event_controller extends CI_Controller
                         }
                         break;
                         
-                    case "CONCAT(person_name, \" \", person_lastname)":
-                        $event_result_row->name = $value;
+                    case "person_name":
+                        break;
+                        
+                    case "person_lastname":
+                        if ($this->session->userdata('name_presentation') == "0") {
+                            //0 = firstname lsatname, 1 = lastmame, firstname; (default)
+                            $name_delim = ' ';
+                            $event_result_row->name = $event_row->person_name . $name_delim . $value;
+                        } else {
+                            $name_delim = ', ';
+                            $event_result_row->name =  $value . $name_delim . $event_row->person_name;
+                        }
+                        
                         if ($this->session->userdata('event_date_order') == "DESC") {
                             if ($event_row->event_type == "2") {
                                 $e[] = $event_result_row;

@@ -35,9 +35,7 @@
 .dropbtn {
   background-color: #4CAF50;
   color: white;
-  padding: 20px;
-  padding-left: 30px;
-  padding-right: 30px;
+  padding: 20px 25px 20px 25px;
   font-family: "Arial", Times, serif;
   font-size: 20px;
   text-transform: uppercase;

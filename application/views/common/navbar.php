@@ -2,6 +2,25 @@
   <?php $sivu_tunnus = $this->session->userdata('sivutunnus');  ?>
   <?php $dropbtn_classes_base = "dropbtn" ?>
 
+  <?php if (empty($this->session->userdata('initialized'))) {
+      //echo "Userdata empty";
+      $session_data_terr = array(
+          'sort_by'         => 'alue_lastdate',
+          'sort_order'      => 'asc',
+          'chkbox_sel'      => '1',
+          'date_sel'        => '2',
+          'filter'          => '',
+          'frontpage'       => '1',
+          'initialized'     => 'K',
+          'event_date_order' => "DESC",
+          'archive_time' => "-12 years",
+          'name_presentation'  => '1'  //0 = firstname lsatname, 1 = lastmame, firstname; (default)
+      );
+      $this->session->set_userdata($session_data_terr);
+      
+  } else {
+      //print_r($this->session->userdata);
+  }?>
   <div class="naw_wrapper">
     <ul>
       <li>
@@ -69,6 +88,15 @@
           </a>
         </div>
       </li>
+      <li>
+        <div class="dropdown">
+          <?php if ($sivu_tunnus == "7") { $dropbtn_classes = $dropbtn_classes_base . " active"; } else { $dropbtn_classes = $dropbtn_classes_base; } ?>
+          <a href="<?php echo base_url("index.php/territory_controller/close_method"); ?>" >
+            <button class="<?php echo $dropbtn_classes; ?>">Sulje</button>
+          </a>
+        </div>
+      </li>
+      
     </ul>
   </div>
 </nav>
