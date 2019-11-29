@@ -15,62 +15,19 @@ class Territory_controller extends CI_Controller
     
     public function display($sort_by = 'alue_code', $sort_order = 'asc', $chkbox_sel = '0', $date_sel = '0', $filter = '') 
     {
-        $data['display_fields'] = array(
-            'alue_code'		=> 'numero',
-            'alue_detail'	=> 'alue_nimi',
-            'alue_location'	=> 'lisätieto',
-            'lainassa'		=> 'lainassa',
-            'alue_lastdate'	=> 'käyty',
-            'event_date'	=> 'otettu',
-            'name'	=> 'kenellä'
-        );
-        
-        $data['database_fields'] = array(
-            'alue_code'		=> 'alue_koodi',
-            'alue_detail'	=> 'alue_nimi',
-            'alue_location'	=> 'alue_tietoja',
-            'lainassa'		=> 'alue_lainassa',
-            'alue_lastdate'	=> 'alue_muutospvm',
-            'event_date'	=> 'event_lastdate',
-            'person_name'	=> 'etunimi',
-            'person_lastname'	=> 'sukunimi'
-        );
-        
-        //Korjaa ääkköset takaisin
-        $filter = urldecode($filter);
-        
-        if ($this->session->userdata('frontpage') == 1) {
-            $results = $this->Territory_model->search_frontpage($data['database_fields'], $sort_by, $sort_order, $chkbox_sel, $date_sel);
-        } else {
-            $results = $this->Territory_model->search($data['database_fields'], $sort_by, $sort_order, $chkbox_sel, $date_sel);
-        }
-        
-        $data['alueet'] = $this->create_terr_displayrows($results,$chkbox_sel);
-        
-        $data['num_results'] = $results['num_rows'];
-       
-        $data['pagination'] = "";
-        
-        //Parameters back to view page
-        $data['sort_by'] = $sort_by;
-        $data['sort_order'] = $sort_order;
-        $data['chkbox_sel'] = $chkbox_sel;
-        $data['date_sel'] = $date_sel;
-        $data['filter'] = $filter;
-        $data['frontpage'] = 0;
-        
-        //State variables of territory_view
+        //State variables for territory_view
         $territory_view_state_data = array(
             'sort_by'         => $sort_by,
             'sort_order'      => $sort_order,
             'chkbox_sel'      => $chkbox_sel,
             'date_sel'        => $date_sel,
             'filter'          => $filter,
-            'frontpage'       => $data['frontpage']
+            'sivutunnus'      => "2"
         );
         $this->session->set_userdata($territory_view_state_data);
         
-        $this->load->view('territory_view', $data);
+        //Common control part
+        $this->display_control($sort_by, $sort_order, $chkbox_sel, $date_sel, $filter);
     }
     
     
@@ -82,6 +39,23 @@ class Territory_controller extends CI_Controller
         $date_sel = '2';
         $filter = '';
             
+        //State variables for territory_view
+        $territory_view_state_data = array(
+            'sort_by'         => $sort_by,
+            'sort_order'      => $sort_order,
+            'chkbox_sel'      => $chkbox_sel,
+            'date_sel'        => $date_sel,
+            'filter'          => $filter,
+            'sivutunnus'      => "1"
+        );
+        $this->session->set_userdata($territory_view_state_data);
+    
+        //Common control part
+        $this->display_control($sort_by, $sort_order, $chkbox_sel, $date_sel, $filter);
+    }
+    
+    public function display_control($sort_by = 'alue_code', $sort_order = 'asc', $chkbox_sel = '0', $date_sel = '0', $filter = '') {
+        //Hakuparametrit näytölle
         $data['display_fields'] = array(
             'alue_code'		=> 'numero',
             'alue_detail'	=> 'alue_nimi',
@@ -92,6 +66,7 @@ class Territory_controller extends CI_Controller
             'name'	=> 'kenellä'
         );
         
+        //Hakuparametrit kantaan
         $data['database_fields'] = array(
             'alue_code'		=> 'alue_koodi',
             'alue_detail'	=> 'alue_nimi',
@@ -106,9 +81,10 @@ class Territory_controller extends CI_Controller
         //Korjaa ääkköset takaisin
         $filter = urldecode($filter);
         
-        $results = $this->Territory_model->search_frontpage($data['database_fields'], $sort_by, $sort_order, $chkbox_sel, $date_sel);
+        //Hae tiedot
+        $results = $this->Territory_model->search($data['database_fields'], $sort_by, $sort_order, $chkbox_sel, $date_sel);
         
-        $data['alueet'] = $this->create_terr_displayrows($results,$chkbox_sel);
+        $data['alueet'] = $this->create_terr_displayrows($results);
         
         $data['num_results'] = $results['num_rows'];
         
@@ -120,25 +96,33 @@ class Territory_controller extends CI_Controller
         $data['chkbox_sel'] = $chkbox_sel;
         $data['date_sel'] = $date_sel;
         $data['filter'] = $filter;
-        $data['frontpage'] = 1;
-        
-        //State variables of territory_view
-        $territory_view_state_data = array(
-            'sort_by'         => $sort_by,
-            'sort_order'      => $sort_order,
-            'chkbox_sel'      => $chkbox_sel,
-            'date_sel'        => $date_sel,
-            'filter'          => $filter,
-            'frontpage'       => $data['frontpage']
-        );
-        
-        
-        $this->session->set_userdata($territory_view_state_data);
         
         $this->load->view('territory_view', $data);
     }
     
-    public function create_terr_displayrows($results, $chkbox_sel) 
+    public function display_marklist() 
+    {
+        $data['database_fields'] = array(
+            'alue_code'		=> 'alue_koodi',
+            'alue_detail'	=> 'alue_nimi',
+            'alue_location'	=> 'alue_tietoja',
+            'lainassa'		=> 'alue_lainassa',
+            'event_date'	=> 'event_lastdate',
+            'alue_lastdate'	=> 'alue_muutospvm',
+            'person_name'	=> 'etunimi',
+            'person_lastname'	=> 'sukunimi'
+        );
+        
+        //Hae tiedot
+        $results = $this->Territory_model->search_mark_exhort($data['database_fields']);
+        
+        $data['terr_mark_list'] = $this->create_terr_mark_rows($results);
+        $data['num_results'] = $results['num_rows'];
+        
+        $this->load->view('territory_mark_view', $data);
+    }
+    
+    public function create_terr_displayrows($results) 
     {
         $r = array();
         foreach ($results['rows'] as $aluerivi) {
@@ -204,7 +188,97 @@ class Territory_controller extends CI_Controller
         }
         return $r;
     }
-    
+
+    public function create_terr_mark_rows($results)
+    {
+        $terr_result = array();
+        $publisher_mark = array();
+        $territories = array();
+        $territoty = array();
+        $prev_name = "";
+        
+        foreach ($results['rows'] as $terr_row) {
+            
+            foreach ($terr_row as $key=>$value)
+            {
+                switch ($key) {
+                    case "alue_code":
+                        $territoty['alue_number'] = $value;
+                        break;
+                        
+                    case "alue_detail":
+                        break;
+                        
+                    case "alue_location":
+                        //Alueen nimi = alue_detail + alue_location
+                        if (empty($terr_row->alue_detail)) {
+                            $territoty['alue_name'] = $value;
+                        } else {
+                            $territoty['alue_name'] = $terr_row->alue_detail . ", " . $value;
+                        }
+                        break;
+                        
+                    case "lainassa":
+                        break;
+                        
+                    case "alue_lastdate":
+                        $alue_lastdate = new DateTime($value);
+                        $territoty['alue_lastdate'] = $alue_lastdate->format('j.n.Y');
+                        break;
+                        
+                    case "event_date":
+                        $alue_eventdate = new DateTime($value);
+                        $alue_lastdate = new DateTime($terr_row->alue_lastdate);
+                        if ($alue_eventdate < $alue_lastdate) {
+                            $territoty['event_date'] = $alue_lastdate->format('j.n.Y');
+                        } else {
+                            $territoty['event_date'] = $alue_eventdate->format('j.n.Y');
+                        }
+                        break;
+                        
+                    case "person_name":
+                        break;
+                        
+                    case "person_lastname":
+                        if ($this->session->userdata('name_presentation') == "0") {
+                            //0 = firstname lsatname, 1 = lastmame, firstname; (default)
+                            $name_delim = ' ';
+                            $name = $terr_row->person_name . $name_delim . $value;
+                        } else {
+                            $name_delim = ', ';
+                            $name =  $value . $name_delim . $terr_row->person_name;
+                        }
+                        //Nimi vaihtui?
+                        if ($prev_name != $name) {
+                            if (!empty($prev_name)) {
+                                //Lisää nimi + alueet
+                                $publisher_mark['name'] = $prev_name;
+                                $publisher_mark['territories'] = $territories;
+                                $terr_result[] = $publisher_mark;
+                                $territories = array();
+                                $publisher_mark = array();
+                            }
+                            $prev_name = $name;
+                        }
+                        $territories[] = $territoty;
+                        $territoty = array();
+                        break;
+
+                    default:
+                        break;
+                } // switch
+            } // foreach terr_row
+        }
+
+        //Lisää viimeinen nimi + alueet
+        if (!empty($prev_name)) {
+            $publisher_mark['name'] = $prev_name;
+            $publisher_mark['territories'] = $territories;
+            $terr_result[] = $publisher_mark;
+        }
+        return $terr_result;
+    }
+        
     public function update ($alue_numero, $filter = '') 
     {
         //State variables of territory_view
@@ -334,14 +408,22 @@ class Territory_controller extends CI_Controller
             );
         }
         
-            $this->Territory_model->update($data, $this->input->post('alue_code'));
+        $this->Territory_model->update($data, $this->input->post('alue_code'));
  
         //Palataan päänäytölle siinä tilassa, kuin se oli ennen päivitystä
-        $this->display($this->session->userdata('sort_by'),
-            $this->session->userdata('sort_order'),
-            $this->session->userdata('chkbox_sel'),
-            $this->session->userdata('date_sel'),
-            $this->session->userdata('filter'));
+        if ($this->session->userdata('sivutunnus') == 1) {
+            $this->display_frontpage($this->session->userdata('sort_by'),
+                $this->session->userdata('sort_order'),
+                $this->session->userdata('chkbox_sel'),
+                $this->session->userdata('date_sel'),
+                $this->session->userdata('filter'));
+        } else {
+            $this->display($this->session->userdata('sort_by'),
+                $this->session->userdata('sort_order'),
+                $this->session->userdata('chkbox_sel'),
+                $this->session->userdata('date_sel'),
+                $this->session->userdata('filter'));
+        }
         
     }
     
@@ -400,12 +482,20 @@ class Territory_controller extends CI_Controller
             }
         }
         if ($action == 'Paluu') {
-            //Palataan päänäytölle siinä tilassa, missä se oli ennen päivitystä
-            $this->display($this->session->userdata('sort_by'),
-                $this->session->userdata('sort_order'),
-                $this->session->userdata('chkbox_sel'),
-                $this->session->userdata('date_sel'),
-                $this->session->userdata('filter'));
+            //Palataan päänäytölle siinä tilassa, kuin se oli ennen päivitystä
+            if ($this->session->userdata('sivutunnus') == 1) {
+                $this->display_frontpage($this->session->userdata('sort_by'),
+                    $this->session->userdata('sort_order'),
+                    $this->session->userdata('chkbox_sel'),
+                    $this->session->userdata('date_sel'),
+                    $this->session->userdata('filter'));
+            } else {
+                $this->display($this->session->userdata('sort_by'),
+                    $this->session->userdata('sort_order'),
+                    $this->session->userdata('chkbox_sel'),
+                    $this->session->userdata('date_sel'),
+                    $this->session->userdata('filter'));
+            }
         }
         
         return;
@@ -456,16 +546,5 @@ class Territory_controller extends CI_Controller
     public function index()
     {
         $this->display_frontpage();
-    }
-    
-    public function close_method()
-    {
-        $this->session->unset_userdata('initialized');
-        
-        echo  "<script type='text/javascript'>";
-        echo  "window.open('', '_self', '');";
-       // echo "window.open('', '_parent', '');";
-        echo "window.close();";
-        echo "</script>";
     }
 }

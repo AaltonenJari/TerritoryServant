@@ -10,7 +10,7 @@
           'chkbox_sel'      => '1',
           'date_sel'        => '2',
           'filter'          => '',
-          'frontpage'       => '1',
+          'sivutunnus'      => '1',
           'initialized'     => 'K',
           'event_date_order' => "DESC",
           'archive_time' => "-12 years",
@@ -48,7 +48,7 @@
           <div class="dropdown-content">
             <div class="nav-sub">
               <ul>
-                <li><a href="#">Merkitsemiskehotuslistat</a></li>
+                <li><a href="<?php echo base_url("index.php/territory_controller/display_marklist"); ?>">Merkitsemiskehotuslistat</a></li>
                 <li><a href="#">KV-raportti</a></li>
                 <li><a href="#">Match Manager</a></li>
               </ul>
@@ -88,15 +88,6 @@
           </a>
         </div>
       </li>
-      <li>
-        <div class="dropdown">
-          <?php if ($sivu_tunnus == "7") { $dropbtn_classes = $dropbtn_classes_base . " active"; } else { $dropbtn_classes = $dropbtn_classes_base; } ?>
-          <a href="<?php echo base_url("index.php/territory_controller/close_method"); ?>" >
-            <button class="<?php echo $dropbtn_classes; ?>">Sulje</button>
-          </a>
-        </div>
-      </li>
-      
     </ul>
   </div>
 </nav>

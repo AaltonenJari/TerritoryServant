@@ -14,16 +14,11 @@
 
   <div id="wrapper">
     <!-- Asetetaan navigointipalkki ja tämä sivu aktiiviseksi -->
-    <?php if ($frontpage == "1") { $sivu_tunnus = "1"; } else { $sivu_tunnus = "2"; } ?>
-    <?php $session_data = array(
-            'sivutunnus' => $sivu_tunnus
-            );
-          $this->session->set_userdata($session_data);
-    ?>
+    <?php $sivu_tunnus = $this->session->userdata('sivutunnus');?>
     <?php $this->load->view('common/navbar.php')?>
 
     <!-- Asetetaan sivun pääotsikko -->
-    <?php if ($frontpage == "1") { ?>
+    <?php if ($sivu_tunnus == "1") { ?>
       <h1>Tervetuloa käyttämään alueohjelmaa!</h1>
       <h2>Suosittele seuraavia alueita.</h2>
     <?php } else { ?>
@@ -36,7 +31,7 @@
           <th width="50%">Etsi / Rajaa</th>
           <th width="10%">Rajaa lainassa</th>
           <th width="25%">Rajaa käyty pvm</th>
-          <th width="15%">Alkutilaan</th>
+          <th width="15%">Perustilaan</th>
         </tr>
   		<tr>
           <td>
@@ -59,9 +54,9 @@
       		<input type="hidden" id="selDateOld" value="<?php echo $date_sel; ?>" />
        		<select name="borrowDateChooser" id="borrowDateChooser" onChange="jsFunction2()">
          	  <option value="0" <?php if ($date_sel == "0") echo "selected=\"selected\""?> >Kaikki</option>
-  		 	  <option value="1" <?php if ($date_sel == "1") echo "selected=\"selected\""?> >Merkintäpäivä < 12 kk</option>
-  		 	  <option value="2" <?php if ($date_sel == "2") echo "selected=\"selected\""?> >Merkintäpäivä < 4 kk</option>
-  		 	  <option value="3" <?php if ($date_sel == "3") echo "selected=\"selected\""?> >Merkintäpäivä < 6 kk</option>
+  		 	  <option value="1" <?php if ($date_sel == "1") echo "selected=\"selected\""?> >Käyty < 12 kk</option>
+  		 	  <option value="2" <?php if ($date_sel == "2") echo "selected=\"selected\""?> >Käyty < 4 kk</option>
+  		 	  <option value="3" <?php if ($date_sel == "3") echo "selected=\"selected\""?> >Käyty < 6 kk</option>
        		</select> 
           </td>
           <td>
