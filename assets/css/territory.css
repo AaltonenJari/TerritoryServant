@@ -218,6 +218,13 @@ a slight movement of the header row */
   height: 15px;
 }
 
+.kehotus_selite {
+  height: 25px;
+  padding:8px 5px 5px 30px; 
+  font-family: "Arial", Times, serif;
+  font-size: 12px;
+}
+
 .julistaja {
   padding-left: 20px;	
   font-family: "Arial", Times, serif;

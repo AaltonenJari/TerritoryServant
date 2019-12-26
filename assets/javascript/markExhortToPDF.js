@@ -12,6 +12,7 @@ function createPDF()
 
 	
 	style = style + ".tyhja_rivi { height: 15px; } ";
+	style = style + ".kehotus_selite { height: 25px; padding:8px 15px 15px 20px; font-family: \"Arial\", Times, serif; font-size: 10px; }";
 	style = style + ".julistaja { font-family: \"Arial\", Times, serif; font-size: 18px; font-weight: bold; } ";
 	style = style + ".ohjeteksti { padding-left: 30px; } ";
 	style = style + ".otsikko_numero { font-weight: bold;  text-align: center; width: 10%; } ";

@@ -30,21 +30,12 @@
     		  <?php 
    		      foreach ($publisher as $key=>$value) {
    		        switch ($key) {
-   		            case "name": 
-   		                if ($idx > 0) { //Edellisen tiedon jälkeen 2 tyhjää riviä ?>
-   		               	  <tr>
-   		                    <td class="tyhja_rivi" colspan="4"> 
-   		                    </td>
-   		                  </tr>
-   		               	  <tr>
-   		                    <td class="tyhja_rivi" colspan="4"> 
-   		                    </td>
-   		                  </tr>
-   		                <?php } ?>
+   		            case "name": ?>
    		                <tr>
-   		                  <td class="julistaja" colspan="4"> 
+   		                  <td class="julistaja" colspan="3"> 
    		                    <?php echo $value; ?>
    		                  </td>
+   		                  <td class="otsikko_kayty"> <?php echo date("j.n.Y"); ?></td>
    		                </tr>
    		               	<tr>
    		                  <td class="ohjeteksti" colspan="4"> 
@@ -94,7 +85,14 @@
    		            default:
    		                break;
    		        } // switch
-   		      } ?>
+   		      } 
+   		      if ($idx > 0) { //Taulukkoon lopuksi selite ?>
+   		        <tr>
+   		          <td class="kehotus_selite" colspan="4">
+   		            Alue tulisi käydä läpi neljässä kuukaudessa. Sitten siitä tulisi ilmoittaa aluepöytään, jotta alue voidaan merkitä käydyksi (km 4/07 s. 8, od s. 98).
+   		          </td>
+   		        </tr>
+              <?php } ?>
     		</tbody>
           </table>
     	<?php }?>
