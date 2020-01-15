@@ -8,6 +8,15 @@
   
   <script src="<?php echo base_url("assets/javascript/territorysearch.js"); ?>"></script> 
   <script src="<?php echo base_url("assets/javascript/territoriesToPDF.js"); ?>"></script> 
+
+  <!--link jquery ui css-->
+  <link type="text/css" rel="stylesheet" href="<?php echo base_url('assets/jquery-ui-1.12.1/jquery-ui.css'); ?>" />
+
+  <!--load jquery-->
+  <script src="<?php echo base_url('assets/javascript/jquery-1.10.2.js'); ?>"></script>
+  <!--load jquery ui js file-->
+  <script src="<?php echo base_url('assets/jquery-ui-1.12.1/jquery-ui.js'); ?>"></script>
+  
 </head>
 
 <body>
@@ -54,9 +63,9 @@
       		<input type="hidden" id="selDateOld" value="<?php echo $date_sel; ?>" />
        		<select name="borrowDateChooser" id="borrowDateChooser" onChange="jsFunction2()">
          	  <option value="0" <?php if ($date_sel == "0") echo "selected=\"selected\""?> >Kaikki</option>
-  		 	  <option value="1" <?php if ($date_sel == "1") echo "selected=\"selected\""?> >Käyty < 12 kk</option>
-  		 	  <option value="2" <?php if ($date_sel == "2") echo "selected=\"selected\""?> >Käyty < 4 kk</option>
-  		 	  <option value="3" <?php if ($date_sel == "3") echo "selected=\"selected\""?> >Käyty < 6 kk</option>
+  		 	  <option value="1" <?php if ($date_sel == "1") echo "selected=\"selected\""?> >Käyty &gt; 12 kk</option>
+  		 	  <option value="2" <?php if ($date_sel == "2") echo "selected=\"selected\""?> >Käyty &gt; 4 kk</option>
+  		 	  <option value="3" <?php if ($date_sel == "3") echo "selected=\"selected\""?> >Käyty &gt; 6 kk</option>
        		</select> 
           </td>
           <td>

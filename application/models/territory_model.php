@@ -15,7 +15,7 @@ class Territory_model extends CI_Model {
         return $results;
     }
     
-    function search($fields, $sort_by, $sort_order, $chkbox_sel, $date_sel) 
+    function search($fields, $sort_by, $sort_order, $chkbox_sel, $date_sel, $date_switch = '0') 
     {
         $sort_order = ($sort_order == 'desc') ? 'desc' : 'asc';
         
@@ -51,29 +51,34 @@ class Territory_model extends CI_Model {
             $this->db->where('lainassa', '1');
         }
         
-        $todayDate = time();
+        if ($date_switch == '0') {
+            $srchDate = ""; // today
+        } else {
+            //Circuit week starting date
+            $srchDate = date_format(date_create_from_format('j.n.Y', $this->session->userdata('circuit_week_start')), 'Y-m-d');
+        }
         
         // alue_lastdate < 12 monhts
         if ($date_sel == '1') {
-            $date_12_months = strtotime("-12 months");
+            $date_12_months = strtotime($srchDate ." -12 months");
             $limit_date = date ('Y-m-d' , $date_12_months);
             $this->db->where('alue_lastdate <=', $limit_date);
         }
         // alue_lastdate < 4 monhts
         if ($date_sel == '2') {
-            $date_4_months = strtotime("-4 months");
+            $date_4_months = strtotime($srchDate ." -4 months");
             $limit_date = date ('Y-m-d' , $date_4_months);
             $this->db->where('alue_lastdate <=', $limit_date);
         }
         
         // alue_lastdate < 6 monhts
         if ($date_sel == '3') {
-            $date_6_months = strtotime("-6 months");
+            $date_6_months = strtotime($srchDate ." -6 months");
             $limit_date = date ('Y-m-d' , $date_6_months);
             $this->db->where('alue_lastdate <=', $limit_date);
         }
         
-        if ($this->session->userdata('sivutunnus') == 1) {
+        if (($this->session->userdata('sivutunnus') == 1) or ($date_switch != '0')) {
             //Etusivu: Älä ota mukaan liikealueita
             $this->db->not_like('alue_code', 'L');
         }
@@ -127,12 +132,12 @@ class Territory_model extends CI_Model {
         $ret['rows'] = $query->get()->result();
         
         //count query
-        $ret['num_rows'] = $this->getRowCount($chkbox_sel, $date_sel);
+        $ret['num_rows'] = $this->getRowCount($chkbox_sel, $date_sel, $date_switch);
         
         return $ret;
     }
     
-	function getRowCount($chkbox_sel, $date_sel) 
+    function getRowCount($chkbox_sel, $date_sel, $date_switch = '0') 
 	{
 		$query = $this->db->select('COUNT(*) as count', FALSE)
             ->from('alue');
@@ -147,33 +152,43 @@ class Territory_model extends CI_Model {
             $this->db->where('lainassa', '1');
         }
         
-        $todayDate = time();
+        if ($date_switch == '0') {
+            $srchDate = ""; // today
+        } else {
+            //Circuit week starting date
+            $srchDate = date_format(date_create_from_format('j.n.Y', $this->session->userdata('circuit_week_start')), 'Y-m-d');
+        }
         
         // alue_lastdate < 12 monhts
         if ($date_sel == '1') {
-            $date_12_months = strtotime("-12 months");
+            $date_12_months = strtotime($srchDate ." -12 months");
             $limit_date = date ('Y-m-d' , $date_12_months);
             $this->db->where('alue_lastdate <=', $limit_date);
         }
         // alue_lastdate < 4 monhts
         if ($date_sel == '2') {
-            $date_4_months = strtotime("-4 months");
+            $date_4_months = strtotime($srchDate ." -4 months");
             $limit_date = date ('Y-m-d' , $date_4_months);
             $this->db->where('alue_lastdate <=', $limit_date);
         }
         
         // alue_lastdate < 6 monhts
         if ($date_sel == '3') {
-            $date_6_months = strtotime("-6 months");
+            $date_6_months = strtotime($srchDate ." -6 months");
             $limit_date = date ('Y-m-d' , $date_6_months);
             $this->db->where('alue_lastdate <=', $limit_date);
         }
 
+        if (($this->session->userdata('sivutunnus') == 1) or ($date_switch != '0')) {
+            //Etusivu: Älä ota mukaan liikealueita
+            $this->db->not_like('alue_code', 'L');
+        }
+        
         $res2 = $query->get()->result();
         return ($res2[0]->count);
 	}
 	
-	function search_mark_exhort($fields)
+	function search_mark_exhort($fields, $date_switch = '0')
 	{
 	    $fetch_columns = array();
 	    foreach ($fields as $field_name => $field_display) {
@@ -187,21 +202,30 @@ class Territory_model extends CI_Model {
 	    $this->db->join('(SELECT ee.event_alue, event_user, ee.event_date FROM alue_events ee JOIN (SELECT event_alue, MAX(event_id) AS max_event_id FROM alue_events GROUP BY event_alue) groupedee ON ee.event_alue = groupedee.event_alue AND ee.event_id = groupedee.max_event_id) e', 'alue.alue_id = e.event_alue');
 	    $this->db->join('person', 'e.event_user = person.person_id');
 	    
-	    // lainassa = true
-        $this->db->where('lainassa', '1');
 	    
-	    $todayDate = time();
+	    if ($date_switch == '0') {
+	        $srchDate = ""; // today
+	    } else {
+	        //Circuit week starting date
+	        $srchDate = date_format(date_create_from_format('j.n.Y', $this->session->userdata('circuit_week_start')), 'Y-m-d');
+	    }
 	    
+	    $this->db->group_start(); // Open bracket
 	    
 	    // alue_lastdate < 4 monhts
-	    $date_4_months = strtotime("-4 months");
+	    $date_4_months = strtotime($srchDate ." -4 months");
 	    $limit_date_4_months = date ('Y-m-d' , $date_4_months);
 	    $this->db->where('event_date <=', $limit_date_4_months);
 	    
 	    // alue_lastdate < 12 monhts
-	    $date_12_months = strtotime("-12 months");
+	    $date_12_months = strtotime($srchDate ." -12 months");
 	    $limit_date_12_months = date ('Y-m-d' , $date_12_months);
 	    $this->db->or_where('alue_lastdate <=', $limit_date_12_months);
+
+	    $this->db->group_end(); // Close bracket
+	    
+	    // lainassa = true
+	    $this->db->where('lainassa', '1');
 	    
 	    //Järjestys
 	    $query = $this->db->order_by("person_lastname", "ASC");
@@ -211,12 +235,12 @@ class Territory_model extends CI_Model {
 	    $ret['rows'] = $query->get()->result();
 	    
 	    //count query
-	    $ret['num_rows'] = $this->getExhortCount();
+	    $ret['num_rows'] = $this->getExhortCount($date_switch);
 	    
 	    return $ret;
 	}
 	
-	function getExhortCount()
+	function getExhortCount($date_switch = '0')
 	{
 	    $query = $this->db->select('COUNT(*) as count', FALSE)
 	    ->from('alue');
@@ -224,23 +248,64 @@ class Territory_model extends CI_Model {
 	    $this->db->join('(SELECT ee.event_alue, event_user, ee.event_date FROM alue_events ee JOIN (SELECT event_alue, MAX(event_id) AS max_event_id FROM alue_events GROUP BY event_alue) groupedee ON ee.event_alue = groupedee.event_alue AND ee.event_id = groupedee.max_event_id) e', 'alue.alue_id = e.event_alue');
 	    $this->db->join('person', 'e.event_user = person.person_id');
 	    
-	    $todayDate = time();
+	    if ($date_switch == '0') {
+	        $srchDate = ""; // today
+	    } else {
+	        //Circuit week starting date
+	        $srchDate = date_format(date_create_from_format('j.n.Y', $this->session->userdata('circuit_week_start')), 'Y-m-d');
+	    }
+	    
+	    $this->db->group_start(); // Open bracket
 	    
 	    // alue_lastdate < 4 monhts
-	    $date_4_months = strtotime("-4 months");
+	    $date_4_months = strtotime($srchDate ." -4 months");
 	    $limit_date_4_months = date ('Y-m-d' , $date_4_months);
 	    $this->db->where('event_date <=', $limit_date_4_months);
 	    
 	    // alue_lastdate < 12 monhts
-	    $date_12_months = strtotime("-12 months");
+	    $date_12_months = strtotime($srchDate ." -12 months");
 	    $limit_date_12_months = date ('Y-m-d' , $date_12_months);
 	    $this->db->or_where('alue_lastdate <=', $limit_date_12_months);
 	    
+	    $this->db->group_end(); // Close bracket
+	    
+	    // lainassa = true
+	    $this->db->where('lainassa', '1');
 	    
 	    $res2 = $query->get()->result();
 	    return ($res2[0]->count);
 	}
 	
+	function get_borrowing_congs() 
+	{
+	    $query = $this->db->select('person_lastname, count(person_lastname) AS territory_count', FALSE)
+	    ->from('alue');
+	    $this->db->join('(SELECT ee.event_alue, event_user, ee.event_date FROM alue_events ee JOIN (SELECT event_alue, MAX(event_id) AS max_event_id FROM alue_events GROUP BY event_alue) groupedee ON ee.event_alue = groupedee.event_alue AND ee.event_id = groupedee.max_event_id) e', 'alue.alue_id = e.event_alue');
+	    $this->db->join('person', 'e.event_user = person.person_id');
+
+	    // lainassa = true
+	    $this->db->where('lainassa', '1');
+
+	    $this->db->where('person_name', 'srk');
+	    
+	    $this->db->group_by('person_lastname'); 
+	    $this->db->order_by('person_lastname', 'ASC');
+	
+	    $ret['rows'] = $query->get()->result();
+	    
+	    return $ret;
+	}
+	
+	function get_terr_group_count($code)
+	{
+	    //count query
+	    $query = $this->db->select('COUNT(*) as count', FALSE)
+	    ->from('alue')
+	    ->like('alue_code', $code);
+	    
+	    $res = $query->get()->result();
+	    return ($res[0]->count);
+	}
 	
 	
 	function get_alue_row($columns, $alue_numero) 

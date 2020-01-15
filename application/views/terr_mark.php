@@ -115,7 +115,7 @@
          </td>
       </tr>
      
-    </table>
+    </table> <!-- cardtable -->
     
     <table id="cardbuttons">
       <tr>
@@ -133,7 +133,7 @@
           <?php echo $this->session->flashdata("error");	?>
         </td>
        </tr>
-    </table>
+    </table> <!-- cardbuttons -->
     
     
     <?php echo form_close(); ?>

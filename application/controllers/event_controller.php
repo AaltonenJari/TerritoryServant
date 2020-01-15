@@ -241,7 +241,6 @@ class Event_controller extends CI_Controller
                         
                     case "person_lastname":
                         if ($this->session->userdata('name_presentation') == "0") {
-                            //0 = firstname lsatname, 1 = lastmame, firstname; (default)
                             $name_delim = ' ';
                             $event_result_row->name = $event_row->person_name . $name_delim . $value;
                         } else {
@@ -306,8 +305,6 @@ class Event_controller extends CI_Controller
                         $taken_value = $events_data[$ai][$idx]->taken;
                     } else {
                         $taken_value = "";
-                        //$date_back_years = strtotime($this->session->userdata('archive_time'));
-                        //$taken_value = date ('Y-m-d' , $date_back_years);
                     }
                     
                     if (property_exists($events_data[$ai][$idx], 'returned')) {

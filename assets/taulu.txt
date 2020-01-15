@@ -22,6 +22,9 @@ http://localhost:8080/
 
 http://localhost:8080/TerritoryServant/index.php/territory_controller/display
 http://localhost:8080/TerritoryServant/index.php/territory_controller
+http://localhost:8080/TerritoryServant/index.php
+
+
 
 C:\wamp64\www\TerritoryServant\application\controllers
 
@@ -203,3 +206,8 @@ how to configure codeigniter pagination to show value of variable insetead of pa
 
 
 Error Number: 1054 Unknown column 'A1' in 'where clause'
+
+how to convert html page to pdf 
+header footer
+
+how to convert html page to pdf in javascript

@@ -12,12 +12,18 @@
           'filter'          => '',
           'sivutunnus'      => '1',
           'initialized'     => 'K',
-          'event_date_order' => "DESC",
-          'archive_time' => "-12 years",
-          'name_presentation'  => '1'  //0 = firstname lsatname, 1 = lastmame, firstname; (default)
       );
       $this->session->set_userdata($session_data_terr);
       
+      //echo "Userdata empty";
+      $setting_data_terr = array(
+          'event_date_order' => "DESC",
+          'archive_time' => "12",
+          'name_presentation'  => '1',  //0 = firstname lsatname, 1 = lastmame, firstname; (default)
+          'circuit_week_start' => "21.1.2020",
+          'circuit_week_end' => "26.1.2020"
+      );
+      $this->session->set_userdata($setting_data_terr);
   } else {
       //print_r($this->session->userdata);
   }?>
@@ -49,8 +55,8 @@
             <div class="nav-sub">
               <ul>
                 <li><a href="<?php echo base_url("index.php/territory_controller/display_marklist"); ?>">Merkitsemiskehotuslistat</a></li>
-                <li><a href="#">KV-raportti</a></li>
-                <li><a href="#">Match Manager</a></li>
+                <li><a href="<?php echo base_url("index.php/territory_controller/display_co_report"); ?>">KV-raportti</a></li>
+                <li><a href="#"><input type="checkbox" id="cweek_check_id" name="cweek_check" value="0">Kierrosviikon alusta</a></li>
               </ul>
             </div>
           </div>
@@ -75,7 +81,7 @@
       <li>
         <div class="dropdown">
           <?php if ($sivu_tunnus == "5") { $dropbtn_classes = $dropbtn_classes_base . " active"; } else { $dropbtn_classes = $dropbtn_classes_base; } ?>
-          <a href="#" >
+          <a href="<?php echo base_url("index.php/settings_controller/settings"); ?>" >
             <button class="<?php echo $dropbtn_classes; ?>">Asetukset</button>
           </a>
         </div>
@@ -91,3 +97,16 @@
     </ul>
   </div>
 </nav>
+<script type="text/javascript">
+$(document).ready(function()
+		{
+		  $('#cweek_check_id').change(function() 
+		  {
+			if (!this.checked) {
+			   $('#cweek_check_id').val('0');
+			} else {
+			   $('#cweek_check_id').val('1');
+		    }
+		  });   
+		});
+</script>

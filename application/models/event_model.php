@@ -56,7 +56,10 @@ class Event_model extends CI_Model
         ->where('event_alue', $alue_id)
         ->limit($limit);
         
-        $date_back_years = strtotime($this->session->userdata('archive_time'));
+        // e.g. back_years = "-12 years"
+        $back_years = -1 * $this->session->userdata('archive_time');
+        $back_years .= " years";
+        $date_back_years = strtotime($back_years);
         
         $limit_date = date ('Y-m-d' , $date_back_years);
         $this->db->where('event_date >=', $limit_date);

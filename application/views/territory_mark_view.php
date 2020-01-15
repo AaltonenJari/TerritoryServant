@@ -7,15 +7,28 @@
   <link rel="stylesheet" type="text/css" href="<?php echo base_url("assets/css/territory.css"); ?>">
   
   <script src="<?php echo base_url("assets/javascript/markExhortToPDF.js"); ?>"></script> 
+  <!--link jquery ui css-->
+  <link type="text/css" rel="stylesheet" href="<?php echo base_url('assets/jquery-ui-1.12.1/jquery-ui.css'); ?>" />
+
+  <!--load jquery-->
+  <script src="<?php echo base_url('assets/javascript/jquery-1.10.2.js'); ?>"></script>
+  <!--load jquery ui js file-->
+  <script src="<?php echo base_url('assets/jquery-ui-1.12.1/jquery-ui.js'); ?>"></script>
+  
 </head>
 
 <body>
 
   <div id="wrapper">
     <!-- Asetetaan navigointipalkki ja tämä sivu aktiiviseksi -->
-    <?php $sivu_tunnus = $this->session->userdata('sivutunnus');?>
+    <?php $sivu_tunnus = "2"; ?>
+    <?php $session_data = array(
+            'sivutunnus' => $sivu_tunnus
+            );
+          $this->session->set_userdata($session_data);
+    ?>
     <?php $this->load->view('common/navbar.php')?>
-
+ 
     <!-- Asetetaan sivun pääotsikko -->
     <h1>Alueet - merkitsemiskehotukset</h1>
 

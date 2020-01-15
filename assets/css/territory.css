@@ -263,6 +263,19 @@ a slight movement of the header row */
   padding-right: 15px;	
 }
 
+#settings_content {
+  margin: auto;
+  width: 40%;
+}
 
+.coReportRow {
+  height: 15px;
+  padding:5px 5px 5px 50px; 
+  font-family: "Arial", Times, serif;
+}
 
-
+.coReportRow2 {
+  height: 15px;
+  padding:5px 5px 5px 80px; 
+  font-family: "Arial", Times, serif;
+}

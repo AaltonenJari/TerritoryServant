@@ -122,6 +122,30 @@ class Territory_controller extends CI_Controller
         $this->load->view('territory_mark_view', $data);
     }
     
+    public function display_co_report()
+    {
+        //Setting parameters to view page
+        $data['circuit_week_start'] = $this->session->userdata('circuit_week_start');
+        $data['circuit_week_end'] = $this->session->userdata('circuit_week_end');
+        
+        //Total count query
+        $data['territort_total_count'] = $this->Territory_model->getRowCount('0', '0');
+        
+        //Hae tiedot alueita lainanneista seurakunnista
+        $results = $this->Territory_model->get_borrowing_congs();
+        $data['lainaukset'] = $results['rows'];
+        
+        $data['liikealue_count'] = $this->Territory_model->get_terr_group_count('L');
+        
+        //Vuosi käymättä lkm
+        $data['vuosi_kaikki'] = $this->Territory_model->getRowCount('0', '1', '1');
+        $data['vuosi_lainassa'] = $this->Territory_model->getRowCount('2', '1', '1');
+        $data['vuosi_laatikossa'] = $this->Territory_model->getRowCount('1', '1', '1');
+        
+        $this->load->view('circuit_report_view', $data);
+    }
+    
+    
     public function create_terr_displayrows($results) 
     {
         $r = array();

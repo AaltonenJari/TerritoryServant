@@ -6,6 +6,14 @@
   <link rel="stylesheet" type="text/css" href="<?php echo base_url("assets/css/navbar.css"); ?>">
   <link rel="stylesheet" type="text/css" href="<?php echo base_url("assets/css/territory.css"); ?>">
   <link rel="stylesheet" type="text/css" href="<?php echo base_url("assets/css/events.css"); ?>">
+
+  <!--link jquery ui css-->
+  <link type="text/css" rel="stylesheet" href="<?php echo base_url('assets/jquery-ui-1.12.1/jquery-ui.css'); ?>" />
+
+  <!--load jquery-->
+  <script src="<?php echo base_url('assets/javascript/jquery-1.10.2.js'); ?>"></script>
+  <!--load jquery ui js file-->
+  <script src="<?php echo base_url('assets/jquery-ui-1.12.1/jquery-ui.js'); ?>"></script>
   
   <script src="<?php echo base_url("assets/javascript/territorysearch.js"); ?>"></script> 
   <script src="<?php echo base_url("assets/javascript/eventsToPDF.js"); ?>"></script> 
