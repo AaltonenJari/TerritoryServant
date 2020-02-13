@@ -9,38 +9,31 @@
             _input = e.target;
             document.getElementById("numero").href = document.getElementById("numeroold").value +
          	    "\\" + document.getElementById("selChkBoxOld").value + 
-           	    "\\" + document.getElementById("selDateOld").value +
-           	    "\\" + document.getElementById("selCodeOld").value;
+           	    "\\" + document.getElementById("selDateOld").value;
 
             document.getElementById("alue_nimi").href = document.getElementById("alue_nimiold").value +
         	    "\\" + document.getElementById("selChkBoxOld").value + 
-           	    "\\" + document.getElementById("selDateOld").value +
-           	    "\\" + document.getElementById("selCodeOld").value;
+           	    "\\" + document.getElementById("selDateOld").value;
 
            	document.getElementById("lisätieto").href = document.getElementById("lisätietoold").value +
           	    "\\" + document.getElementById("selChkBoxOld").value + 
-           	    "\\" + document.getElementById("selDateOld").value +
-           	    "\\" + document.getElementById("selCodeOld").value;
+           	    "\\" + document.getElementById("selDateOld").value;
             
            	document.getElementById("lainassa").href = document.getElementById("lainassaold").value +
         	    "\\" + document.getElementById("selChkBoxOld").value + 
-           	    "\\" + document.getElementById("selDateOld").value +
-           	    "\\" + document.getElementById("selCodeOld").value;
+           	    "\\" + document.getElementById("selDateOld").value;
 
            	document.getElementById("käyty").href = document.getElementById("käytyold").value +
         	    "\\" + document.getElementById("selChkBoxOld").value + 
-           	    "\\" + document.getElementById("selDateOld").value +
-           	    "\\" + document.getElementById("selCodeOld").value;
+           	    "\\" + document.getElementById("selDateOld").value;
 
            	document.getElementById("otettu").href = document.getElementById("otettuold").value +
         	    "\\" + document.getElementById("selChkBoxOld").value + 
-           	    "\\" + document.getElementById("selDateOld").value +
-           	    "\\" + document.getElementById("selCodeOld").value;
+           	    "\\" + document.getElementById("selDateOld").value;
 
            	document.getElementById("kenellä").href = document.getElementById("kenelläold").value +
     	       "\\" + document.getElementById("selChkBoxOld").value + 
-           	    "\\" + document.getElementById("selDateOld").value +
-           	    "\\" + document.getElementById("selCodeOld").value;
+       	       "\\" + document.getElementById("selDateOld").value;
             
             if (_input.value != "") {
                 document.getElementById("numero").href =

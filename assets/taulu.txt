@@ -22,9 +22,9 @@ http://localhost:8080/
 
 http://localhost:8080/TerritoryServant/index.php/territory_controller/display
 http://localhost:8080/TerritoryServant/index.php/territory_controller
-http://localhost:8080/TerritoryServant/index.php
 
 
+font-family sans-serif
 
 C:\wamp64\www\TerritoryServant\application\controllers
 
@@ -211,3 +211,70 @@ how to convert html page to pdf
 header footer
 
 how to convert html page to pdf in javascript
+
+codeigniter form table how to update several rows
+https://stackoverflow.com/questions/43324655/getting-error-on-updating-multiple-rows-using-loop-in-codeigniter
+how to access posted multible row data from codeigniter form
+
+codeigniter form table how to update several rows
+how to access multible row data after form_submit in codeigniter controller
+
+how to get changed rows dirty state rows form_submit in codeigniter 
+
+form_validation in multiple rows
+how to check if value changed in form_input
+
+https://stackoverflow.com/questions/30995409/standard-way-to-detect-form-values-has-been-changed
+https://stackoverflow.com/questions/21397347/dynamic-form-validation-for-multiple-records
+codeigniter how to submit multiple rows with the same name
+
+5 jQuery.each() Function Examples — SitePoint:
+https://www.sitepoint.com/jquery-each-function-examples/
+$.each($('.productDescription'), function (index, value) {
+console.log(index + ':' + $(value).text());
+});
+
+$("input:text[name=task]").each(function(){
+    newArray.push($(this));
+});
+
+how to detect if one of items with same name is changed in jquery 
+
+$('input.invent').each(function () {
+    $(this).change(function () {
+
+    });
+});
+
+how to set class name default value to form_input codeigniter
+echo form_input(array('name' => 'codigo', 'id' => 'codigo'), set_value('codigo', 'YOUR_VALUE'));
+
+$data = array(
+    'name' => 'qty_' . $i, 
+    'size'=>15, 
+    'id' => 'qty_' . $i,
+    'required'=>'required', 
+    'class'=>'input-small',
+    'value' => set_value('qty_' . $i),
+    $restock_thirty
+);
+ 
+ 'class'=>'input-small',
+ 'value' => set_value('name', $data['name'])
+
+$('input.alue_detail').each(function (index, value) {
+    $(this).change(function () {
+
+    });
+});
+
+$.each($('.alue_detail'), function (index, value) {
+
+$.each function value argument gives [object HTMLInoutElement] not value of the field
+
+how to filter table input fields
+https://stackoverflow.com/questions/21998899/filter-table-data-with-jquery-based-on-html-input
+
+How to filter table that contains input cells using javascript?
+https://stackoverflow.com/questions/50971962/how-to-filter-table-that-contains-input-cells-using-javascript
+
