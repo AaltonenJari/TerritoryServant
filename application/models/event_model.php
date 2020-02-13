@@ -25,7 +25,7 @@ class Event_model extends CI_Model
         $ret['rows'] = $query->get()->result();
         
         //count query
-        $ret['num_rows'] = $this->get_alue_count($code);
+        $ret['num_rows'] = count($ret['rows']);
         
         return $ret;
     }
@@ -41,7 +41,7 @@ class Event_model extends CI_Model
         return ($res[0]->count);
     }
     
-    function search_event_data($fields, $alue_id) 
+    function search_event_data($fields, $alue_id, $archive_time, $event_date_order) 
     {
         $limit = 25;
         
@@ -57,7 +57,7 @@ class Event_model extends CI_Model
         ->limit($limit);
         
         // e.g. back_years = "-12 years"
-        $back_years = -1 * $this->session->userdata('archive_time');
+        $back_years = -1 * $archive_time;
         $back_years .= " years";
         $date_back_years = strtotime($back_years);
         
@@ -67,7 +67,7 @@ class Event_model extends CI_Model
         $this->db->join('person', 'event_user = person.person_id');
         $this->db->join('alue', 'event_alue = alue.alue_id');
         
-        $query = $this->db->order_by("event_id", $this->session->userdata('event_date_order'));
+        $query = $this->db->order_by("event_id", $event_date_order);
         
         $ret['rows'] = $query->get()->result();
         
@@ -105,7 +105,7 @@ class Event_model extends CI_Model
     }
     
     
-    function get_terr_codes() 
+    public function get_terr_codes() 
     {
         $query = $this->db->select('distinct left(alue_code, 1) as letter')
         ->from('alue');

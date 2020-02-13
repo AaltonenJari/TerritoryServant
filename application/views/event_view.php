@@ -34,100 +34,117 @@
     <!-- Asetetaan sivun pääotsikko -->
     <h1>Alueet - Historia</h1>
         
-	<div id="content">
-	  <div class="tableWrapEvent">
-        <table id="table3">
-          <thead>
-		    <tr>
+    <div id="content">
+      <div class="tableWrapEvent">
+        <table class="table3">
+          <thead class="table3Header">
+            <tr>
+              <th class="table3Hdr" colspan="20">Aluekorttiluettelo</th>
+            </tr>
+            <tr>
               <?php foreach ($event_headers as $event_hdr) { ?>
-	    		<?php foreach ($display_fields as $field_name => $field_display) { ?>
-	    	      <th width="5%">
-	    	        <div class="hdrtext">
-	    	          Alue<br>nro
-	    	        </div>
-	    	      </th>
-	    	      <th width="5%">
-	    	        <div class="hdrnbr">
-  			    	  <?php echo $event_hdr->$field_name; ?>
-	    	        </div>
-	    	      </th>
-	    	      <th width="5%"> 
-	    	      </th>
-	    	      <th width="5%"> 
-	    	      </th>
-    		    <?php } ?>
-    		  <?php } ?>
-    		  <?php if (count($event_headers) < 5) { ?>
-    		    <?php for ($i=count($event_headers);$i < 5; $i++) {?>
-	    	      <th width="5%"> 
-	    	        <div class="hdrtext">
-  	    	          Alue<br>nro
-	    	        </div>
-	    	      </th>
-    		      <th width="5%"> 
-	    	      </th>
-	    	      <th width="5%"> 
-	    	      </th>
-	    	      <th width="5%"> 
-	    	      </th>
-      		    <?php } ?>
-    		  <?php } ?>
- 			</tr>
+                <?php foreach ($display_fields as $field_name => $field_display) { ?>
+                  <th class="table3HdrRow" width="5%">
+                    <div class="hdrtext">
+                      Alue<br>nro
+                    </div>
+                  </th>
+                  <th class="table3HdrRow" width="5%">
+                    <div class="hdrnbr">
+                      <?php echo $event_hdr->$field_name; ?>
+                    </div>
+                  </th>
+                  <th class="table3HdrRow" width="5%"></th>
+                  <th class="table3HdrRow" width="5%"></th>
+                <?php } ?> <!-- foreach $display_fields  -->
+              <?php } ?> <!-- foreach $event_headers  -->
+              <?php if (count($event_headers) < 5) { ?>
+                <?php for ($i=count($event_headers);$i < 5; $i++) {?>
+                  <th class="table3HdrRow" width="5%"> 
+                    <div class="hdrtext">
+                      Alue<br>nro
+                    </div>
+                  </th>
+                  <th class="table3HdrRow" width="5%"></th>
+                  <th class="table3HdrRow" width="5%"></th>
+                  <th class="table3HdrRow" width="5%"></th>
+                <?php } ?> <!-- foreach empty header columns  -->
+              <?php } ?> <!-- if empty header columns  exists -->
+            </tr>
           </thead>
-          <tbody>
-		    <?php $idx = 0; ?>
-       		<?php foreach ($event_data as $row_key => $row_value) { ?>
-        	  <?php foreach ($row_value as $row_item_key => $row_item_value) { ?>
-              	<tr>
-              	  <?php if ($row_item_key == "names") { ?>
-              	    <?php foreach ($row_item_value as $name_key => $name_value) { ?>
-  			    	  <td colspan="4"><?php echo $name_value; ?>
-   			    	  </td>
+
+          <tbody class="table3body">
+            <?php $rowidx = 0; ?>
+            <?php foreach ($event_data as $row_key => $row_value) { ?>
+              <?php foreach ($row_value as $row_item_key => $row_item_value) { ?>
+                <tr>
+                  <?php if ($row_item_key == "names") { ?>
+                    <?php foreach ($row_item_value as $name_key => $name_value) { ?>
+                      <td class="event_nimi" colspan="4"><?php echo $name_value; ?></td>
                     <?php } ?>
                     <?php if (count($event_headers) < 5) { ?>
-    		          <?php for ($i=count($event_headers);$i < 5; $i++) {?>
-    		            <td colspan="4"> 
-	    	            </td>
-      		          <?php } ?>
-           		     <?php } ?>
+                      <?php for ($i=count($event_headers);$i < 5; $i++) {?>
+                        <td class="event_nimi" colspan="4"></td>
+                      <?php } ?>
+                     <?php } ?>
                   <?php } else if ($row_item_key == "dates") { ?>
-              	    <?php foreach ($row_item_value as $date_key => $date_value) { ?>
-  			    	  <td colspan="2"><?php echo $date_value; ?>
-   			    	  </td>
+                    <?php $colidx = 0; ?>
+                    <?php foreach ($row_item_value as $date_key => $date_value) {
+                      if ($colidx % 2 == 0) { ?>
+                        <td class="event_lainattu" colspan="2"><?php echo $date_value; ?></td>
+                      <?php } else { ?>
+                        <td class="event_palautettu" colspan="2"><?php echo $date_value; ?></td>
+                      <?php }
+                        $colidx++;
+                      ?>
                     <?php } ?>
                     <?php if (count($event_headers) < 5) { ?>
-      		          <?php for ($i=count($event_headers);$i < 5; $i++) {?>
-    		            <td colspan="2"></td>
-    		            <td colspan="2"></td>
-      		          <?php } ?>
-           		     <?php } ?>
+                      <?php for ($i=count($event_headers);$i < 5; $i++) {?>
+                        <td class="event_lainattu" colspan="2"></td>
+                        <td class="event_palautettu" colspan="2"></td>
+                      <?php } ?>
+                     <?php } ?>
                    <?php } ?>
-       			</tr>
+                </tr>
+              <?php } 
+                $rowidx++; ?>
+            <?php }
+            for ($j=$rowidx;$j < 26; $j++) { ?>
+            <tr class="tyhja_rivi" >
+              <?php for ($i=0;$i < 5; $i++) {?>
+                <td class="event_nimi" colspan="4"></td>
               <?php } ?>
-   			<?php } ?>
-	      </tbody>
-        </table>
-      </div>
-	</div><!-- content -->
+            </tr>
+            <tr class="tyhja_rivi" >
+              <?php for ($i=0;$i < 5; $i++) {?>
+                <td class="event_lainattu" colspan="2"></td>
+                <td class="event_palautettu" colspan="2"></td>
+              <?php } ?>
+            </tr>
+            <?php } ?>
+          </tbody>
+        </table> <!-- table3 -->
+      </div> <!-- tableWrapEvent -->
+    </div><!-- content -->
     <div class="middleArea">
     </div>
     <div id="bottomArea" class="bottomArea">
       <table id="bottomtable">
         <tr>
           <td width="43%">
-	 	    <div id="totalcount">
-  		      <span>Löytyi: <span id="tableRowCount"> <?php echo $num_headers; ?></span> aluetta</span>
-    	    </div>
+            <div id="totalcount">
+              <span>Ryhmässä yhteensä: <span id="tableRowCount"> <?php echo $num_headers; ?></span> aluetta</span>
+            </div>
           </td>
           <td width="42%">
-		    <div id="sivutusotsake">
-  	  		  <span>Valitse ryhmä ja sivu</span>
-    		</div>
+            <div id="sivutusotsake">
+              <span>Valitse ryhmä ja sivu</span>
+            </div>
           </td>
           <td width="15%">
-		    <div id="reportPrint">
-  	  		  <input type="button" value="Raportti" id="btPrint" onclick="createPDF()" />
-    		</div>
+            <div id="reportPrint">
+              <input type="button" value="Raportti" id="btPrint" onclick="createPDF()" />
+            </div>
           </td>
         </tr>
       </table>

@@ -19,15 +19,75 @@ class Event_controller extends CI_Controller
 	    $limit = 5;
 	    
 	    $data['display_fields'] = array(
+	        'alue_code'		=> 'numero',
+	    );
+	    
+	    //Hae sivun tiedot
+	    $page_data = $this->get_event_page($code, $offset, $limit,
+	        $this->session->userdata('archive_time'),
+	        $this->session->userdata('event_date_order'));
+	    foreach ($page_data as $key=>$value) {
+	        $data[$key] = $page_data[$key];
+	    }
+	    
+	    //Number of cards
+	    $data['num_headers'] = $this->Event_model->get_alue_count($code);
+	    
+        //Muodostetaan sivutusvalikot sivun loppuun
+        $data = $this->set_pagination_rows($data, $code, $limit);
+        
+        $this->load->view('event_view', $data);
+    }
+    
+    public function display_bookkeeping()
+    {
+        $code = 'A';
+        $limit = 5;
+        
+        $data['display_fields'] = array(
             'alue_code'		=> 'numero',
         );
         
-        $data['database_fields'] = array(
+        //Hae alueryhmät ja ryhmien korttien lukumäärät
+        $terr_groups = $this->get_terr_group_data();
+        
+        //Hae koko kirjanpito
+        $event_data = array();
+        
+        //Hidas haku; haetaan nyt vain kaksi riviä
+//         $page_data = $this->get_event_page($code, 0, $limit,
+//             $this->session->userdata('archive_time'),
+//             "ASC");
+//         $event_data[] = $page_data;
+//         $page_data = $this->get_event_page($code, 5, $limit,
+//             $this->session->userdata('archive_time'),
+//             "ASC");
+//         $event_data[] = $page_data;
+        
+        foreach ($terr_groups as $code=>$count) {
+            for ($offset = 0; $offset < $count; $offset = $offset + $limit) {
+                $page_data = $this->get_event_page($code, $offset, $limit,
+                               $this->session->userdata('archive_time'),
+                               "ASC");
+                $event_data[] = $page_data;
+            }
+        }
+
+        $data['bookkeeping'] = $event_data;
+        
+        $this->load->view('bookkeeping_view', $data);
+    }
+    
+    function get_event_page($code = 'A', $offset = 0, $limit = 5, $archive_time, $event_date_order)
+    {
+        $page_data = array();
+        
+        $event_hdr_fields = array(
             'alue_code'		=> 'alue_koodi',
             'alue_id'	    => 'alue_id',
         );
         
-        $results = $this->Event_model->search_headers($data['database_fields'], $code, $limit, $offset);
+        $results = $this->Event_model->search_headers($event_hdr_fields, $code, $limit, $offset);
         
         $event_fields = array(
             'alue_code'		=> 'alue_koodi',
@@ -40,7 +100,7 @@ class Event_controller extends CI_Controller
         $event_hdrs = array();
         $events_data = array();
         
-        foreach ($results['rows'] as $aluerivi) 
+        foreach ($results['rows'] as $aluerivi)
         {
             $resultrow = new stdClass;
             foreach ($aluerivi as $key=>$value) {
@@ -48,11 +108,13 @@ class Event_controller extends CI_Controller
                     case "alue_code":
                         $resultrow->alue_code = $value;
                         break;
-
+                        
                     case "alue_id":
                         //Hae alueen tapahtumat tunnuksella
-                        $event_results = $this->Event_model->search_event_data($event_fields, $value);
-                        $events_alue = $this->tabulate_alue_events($event_results);
+                        $event_results = $this->Event_model->search_event_data($event_fields, $value, 
+                                           $archive_time, 
+                                           $event_date_order);
+                        $events_alue = $this->tabulate_alue_events($event_results, $event_date_order);
                         $events_data[] = $events_alue;
                         break;
                         
@@ -63,19 +125,33 @@ class Event_controller extends CI_Controller
             $event_hdrs[] = $resultrow;
         }
         
-        $data['event_headers'] = $event_hdrs;
-        $data['event_data'] = $this->tabulate($events_data);
+        $page_data['event_headers'] = $event_hdrs;
+        $page_data['event_data'] = $this->tabulate($events_data);
+        $page_data['page_cards'] = $results['num_rows'];
         
-        //Number of cards
-        $data['num_headers'] = $results['num_rows'];
-        
-        //Muodostetaan sivutusvalikot sivun loppuun
-        $data = $this->set_pagination_rows($data, $code, $limit);
-        
-        $this->load->view('event_view', $data);
+        return $page_data;
     }
     
-    function set_pagination_rows($data, $code, $limit) 
+    function get_terr_group_data()
+    {
+        $terrgroups = array();
+        
+        //Hae aluekoodit
+        $tresults = $this->Event_model->get_terr_codes();
+        
+        //Tee taulukko, jossa on avaimena aluekoodi ja arvona korttien lkm
+        foreach ($tresults['rows'] as $territory_codes) {
+            foreach ($territory_codes as $key=>$value) {
+                $terr_count = $this->Event_model->get_alue_count($value);
+                
+                //Lisätään avain ja arvo taulukkoon
+                $terrgroups[$value] = $terr_count;
+            }
+        }
+        return $terrgroups;
+    }
+    
+    function set_pagination_rows($page_data, $code, $limit) 
     {
         //Get territory codes
         $tresults = $this->Event_model->get_terr_codes();
@@ -97,12 +173,12 @@ class Event_controller extends CI_Controller
         $t = $t . "</div>";
         $t = $t . "</div>";
         
-        $data['terr_codes'] = $t;
+        $page_data['terr_codes'] = $t;
         
         //Pagination configuration
         $config = array();
         $config['base_url'] = site_url('event_controller/display/'.$code);
-        $config['total_rows'] = $data['num_headers'];
+        $config['total_rows'] = $page_data['num_headers'];
         $config['per_page'] = $limit;
         $config['uri_segment'] = 4;
         
@@ -136,12 +212,12 @@ class Event_controller extends CI_Controller
         $this->pagination->initialize($config);
         
         //Pagination links
-        $data["links"] = $this->pagination->create_links();
+        $page_data["links"] = $this->pagination->create_links();
         
-        return $data;
+        return $page_data;
     }
     
-    function tabulate_alue_events($event_results) 
+    function tabulate_alue_events($event_results, $event_date_order) 
     {
         $e = array();
         $event_result_row = new stdClass;
@@ -157,13 +233,13 @@ class Event_controller extends CI_Controller
                         if ($event_row->event_type == $prev_event_type) {
                             //Käsitellään tilanne, jossa tapahtuma puuttuu
                             if ($event_row->event_type == "1") {
-                                if ($this->session->userdata('event_date_order') == "ASC") {
+                                if ($event_date_order == "ASC") {
                                     $e[] = $event_result_row;
                                     $event_result_row = new stdClass;
                                 }
                             }
                             if ($event_row->event_type == "2") {
-                                if ($this->session->userdata('event_date_order') == "DESC") {
+                                if ($event_date_order == "DESC") {
                                     $e[] = $event_result_row;
                                     $event_result_row = new stdClass;
                                 }
@@ -197,13 +273,13 @@ class Event_controller extends CI_Controller
                             $event_result_row->name =  $value . $name_delim . $event_row->person_name;
                         }
                         
-                        if ($this->session->userdata('event_date_order') == "DESC") {
+                        if ($event_date_order == "DESC") {
                             if ($event_row->event_type == "1") {
                                 $e[] = $event_result_row;
                                 $event_result_row = new stdClass;
                             }
                         }
-                        if ($this->session->userdata('event_date_order') == "ASC") {
+                        if ($event_date_order == "ASC") {
                             if ($event_row->event_type == "2") {
                                 $e[] = $event_result_row;
                                 $event_result_row = new stdClass;
@@ -248,12 +324,12 @@ class Event_controller extends CI_Controller
                             $event_result_row->name =  $value . $name_delim . $event_row->person_name;
                         }
                         
-                        if ($this->session->userdata('event_date_order') == "DESC") {
+                        if ($event_date_order == "DESC") {
                             if ($event_row->event_type == "2") {
                                 $e[] = $event_result_row;
                             }
                         }
-                        if ($this->session->userdata('event_date_order') == "ASC") {
+                        if ($event_date_order == "ASC") {
                             if ($event_row->event_type == "1") {
                                 $e[] = $event_result_row;
                             }

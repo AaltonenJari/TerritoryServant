@@ -34,7 +34,7 @@
 
 	<div id="content">
 	  <div class="tableWrap">
-    	<?php $idx = 0;
+    	<?php $rowidx = 0;
     	foreach ($terr_mark_list as $publisher) { ?>
     	  <table class="table4">
     		<thead>
@@ -63,7 +63,7 @@
    		                  <td class="tyhja_rivi" colspan="4"> 
    		                  </td>
    		                </tr>
-   		                <?php $idx++;
+   		                <?php $rowidx++;
    		                break;
    		            
    		            case "territories":
@@ -99,7 +99,7 @@
    		                break;
    		        } // switch
    		      } 
-   		      if ($idx > 0) { //Taulukkoon lopuksi selite ?>
+   		      if ($rowidx > 0) { //Taulukkoon lopuksi selite ?>
    		        <tr>
    		          <td class="kehotus_selite" colspan="4">
    		            Alue tulisi käydä läpi neljässä kuukaudessa. Sitten siitä tulisi ilmoittaa aluepöytään, jotta alue voidaan merkitä käydyksi (km 4/07 s. 8, od s. 98).

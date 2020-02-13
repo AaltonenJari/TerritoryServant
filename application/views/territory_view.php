@@ -37,9 +37,10 @@
     <div id="filterArea" class="filterArea">
       <table id="selectortable">
         <tr>
-          <th width="50%">Etsi / Rajaa</th>
-          <th width="10%">Rajaa lainassa</th>
-          <th width="25%">Rajaa käyty pvm</th>
+          <th width="15%">Etsi / Rajaa</th>
+          <th width="35%">Koodi</th>
+          <th width="10%">Lainassa</th>
+          <th width="25%">Käyty pvm</th>
           <th width="15%">Perustilaan</th>
         </tr>
   		<tr>
@@ -51,6 +52,19 @@
 
 	        <input type="hidden" id="filter_param" value="<?php echo $filter; ?>"/>
           </td>
+		  <td>
+		    <input type="hidden" id="selCodeOld" value="<?php echo $code_sel; ?>" />
+      		<select name="terrCodeChkBoxChooser" id="terrCodeChkBoxChooser" onChange="jsFunction4()">
+         	  <option value="0" <?php if ($code_sel == "0") echo "selected=\"selected\""?> >Kaikki</option>
+			  <?php 
+                foreach ($territory_codes as $territory_code) {
+                  foreach ($territory_code as $key=>$value) { ?>
+  		            <option value="<?php echo $value; ?>" <?php if ($code_sel == $value) echo "selected=\"selected\""?> ><?php echo $value; ?></option>
+                  <?php }
+                }
+              ?>
+      	    </select> 
+		  </td>
           <td>
  		    <input type="hidden" id="selChkBoxOld" value="<?php echo $chkbox_sel; ?>" />
       		<select name="borrowChkBoxChooser" id="borrowChkBoxChooser" onChange="jsFunction()">
@@ -93,13 +107,13 @@
             </tr>
           </thead>
           <tbody>
-		    <?php $idx = 0; ?>
+		    <?php $rowidx = 0; ?>
        		<?php foreach ($alueet as $alue) { ?>
                	<tr>
-               		<?php $idx++; ?>
+               		<?php $rowidx++; ?>
 	    			<?php foreach ($display_fields as $field_name => $field_display) { ?>
-	    				<?php $field_name_data = $field_display . $idx ?>
-   			    	    <?php $field_input_name_data = $field_display . "input". $idx ?>
+	    				<?php $field_name_data = $field_display . $rowidx ?>
+   			    	    <?php $field_input_name_data = $field_display . "input". $rowidx ?>
 	    				<?php if ($field_name == "lainassa") { ?>
      			    	  <td id="<?php echo $field_name_data; ?>">
 	    				    <input type="checkbox" name="<?php echo $field_input_name_data; ?>" value="Lainassa" disabled
@@ -156,10 +170,11 @@ function jsFunction() {
       var newUrl = document.getElementById("displayBaseUrl").value;
       newUrl = newUrl + "\\" + document.getElementById("selChkBoxOld").value;
       newUrl = newUrl + "\\" + document.getElementById("selDateOld").value;
+      newUrl = newUrl + "\\" + document.getElementById("selCodeOld").value;
       newUrl = newUrl + "\\" + document.getElementById("filter_param").value;
 	  //alert(newUrl);
 	  location.replace(newUrl);
-	}
+}
 	
 function jsFunction2() {
 	  var myselect = document.getElementById("borrowDateChooser");
@@ -167,15 +182,29 @@ function jsFunction2() {
       var newUrl = document.getElementById("displayBaseUrl").value;
       newUrl = newUrl + "\\" + document.getElementById("selChkBoxOld").value;
       newUrl = newUrl + "\\" + document.getElementById("selDateOld").value;
+      newUrl = newUrl + "\\" + document.getElementById("selCodeOld").value;
       newUrl = newUrl + "\\" + document.getElementById("filter_param").value;
 	  //alert(newUrl);
 	  location.replace(newUrl);
-	}
+}
 
 function jsFunction3(param) {
 	var newUrl = param + "\\" + document.getElementById("filter_param").value;
 	  //alert(newUrl);
 	  location.replace(newUrl);
 }
+
+function jsFunction4() {
+	var myselect = document.getElementById("terrCodeChkBoxChooser");
+	document.getElementById("selCodeOld").value = myselect.options[myselect.selectedIndex].value;
+    var newUrl = document.getElementById("displayBaseUrl").value;
+    newUrl = newUrl + "\\" + document.getElementById("selChkBoxOld").value;
+    newUrl = newUrl + "\\" + document.getElementById("selDateOld").value;
+    newUrl = newUrl + "\\" + document.getElementById("selCodeOld").value;
+    newUrl = newUrl + "\\" + document.getElementById("filter_param").value;
+	//alert(newUrl);
+	location.replace(newUrl);
+}
+
 </script>
 </html>

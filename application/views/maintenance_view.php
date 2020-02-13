@@ -77,13 +77,13 @@
             </tr>
           </thead>
           <tbody>
-		    <?php $idx = 0; ?>
+		    <?php $rowidx = 0; ?>
        		<?php foreach ($alueet as $alue) { ?>
                	<tr>
-               		<?php $idx++; ?>
+               		<?php $rowidx++; ?>
 	    			<?php foreach ($display_fields as $field_name => $field_display) { ?>
-	    				<?php $field_name_data = $field_display . $idx ?>
-   			    	    <?php $field_input_name_data = $field_display . "input". $idx ?>
+	    				<?php $field_name_data = $field_display . $rowidx ?>
+   			    	    <?php $field_input_name_data = $field_display . "input". $rowidx ?>
  	    				<?php if ($field_name == "alue_code") { ?>
     			    	  <td id="<?php echo $field_name_data; ?>"> 
     			    	      	<a id="<?php echo $alue->$field_name; ?>" href="<?php echo base_url("index.php/maintenance_controller/update") . "/"  . $alue->$field_name; ?>">

@@ -68,6 +68,13 @@
           <a href="<?php echo base_url("index.php/event_controller/display"); ?>" >
             <button class="<?php echo $dropbtn_classes; ?>">Tapahtumat</button>
           </a>
+          <div class="dropdown-content">
+            <div class="nav-sub">
+              <ul>
+                <li><a href="<?php echo base_url("index.php/event_controller/display_bookkeeping"); ?>">Koko kirjanpito</a></li>
+              </ul>
+            </div>
+          </div>
         </div>
       </li>
       <li>

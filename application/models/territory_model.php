@@ -6,16 +6,7 @@ class Territory_model extends CI_Model {
         parent::__construct();
     }
     
-    function get_all_entries() {
-        $query = $this->db->get('alue');
-        $results = array();
-        foreach ($query->result() as $result) {
-            $results[] = $result;
-        }
-        return $results;
-    }
-    
-    function search($fields, $sort_by, $sort_order, $chkbox_sel, $date_sel, $date_switch = '0') 
+    function search($fields, $sort_by, $sort_order, $chkbox_sel, $date_sel, $code_sel = '0', $date_switch = '0') 
     {
         $sort_order = ($sort_order == 'desc') ? 'desc' : 'asc';
         
@@ -78,6 +69,11 @@ class Territory_model extends CI_Model {
             $this->db->where('alue_lastdate <=', $limit_date);
         }
         
+        // Onko rajattu alueryhmän mukaan?
+        if ($code_sel != '0') {
+            $this->db->like('alue_code', $code_sel);
+        }
+        
         if (($this->session->userdata('sivutunnus') == 1) or ($date_switch != '0')) {
             //Etusivu: Älä ota mukaan liikealueita
             $this->db->not_like('alue_code', 'L');
@@ -132,12 +128,12 @@ class Territory_model extends CI_Model {
         $ret['rows'] = $query->get()->result();
         
         //count query
-        $ret['num_rows'] = $this->getRowCount($chkbox_sel, $date_sel, $date_switch);
+        $ret['num_rows'] = $this->getRowCount($chkbox_sel, $date_sel, $code_sel, $date_switch);
         
         return $ret;
     }
     
-    function getRowCount($chkbox_sel, $date_sel, $date_switch = '0') 
+    function getRowCount($chkbox_sel, $date_sel, $code_sel = '0', $date_switch = '0') 
 	{
 		$query = $this->db->select('COUNT(*) as count', FALSE)
             ->from('alue');
@@ -179,6 +175,11 @@ class Territory_model extends CI_Model {
             $this->db->where('alue_lastdate <=', $limit_date);
         }
 
+        // Onko rajattu alueryhmän mukaan?
+        if ($code_sel != '0') {
+            $this->db->like('alue_code', $code_sel);
+        }
+        
         if (($this->session->userdata('sivutunnus') == 1) or ($date_switch != '0')) {
             //Etusivu: Älä ota mukaan liikealueita
             $this->db->not_like('alue_code', 'L');

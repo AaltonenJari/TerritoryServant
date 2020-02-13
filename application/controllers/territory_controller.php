@@ -13,7 +13,7 @@ class Territory_controller extends CI_Controller
         $this->load->model('Event_model');
     }
     
-    public function display($sort_by = 'alue_code', $sort_order = 'asc', $chkbox_sel = '0', $date_sel = '0', $filter = '') 
+    public function display($sort_by = 'alue_code', $sort_order = 'asc', $chkbox_sel = '0', $date_sel = '0', $code_sel = '0', $filter = '') 
     {
         //State variables for territory_view
         $territory_view_state_data = array(
@@ -21,13 +21,14 @@ class Territory_controller extends CI_Controller
             'sort_order'      => $sort_order,
             'chkbox_sel'      => $chkbox_sel,
             'date_sel'        => $date_sel,
+            'code_sel'        => $code_sel,
             'filter'          => $filter,
             'sivutunnus'      => "2"
         );
         $this->session->set_userdata($territory_view_state_data);
         
         //Common control part
-        $this->display_control($sort_by, $sort_order, $chkbox_sel, $date_sel, $filter);
+        $this->display_control($sort_by, $sort_order, $chkbox_sel, $date_sel, $code_sel, $filter);
     }
     
     
@@ -37,6 +38,7 @@ class Territory_controller extends CI_Controller
         $sort_order = 'asc';
         $chkbox_sel = '1';
         $date_sel = '2';
+        $code_sel = '0';
         $filter = '';
             
         //State variables for territory_view
@@ -45,16 +47,17 @@ class Territory_controller extends CI_Controller
             'sort_order'      => $sort_order,
             'chkbox_sel'      => $chkbox_sel,
             'date_sel'        => $date_sel,
+            'code_sel'        => $code_sel,
             'filter'          => $filter,
             'sivutunnus'      => "1"
         );
         $this->session->set_userdata($territory_view_state_data);
     
         //Common control part
-        $this->display_control($sort_by, $sort_order, $chkbox_sel, $date_sel, $filter);
+        $this->display_control($sort_by, $sort_order, $chkbox_sel, $date_sel, $code_sel, $filter);
     }
     
-    public function display_control($sort_by = 'alue_code', $sort_order = 'asc', $chkbox_sel = '0', $date_sel = '0', $filter = '') {
+    public function display_control($sort_by = 'alue_code', $sort_order = 'asc', $chkbox_sel = '0', $date_sel = '0', $code_sel = '0', $filter = '') {
         //Hakuparametrit näytölle
         $data['display_fields'] = array(
             'alue_code'		=> 'numero',
@@ -82,7 +85,7 @@ class Territory_controller extends CI_Controller
         $filter = urldecode($filter);
         
         //Hae tiedot
-        $results = $this->Territory_model->search($data['database_fields'], $sort_by, $sort_order, $chkbox_sel, $date_sel);
+        $results = $this->Territory_model->search($data['database_fields'], $sort_by, $sort_order, $chkbox_sel, $date_sel, $code_sel);
         
         $data['alueet'] = $this->create_terr_displayrows($results);
         
@@ -95,8 +98,14 @@ class Territory_controller extends CI_Controller
         $data['sort_order'] = $sort_order;
         $data['chkbox_sel'] = $chkbox_sel;
         $data['date_sel'] = $date_sel;
+        $data['code_sel'] = $code_sel;
         $data['filter'] = $filter;
         
+        //Hae aluekoodit
+        $tresults = $this->Event_model->get_terr_codes();
+        $data['territory_codes'] = $tresults['rows'];
+        
+        //$this->load->view('territory_edit', $data);
         $this->load->view('territory_view', $data);
     }
     
@@ -565,6 +574,50 @@ class Territory_controller extends CI_Controller
         else {
             return true;
         }
+    }
+    
+    public function update_territories() 
+    {
+        $fieldA = $this->input->post('numero');
+        $fieldB = $this->input->post('alue_nimi');
+        $fieldC = $this->input->post('lisätieto');
+        $fieldD = $this->input->post('lainassa');
+        $fieldE = $this->input->post('käyty');
+        $fieldF = $this->input->post('otettu');
+        $fieldG = $this->input->post('kenellä');
+        $r = array();
+        
+        for ($i = 0; $i < sizeof($fieldA); $i++) {
+            $array = array('numero' => $fieldA[$i],
+                'alue_nimi' => $fieldB[$i],
+                'lisätieto' => $fieldC[$i],
+                'lainassa' => $fieldD[$i],
+                'käyty' => $fieldE[$i],
+                'otettu' => $fieldF[$i],
+                'kenellä' => $fieldG[$i]
+            );
+            $r[] = $array;
+        }
+        
+        print_r($r);
+   
+        
+        
+//         $count = count($this->input->post('numero'));
+//         for ($i = 0; $i < $count; $i++) {
+//             $data[] = array(
+//                 'numero' => $this->input->post('numero'),
+//                 'alue_nimi'	=>  $this->input->post('alue_nimi'),
+//                 'lisätieto'	=> $this->input->post('lisätieto'),
+//                 'lainassa'	=> $this->input->post('lainassa'),
+//                 'käyty'	    => $this->input->post('käyty'),
+//                 'otettu'	=> $this->input->post('otettu'),
+//                 'kenellä'	=> $this->input->post('kenellä')
+//             );
+//         }
+        
+//         print_r($data);
+      return 0;
     }
     
     public function index()
