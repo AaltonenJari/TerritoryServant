@@ -33,9 +33,43 @@
     
     <!-- Asetetaan sivun pääotsikko -->
     <h1>Alueet - Historia</h1>
+
+    <div id="selector_area">
+
+      <span>Valitse sivu:</span>
+      <?php $display_baseurl = base_url("index.php/event_controller/display"); ?>
+      <input type="hidden" id="displayBaseUrl" value="<?php echo $display_baseurl; ?>" />
+
+      <input type="hidden" id="selCodeOld" value="<?php echo $code_sel; ?>" />
+  	  <select name="terrCodeChkBoxChooser" id="terrCodeChkBoxChooser" onChange="jsFunction4()">
         
+      <?php
+      foreach ($sel_data as $terrgroup_selecion) {
+        $sel_string = "";
+        foreach ($terrgroup_selecion as $key => $value) {
+            switch ($key) {
+                case "code":
+                    $sel_string = $value;
+                    break;
+                    
+                case "offset":
+                    $sel_string .= $value;
+                    break;
+                    
+                case "last":
+                    $sel_string .= "-" . $value;
+                    break;
+            }
+        }?>
+  		<option value="<?php echo $sel_string; ?>" <?php if ($code_sel == $sel_string) echo "selected=\"selected\""?> ><?php echo $sel_string; ?></option>
+        <?php 
+      }
+      ?>
+      </select>
+    </div>
+         
     <div id="content">
-      <div class="tableWrapEvent">
+      <div class="tableWrap">
         <table class="table3">
           <thead class="table3Header">
             <tr>
@@ -133,7 +167,11 @@
         <tr>
           <td width="43%">
             <div id="totalcount">
-              <span>Ryhmässä yhteensä: <span id="tableRowCount"> <?php echo $num_headers; ?></span> aluetta</span>
+              <?php if ($num_headers == 1) {?>
+                <span>Ryhmässä <?php echo substr($code_sel,0,1); ?> yhteensä: <span id="tableRowCount"> <?php echo $num_headers; ?></span> alue</span>
+              <?php } else { ?>
+                <span>Ryhmässä <?php echo substr($code_sel,0,1); ?> yhteensä: <span id="tableRowCount"> <?php echo $num_headers; ?></span> aluetta</span>
+              <?php } ?>
             </div>
           </td>
           <td width="42%">
@@ -161,4 +199,28 @@
     </div>
   </div><!-- wrapper -->
 </body>
+
+<script>
+function jsFunction4() {
+	var myselect = document.getElementById("terrCodeChkBoxChooser");
+	document.getElementById("selCodeOld").value = myselect.options[myselect.selectedIndex].value;
+
+    var selString = document.getElementById("selCodeOld").value;
+    var matchStrings = selString.match(/([A-Z])(\d+)-(\d+)/);
+    var code = matchStrings[1];
+    var offset = parseInt(matchStrings[2])-1;
+
+    var newUrl = document.getElementById("displayBaseUrl").value;
+    newUrl = newUrl + "\\" + code;
+    newUrl = newUrl + "\\" + offset;
+    
+    //alert (newUrl);
+    
+	location.replace(newUrl);
+}
+</script>
+
 </html>
+
+
+

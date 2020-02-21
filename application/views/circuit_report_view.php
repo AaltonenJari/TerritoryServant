@@ -31,16 +31,18 @@
     <?php $this->load->view('common/navbar.php')?>
     
     <!-- Asetetaan sivun pääotsikko -->
-    <h1>Alueet - käyntitilanne <?php echo $circuit_week_start; ?></h1>
+    <h1>Alueet - käyntitilanne <?php echo $report_date; ?></h1>
  
  	<div id="content">
       <div class="tyhja_rivi"> 
    	  </div>
  	  <div class="coReportRow">
- 	    Kierrosvalvojan vierailuaika: 
-	    <span id="circuit_week_start_date"> <?php echo $circuit_week_start; ?></span>
-	    -
-	    <span id="circuit_week_end_date"> <?php echo $circuit_week_end; ?></span>
+ 	    <?php if ($is_cw_coming) { ?>
+ 	      Kierrosvalvojan vierailuaika: 
+	      <span id="circuit_week_start_date"> <?php echo $circuit_week_start; ?></span>
+	      -
+	      <span id="circuit_week_end_date"> <?php echo $circuit_week_end; ?></span>
+	    <?php } ?>
 	  </div>
  	  <div class="coReportRow">
  	    Aluekortteja yhteensä:

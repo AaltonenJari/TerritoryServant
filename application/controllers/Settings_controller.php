@@ -21,6 +21,7 @@ class Settings_controller extends CI_Controller
         
         $data['event_date_order'] = $results['event_date_order'];
         $data['archive_time'] = $results['archive_time'];
+        $data['bt_switch'] = $results['bt_switch'];
         
         $data['circuit_week_start'] = $results['circuit_week_start'];
         $data['circuit_week_end'] = $results['circuit_week_end'];
@@ -48,12 +49,17 @@ class Settings_controller extends CI_Controller
     
     public function update_settings()
     {
+        
+        $alkaa_unix = strtotime($this->input->post('kvviikko_alkaa'));
+        $alkaa = date('j.n.Y', $alkaa_unix);
+        
         //note that the keys are the session->userdata keys defined in navbar.php file.
         $settings_data = array(
             'event_date_order' => $this->input->post('eventOrderOld'),
             'archive_time' => $this->input->post('archiveYearsOld'),
             'name_presentation'  => $this->input->post('namePresentationOld'),
-            'circuit_week_start' => $this->input->post('kvviikko_alkaa'),
+            'bt_switch'  => $this->input->post('btSwitchOld'),
+            'circuit_week_start' => $alkaa,
             'circuit_week_end' => $this->input->post('kvviikko_loppuu')
         );
         

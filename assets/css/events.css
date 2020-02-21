@@ -1,11 +1,3 @@
-/* Set a fixed scrollable wrapper */
-.tableWrapEvent {
-  height: 446px;
-  border: 1px solid black;
-  overflow: auto;
-}
-
-
 /* If we use border,
 we must use table-collapse to avoid
 a slight movement of the header row */

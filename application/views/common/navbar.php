@@ -20,6 +20,7 @@
           'event_date_order' => "DESC",
           'archive_time' => "12",
           'name_presentation'  => '1',  //0 = firstname lsatname, 1 = lastmame, firstname; (default)
+          'bt_switch' => '0',  //0 = ei näytetä (default), 1 = näytetään 
           'circuit_week_start' => "21.1.2020",
           'circuit_week_end' => "26.1.2020"
       );

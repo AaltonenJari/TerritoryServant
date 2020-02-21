@@ -24,6 +24,10 @@ http://localhost:8080/TerritoryServant/index.php/territory_controller/display
 http://localhost:8080/TerritoryServant/index.php/territory_controller
 
 
+Kankaanpää
+http://localhost:8080/alue
+
+
 font-family sans-serif
 
 C:\wamp64\www\TerritoryServant\application\controllers

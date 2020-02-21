@@ -15,6 +15,9 @@ class Territory_controller extends CI_Controller
     
     public function display($sort_by = 'alue_code', $sort_order = 'asc', $chkbox_sel = '0', $date_sel = '0', $code_sel = '0', $filter = '') 
     {
+        //Näytetäänkö liikeakueet?
+        $bt_switch = $this->session->userdata('bt_switch');
+        
         //State variables for territory_view
         $territory_view_state_data = array(
             'sort_by'         => $sort_by,
@@ -28,9 +31,8 @@ class Territory_controller extends CI_Controller
         $this->session->set_userdata($territory_view_state_data);
         
         //Common control part
-        $this->display_control($sort_by, $sort_order, $chkbox_sel, $date_sel, $code_sel, $filter);
+        $this->display_control($sort_by, $sort_order, $chkbox_sel, $date_sel, $code_sel, $bt_switch, $filter);
     }
-    
     
     public function display_frontpage() 
     {
@@ -39,6 +41,7 @@ class Territory_controller extends CI_Controller
         $chkbox_sel = '1';
         $date_sel = '2';
         $code_sel = '0';
+        $bt_switch = '0';
         $filter = '';
             
         //State variables for territory_view
@@ -54,10 +57,11 @@ class Territory_controller extends CI_Controller
         $this->session->set_userdata($territory_view_state_data);
     
         //Common control part
-        $this->display_control($sort_by, $sort_order, $chkbox_sel, $date_sel, $code_sel, $filter);
+        $this->display_control($sort_by, $sort_order, $chkbox_sel, $date_sel, $code_sel, $bt_switch, $filter);
     }
     
-    public function display_control($sort_by = 'alue_code', $sort_order = 'asc', $chkbox_sel = '0', $date_sel = '0', $code_sel = '0', $filter = '') {
+    public function display_control($sort_by = 'alue_code', $sort_order = 'asc', $chkbox_sel = '0', $date_sel = '0', $code_sel = '0', $bt_switch = '0', $filter = '') 
+    {
         //Hakuparametrit näytölle
         $data['display_fields'] = array(
             'alue_code'		=> 'numero',
@@ -85,7 +89,7 @@ class Territory_controller extends CI_Controller
         $filter = urldecode($filter);
         
         //Hae tiedot
-        $results = $this->Territory_model->search($data['database_fields'], $sort_by, $sort_order, $chkbox_sel, $date_sel, $code_sel);
+        $results = $this->Territory_model->search($data['database_fields'], $sort_by, $sort_order, $chkbox_sel, $date_sel, $code_sel, $bt_switch, '0');
         
         $data['alueet'] = $this->create_terr_displayrows($results);
         
@@ -134,12 +138,26 @@ class Territory_controller extends CI_Controller
     public function display_co_report()
     {
         //Setting parameters to view page
+        $data['report_date'] = $this->session->userdata('circuit_week_start');
+        
         $data['circuit_week_start'] = $this->session->userdata('circuit_week_start');
         $data['circuit_week_end'] = $this->session->userdata('circuit_week_end');
         
-        //Total count query
-        $data['territort_total_count'] = $this->Territory_model->getRowCount('0', '0');
+        $date_sw = '0';
+        $isCwComing = $this->vertaaPvm();
+        $data['is_cw_coming'] = $isCwComing;
         
+        if (!$isCwComing) {
+            //Jos kierrosviikko on mennyt, raporttipäiväksi kuluva päivä.
+            //Vierailun ajankohtaa ei mäytetä.
+            $today = date("Y-m-d");
+            $unixDate = strtotime($today);
+            $data['report_date'] = date('j.n.Y', $unixDate);
+        }
+        
+        //Total count query
+        $data['territort_total_count'] = $this->Territory_model->getTerritoryCount('0', '0', '0', '1', $date_sw);
+ 
         //Hae tiedot alueita lainanneista seurakunnista
         $results = $this->Territory_model->get_borrowing_congs();
         $data['lainaukset'] = $results['rows'];
@@ -147,13 +165,30 @@ class Territory_controller extends CI_Controller
         $data['liikealue_count'] = $this->Territory_model->get_terr_group_count('L');
         
         //Vuosi käymättä lkm
-        $data['vuosi_kaikki'] = $this->Territory_model->getRowCount('0', '1', '1');
-        $data['vuosi_lainassa'] = $this->Territory_model->getRowCount('2', '1', '1');
-        $data['vuosi_laatikossa'] = $this->Territory_model->getRowCount('1', '1', '1');
+        $data['vuosi_kaikki'] = $this->Territory_model->getTerritoryCount('0', '1', '0', '0', $date_sw);
+        $data['vuosi_lainassa'] = $this->Territory_model->getTerritoryCount('2', '1', '0', '0', $date_sw);
+        $data['vuosi_laatikossa'] = $this->Territory_model->getTerritoryCount('1', '1', '0', '0', $date_sw);
         
         $this->load->view('circuit_report_view', $data);
     }
     
+    public function vertaaPvm() 
+    {
+        $isFuture = true;
+      
+        $today = date("Y-m-d");
+        $cwStart = $this->session->userdata('circuit_week_start');
+        
+        $today_time = strtotime($today);
+        $expire_time = strtotime($cwStart);
+        
+        if ($expire_time < $today_time) 
+        { 
+            $isFuture = false;
+        }
+        
+        return $isFuture;
+    }
     
     public function create_terr_displayrows($results) 
     {
@@ -406,6 +441,7 @@ class Territory_controller extends CI_Controller
             );
             
             $this->Event_model->insert($event_data_new);
+            //Merkitään alue käydyksi, palautuneeksi
             $alue_kayty = true;
         } else { //lainaus
             if ($this->input->post('lainassa_old') == "1") { //Alueen vaihto
@@ -418,7 +454,11 @@ class Territory_controller extends CI_Controller
                 );
                 
                 $this->Event_model->insert($event_data_old);
-                $alue_kayty = true;
+                
+                //Merkitään alue käydyksi ja palautuneeksi vain, jos lainaaja vaihtuu
+                if ($person_id_old != $person_id_new) {
+                    $alue_kayty = true;
+                }
             }
             $event_data_new = array(
                 'event_type' => "1",

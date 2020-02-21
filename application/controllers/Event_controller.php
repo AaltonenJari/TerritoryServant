@@ -14,7 +14,7 @@ class Event_controller extends CI_Controller
         $this->load->model('Event_model');
      }
     
-    public function display($code = 'A', $offset = 0) 
+     public function display($code = 'A', $offset = 0) 
 	{
 	    $limit = 5;
 	    
@@ -30,11 +30,19 @@ class Event_controller extends CI_Controller
 	        $data[$key] = $page_data[$key];
 	    }
 	    
+	    $first = $offset + 1;
+	    $last = $limit + $offset;
+	    $code_sel = $code . $first . "-" . $last;
+	    $data['code_sel'] = $code_sel;
+	    
 	    //Number of cards
 	    $data['num_headers'] = $this->Event_model->get_alue_count($code);
 	    
-        //Muodostetaan sivutusvalikot sivun loppuun
+	    $data['sel_data'] = $this->get_terr_group_selector_data();
+	    
+	    //Muodostetaan sivutusvalikot sivun loppuun
         $data = $this->set_pagination_rows($data, $code, $limit);
+        
         
         $this->load->view('event_view', $data);
     }
@@ -149,6 +157,38 @@ class Event_controller extends CI_Controller
             }
         }
         return $terrgroups;
+    }
+    
+    function get_terr_group_selector_data()
+    {
+        $limit = 5;
+        $last = 5;
+        $terrgroup = array();
+        $terrgroup_selecion = array();
+        
+        //Hae aluekoodit
+        $tresults = $this->Event_model->get_terr_codes();
+        
+        //Tee taulukko, jossa on avaimena aluekoodi ja arvona korttien lkm
+        foreach ($tresults['rows'] as $territory_codes) {
+            foreach ($territory_codes as $key=>$value) {
+                $terr_count = $this->Event_model->get_alue_count($value);
+                
+                for ($offset = 0; $offset < $terr_count; $offset = $offset + $limit) {
+                    //Lisätään avain ja arvo taulukkoon
+                    $terrgroup['code'] = $value;
+                    $terrgroup['offset'] = $offset+1;
+                    $last = $offset + $limit;
+                    if ($last > $terr_count) {
+                        $last = $terr_count;
+                    }
+                    $terrgroup['last'] = $last;
+                    $terrgroup_selecion[] = $terrgroup;
+                    
+                }
+             }
+        }
+        return $terrgroup_selecion;
     }
     
     function set_pagination_rows($page_data, $code, $limit) 

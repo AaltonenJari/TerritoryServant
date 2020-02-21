@@ -97,6 +97,24 @@
               ?>
             </td>
           </tr>
+ 
+           <tr>
+             <td>
+              <?php echo form_label('Näytetäänkö liikealueet?: '); ?>
+            </td>
+            <td>
+              <?php echo form_hidden('btSwitchOld', $bt_switch); 
+              $options_bt_switch = array(
+                       '0'         => 'Ei näytetä',
+                       '1'         => 'Näytetään',
+               );
+
+		 	  $js4 = 'id="btSwitchChooser" onChange="jsFunction4();"';
+		 	  echo form_dropdown('btSwitchChooser', $options_bt_switch, $bt_switch, $js4);
+              ?>
+            </td>
+          </tr>
+          
           <tr>
             <td>
               <?php echo form_label('Kierrosviikko alkaa:'); ?>
@@ -215,6 +233,11 @@ function jsFunction2() {
 function jsFunction3() {
 	  var myselect = document.getElementById("archiveYearsChooser");
 	  document.getElementsByName("archiveYearsOld")[0].value = myselect.options[myselect.selectedIndex].value;
+	}
+
+function jsFunction4() {
+	  var myselect = document.getElementById("btSwitchChooser");
+	  document.getElementsByName("btSwitchOld")[0].value = myselect.options[myselect.selectedIndex].value;
 	}
 
 </script>   	

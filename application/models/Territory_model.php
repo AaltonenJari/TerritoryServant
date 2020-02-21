@@ -6,7 +6,7 @@ class Territory_model extends CI_Model {
         parent::__construct();
     }
     
-    function search($fields, $sort_by, $sort_order, $chkbox_sel, $date_sel, $code_sel = '0', $date_switch = '0') 
+    function search($fields, $sort_by, $sort_order, $chkbox_sel, $date_sel, $code_sel = '0', $bt_switch = '0', $date_switch = '0') 
     {
         $sort_order = ($sort_order == 'desc') ? 'desc' : 'asc';
         
@@ -29,8 +29,8 @@ class Territory_model extends CI_Model {
         $query = $this->db->select($fetch_columns)
             ->from('alue');
         
-        $this->db->join('(SELECT ee.event_alue, event_user, ee.event_date FROM alue_events ee JOIN (SELECT event_alue, MAX(event_id) AS max_event_id FROM alue_events GROUP BY event_alue) groupedee ON ee.event_alue = groupedee.event_alue AND ee.event_id = groupedee.max_event_id) e', 'alue.alue_id = e.event_alue');
-        $this->db->join('person', 'e.event_user = person.person_id');
+            $this->db->join('(SELECT ee.event_alue, event_user, ee.event_date FROM alue_events ee JOIN (SELECT event_alue, MAX(event_id) AS max_event_id FROM alue_events GROUP BY event_alue) groupedee ON ee.event_alue = groupedee.event_alue AND ee.event_id = groupedee.max_event_id) e', 'alue.alue_id = e.event_alue','left');
+            $this->db->join('person', 'e.event_user = person.person_id','left');
         
         // lainassa = false
         if ($chkbox_sel == '1') {
@@ -74,8 +74,8 @@ class Territory_model extends CI_Model {
             $this->db->like('alue_code', $code_sel);
         }
         
-        if (($this->session->userdata('sivutunnus') == 1) or ($date_switch != '0')) {
-            //Etusivu: Älä ota mukaan liikealueita
+        //Otetaanko liikealueet mukaan?
+        if ($bt_switch == '0') {
             $this->db->not_like('alue_code', 'L');
         }
         
@@ -128,12 +128,12 @@ class Territory_model extends CI_Model {
         $ret['rows'] = $query->get()->result();
         
         //count query
-        $ret['num_rows'] = $this->getRowCount($chkbox_sel, $date_sel, $code_sel, $date_switch);
+        $ret['num_rows'] = count($ret['rows']);
         
         return $ret;
     }
     
-    function getRowCount($chkbox_sel, $date_sel, $code_sel = '0', $date_switch = '0') 
+    function getTerritoryCount($chkbox_sel, $date_sel, $code_sel = '0', $bt_switch = '0', $date_switch = '0') 
 	{
 		$query = $this->db->select('COUNT(*) as count', FALSE)
             ->from('alue');
@@ -180,8 +180,8 @@ class Territory_model extends CI_Model {
             $this->db->like('alue_code', $code_sel);
         }
         
-        if (($this->session->userdata('sivutunnus') == 1) or ($date_switch != '0')) {
-            //Etusivu: Älä ota mukaan liikealueita
+        //Otetaanko liikealueet mukaan?
+        if ($bt_switch == '0') {
             $this->db->not_like('alue_code', 'L');
         }
         

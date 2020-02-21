@@ -50,19 +50,11 @@ class Maintenance_model extends CI_Model
         $ret['rows'] = $query->get()->result();
         
         //count cuery
-        $ret['num_rows'] = $this->getRowCount();
+        $ret['num_rows'] = count($ret['rows']);
         
         return $ret;
     }
     
-    public function getRowCount() {
-        $query = $this->db->select('COUNT(*) as count', FALSE)
-        ->from('alue');
-        
-        $res2 = $query->get()->result();
-        return ($res2[0]->count);
-    }
-
     public function terrExists($terr_nbr) {
         $query = $this->db->select('COUNT(*) as count', FALSE)
         ->from('alue');

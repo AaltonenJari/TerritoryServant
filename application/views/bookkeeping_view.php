@@ -35,7 +35,7 @@
     <h1>Alueet - Kirjanpito</h1>
         
     <div id="content">
-      <div class="tableWrapEvent">
+      <div class="tableWrap">
         <?php foreach ($bookkeeping as $bookkeeping_row) { ?>
         <table class="table3">
           <?php 
