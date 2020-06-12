@@ -123,4 +123,48 @@
   z-index: 999;
 }
 
+/* Tooltip styles for pagination */
+.tooltip_pagination {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltip_pagination .tooltiptext_pagination {
+  visibility: hidden;
+  width: 100px;
+  background: #000000;
+  color: #FFFFFF;
+  height: 60px;
+  line-height: 60px;
+  text-align: center;
+  border-radius: 8px;
+  /* Position the tooltip */
+  position: absolute;
+  z-index: 1;
+  top: 220%;
+  left: 50%;
+  margin-left: -50px;
+  box-shadow: 4px 3px 10px #800000;
+}
+
+.tooltip_pagination .tooltiptext_pagination::after {
+  content: "";
+  position: absolute;
+  bottom: 100%;
+  left: 20%;
+  margin-left: -8px;
+  border-bottom: 8px solid #000000;
+  border-right: 8px solid transparent;
+  border-left: 8px solid transparent;
+}
+
+.tooltip_pagination:hover .tooltiptext_pagination {
+  visibility: visible;
+  opacity: 0.7;
+  top: 40px; 
+  left: 0%; 
+  margin-left: 3px;
+  z-index: 999;
+}
+
 /* Sub-menu */

@@ -58,7 +58,7 @@
                 document.getElementById("käyty").href =
                     document.getElementById("käyty").href + 
                     "\\" + _input.value;
-               document.getElementById("otettu").href =
+                document.getElementById("otettu").href =
                     document.getElementById("otettu").href + 
                     "\\" + _input.value;
                 document.getElementById("kenellä").href =
