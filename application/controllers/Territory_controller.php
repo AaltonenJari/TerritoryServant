@@ -489,12 +489,14 @@ class Territory_controller extends CI_Controller
                 $this->session->userdata('sort_order'),
                 $this->session->userdata('chkbox_sel'),
                 $this->session->userdata('date_sel'),
+                $this->session->userdata('code_sel'),
                 $this->session->userdata('filter'));
         } else {
             $this->display($this->session->userdata('sort_by'),
                 $this->session->userdata('sort_order'),
                 $this->session->userdata('chkbox_sel'),
                 $this->session->userdata('date_sel'),
+                $this->session->userdata('code_sel'),
                 $this->session->userdata('filter'));
         }
         
@@ -556,17 +558,19 @@ class Territory_controller extends CI_Controller
         }
         if ($action == 'Paluu') {
             //Palataan päänäytölle siinä tilassa, kuin se oli ennen päivitystä
-            if ($this->session->userdata('sivutunnus') == 1) {
+             if ($this->session->userdata('sivutunnus') == 1) {
                 $this->display_frontpage($this->session->userdata('sort_by'),
                     $this->session->userdata('sort_order'),
                     $this->session->userdata('chkbox_sel'),
                     $this->session->userdata('date_sel'),
+                    $this->session->userdata('code_sel'),
                     $this->session->userdata('filter'));
             } else {
                 $this->display($this->session->userdata('sort_by'),
                     $this->session->userdata('sort_order'),
                     $this->session->userdata('chkbox_sel'),
                     $this->session->userdata('date_sel'),
+                    $this->session->userdata('code_sel'),
                     $this->session->userdata('filter'));
             }
         }

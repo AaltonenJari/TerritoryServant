@@ -15,7 +15,7 @@ class Event_controller extends CI_Controller
      }
     
      public function display($code = 'A', $offset = 0) 
-	{
+	 {
 	    $limit = 5;
 	    
 	    $data['display_fields'] = array(
@@ -30,16 +30,20 @@ class Event_controller extends CI_Controller
 	        $data[$key] = $page_data[$key];
 	    }
 	    
+	    $terr_count = $this->Event_model->get_alue_count($code);
 	    $first = $offset + 1;
 	    $last = $limit + $offset;
+	    if ($last > $terr_count) {
+	        $last = $terr_count;
+	    }
 	    $code_sel = $code . $first . "-" . $last;
 	    $data['code_sel'] = $code_sel;
 	    
 	    //Number of cards
-	    $data['num_headers'] = $this->Event_model->get_alue_count($code);
+	    $data['num_headers'] = $terr_count;
 	    
 	    $data['sel_data'] = $this->get_terr_group_selector_data();
-	    
+	   
 	    //Muodostetaan sivutusvalikot sivun loppuun
         $data = $this->set_pagination_rows($data, $code, $limit);
         
@@ -164,7 +168,7 @@ class Event_controller extends CI_Controller
         $limit = 5;
         $last = 5;
         $terrgroup = array();
-        $terrgroup_selecion = array();
+        $terrgroup_selection = array();
         
         //Hae aluekoodit
         $tresults = $this->Event_model->get_terr_codes();
@@ -183,12 +187,32 @@ class Event_controller extends CI_Controller
                         $last = $terr_count;
                     }
                     $terrgroup['last'] = $last;
-                    $terrgroup_selecion[] = $terrgroup;
+                    $terrgroup_selection[] = $terrgroup;
                     
                 }
              }
         }
-        return $terrgroup_selecion;
+        return $terrgroup_selection;
+    }
+    
+    function get_terr_selectors($code) 
+    {
+        $limit = 5;
+        $last = 5;
+        $selectors = array();
+        
+        $terr_count = $this->Event_model->get_alue_count($value);
+        
+        for ($offset = 0; $offset < $terr_count; $offset = $offset + $limit) {
+            $first = $offset + 1;
+            $last = $limit + $offset;
+            if ($last > $terr_count) {
+                $last = $terr_count;
+            }
+            $code_sel = $code . $first . "-" . $last;
+            $selectors[] = $terrgroup;
+        }
+        return $selectors;
     }
     
     function set_pagination_rows($page_data, $code, $limit) 
@@ -196,6 +220,7 @@ class Event_controller extends CI_Controller
         //Get territory codes
         $tresults = $this->Event_model->get_terr_codes();
         
+        //print_r($page_data['sel_data']);
         $t="<div class='center'>";
         $t="<div class='territorycodes'>";
         
@@ -211,7 +236,7 @@ class Event_controller extends CI_Controller
             } // foreach aluekoodi
         }
         $t = $t . "</div>";
-        $t = $t . "</div>";
+        //$t = $t . "</div>";
         
         $page_data['terr_codes'] = $t;
         
@@ -233,16 +258,16 @@ class Event_controller extends CI_Controller
         $config['last_tag_open'] = '<span class="lastlink">';
         $config['last_tag_close'] = '</span>';
         
-        $config['next_link'] = '>';
+        $config['next_link'] = '&gt';
         $config['next_tag_open'] = '<span class="nextlink">';
         $config['next_tag_close'] = '</span>';
         
-        $config['prev_link'] = '<';
+        $config['prev_link'] = '&lt';
         $config['prev_tag_open'] = '<span class="prevlink">';
         $config['prev_tag_close'] = '</span>';
         
-        $config['cur_tag_open'] = '<span class="curlink">';
-        $config['cur_tag_close'] = '</span>';
+        $config['cur_tag_open'] = '<div class="tooltip_pagination"><span class="curlink">';
+        $config['cur_tag_close'] = '</span><span class="tooltiptext_pagination">'. $page_data['code_sel'] .'</span></div>';
         
         $config['num_tag_open'] = '<span class="numlink">';
         $config['num_tag_close'] = '</span>';

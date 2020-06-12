@@ -121,7 +121,7 @@
 	    				    >
      			    	  </td>
  	    				<?php } else if ($field_name == "alue_code") { ?>
- 	    				  <?php $terr_url = base_url("index.php/Territory_controller/update") . "/" . $alue->$field_name; ?>
+ 	    				  <?php $terr_url = base_url("index.php/Territory_controller/update") . "/" . $alue->$field_name . "/" . $filter; ?>
     			    	  <td id="<?php echo $field_name_data; ?>"> 
     			    	      	<a id="<?php echo $alue->$field_name; ?>" href="#" onClick='jsFunction3("<?php echo $terr_url; ?>")'>
     			    	    <?php echo $alue->$field_name; ?> 
