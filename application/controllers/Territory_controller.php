@@ -13,6 +13,28 @@ class Territory_controller extends CI_Controller
         $this->load->model('Event_model');
     }
     
+    /**
+     * Näyttää aluetiedot. Hakee tiedot kannasta ja välittää ne näytölle. Pääohjelma
+     *
+     * @param	string sort_by    lajitteluavain Oletus: 'alue_code'
+     * @param	string sort_order lajittelujärjestys Oletus: 'asc'
+     * @param	string chkbox_sel Rajaus alueen sijainnin mukaan
+     *          Arvot:  "0" Näytä kaikki (Oletus)
+     *                  "1" Vain seurakunnassa
+     *                  "2" Vain lainassa
+     * @param	string date_sel   Rajaus alueen käyntipäivän mukaan
+     *          Arvot:  "0" Näytä kaikki (Oletus)
+     *                  "1" Vain yli 12 kk käymättä
+     *                  "2" Vain yli 4 kk käymättä
+     *                  "3" Vain yli 6 kk käymättä
+     * @param	string code_sel   Rajaus alueen koodin mukaan
+     *          Arvot:  " " Näytä kaikki (Oletus)
+     *                  kirjain "A", "B" ... aluekoodi
+     * @param	string filter   Rajaussuodatin
+     *          " " Näytä kaikki (Oletus)
+     * 
+     * @return	-
+     */
     public function display($sort_by = 'alue_code', $sort_order = 'asc', $chkbox_sel = '0', $date_sel = '0', $code_sel = '0', $filter = '') 
     {
         //Näytetäänkö liikeakueet?
@@ -36,7 +58,7 @@ class Territory_controller extends CI_Controller
     
     public function display_frontpage() 
     {
-        $sort_by = 'alue_lastdate';
+        $sort_by = 'mark_date';
         $sort_order = 'asc';
         $chkbox_sel = '1';
         $date_sel = '2';
@@ -68,9 +90,9 @@ class Territory_controller extends CI_Controller
             'alue_detail'	=> 'alue_nimi',
             'alue_location'	=> 'lisätieto',
             'lainassa'		=> 'lainassa',
-            'alue_lastdate'	=> 'käyty',
-            'event_date'	=> 'otettu',
-            'name'	=> 'kenellä'
+            'mark_date'	    => 'käyty',
+            'event_last_date'	=> 'otettu',
+            'name'	        => 'kenellä'
         );
         
         //Hakuparametrit kantaan
@@ -79,8 +101,8 @@ class Territory_controller extends CI_Controller
             'alue_detail'	=> 'alue_nimi',
             'alue_location'	=> 'alue_tietoja',
             'lainassa'		=> 'alue_lainassa',
-            'alue_lastdate'	=> 'alue_muutospvm',
-            'event_date'	=> 'event_lastdate',
+            'mark_date'	    => 'merkitty',
+            'event_last_date'	=> 'otettu',
             'person_name'	=> 'etunimi',
             'person_lastname'	=> 'sukunimi'
         );
@@ -120,8 +142,8 @@ class Territory_controller extends CI_Controller
             'alue_detail'	=> 'alue_nimi',
             'alue_location'	=> 'alue_tietoja',
             'lainassa'		=> 'alue_lainassa',
-            'event_date'	=> 'event_lastdate',
-            'alue_lastdate'	=> 'alue_muutospvm',
+            'event_last_date'	=> 'alue_muutospvm',
+            'mark_date'	=> 'event_lastdate',
             'person_name'	=> 'etunimi',
             'person_lastname'	=> 'sukunimi'
         );
@@ -143,7 +165,9 @@ class Territory_controller extends CI_Controller
         $data['circuit_week_start'] = $this->session->userdata('circuit_week_start');
         $data['circuit_week_end'] = $this->session->userdata('circuit_week_end');
         
-        $date_sw = '0';
+        //Käytä raportin vertailupäivänä kierrosviikon alkupäivää
+        $date_sw = '1';
+        
         $isCwComing = $this->vertaaPvm();
         $data['is_cw_coming'] = $isCwComing;
         
@@ -153,6 +177,7 @@ class Territory_controller extends CI_Controller
             $today = date("Y-m-d");
             $unixDate = strtotime($today);
             $data['report_date'] = date('j.n.Y', $unixDate);
+            $date_sw = '0'; //Vertailupäiväksi kuluva päivä
         }
         
         //Total count query
@@ -214,9 +239,9 @@ class Territory_controller extends CI_Controller
                         $resultrow->lainassa = $value;
                         break;
                         
-                    case "alue_lastdate":
-                        $alue_lastdate = new DateTime($value);
-                        $resultrow->alue_lastdate = $alue_lastdate->format('j.n.Y');
+                    case "mark_date":
+                        $mark_date = new DateTime($value);
+                        $resultrow->mark_date = $mark_date->format('j.n.Y');
                         break;
                         
                     case "person_name":
@@ -237,17 +262,15 @@ class Territory_controller extends CI_Controller
                         }
                         break;
                     
-                    case "event_date":
+                    case "event_last_date":
                         if ($aluerivi->lainassa == "1") {
                             $alue_eventdate = new DateTime($value);
-                            $resultrow->event_date = $alue_eventdate->format('j.n.Y');
+                            $resultrow->event_last_date = $alue_eventdate->format('j.n.Y');
                         } else {
-                            $resultrow->event_date = "";
+                            $resultrow->event_last_date = "";
                         }
                         break;
-                    
-                        break;
-                        
+                         
                     default:
                         break;
                 } // switch
@@ -289,19 +312,14 @@ class Territory_controller extends CI_Controller
                     case "lainassa":
                         break;
                         
-                    case "alue_lastdate":
-                        $alue_lastdate = new DateTime($value);
-                        $territoty['alue_lastdate'] = $alue_lastdate->format('j.n.Y');
+                    case "mark_date":
+                        $mark_date = new DateTime($value);
+                        $territoty['mark_date'] = $mark_date->format('j.n.Y');
                         break;
                         
-                    case "event_date":
-                        $alue_eventdate = new DateTime($value);
-                        $alue_lastdate = new DateTime($terr_row->alue_lastdate);
-                        if ($alue_eventdate < $alue_lastdate) {
-                            $territoty['event_date'] = $alue_lastdate->format('j.n.Y');
-                        } else {
-                            $territoty['event_date'] = $alue_eventdate->format('j.n.Y');
-                        }
+                    case "event_last_date":
+                        $event_last_date = new DateTime($value);
+                        $territoty['event_last_date'] = $event_last_date->format('j.n.Y');
                         break;
                         
                     case "person_name":
@@ -360,7 +378,7 @@ class Territory_controller extends CI_Controller
             'alue_detail',
             'alue_location',
             'lainassa',
-            'alue_lastdate',
+            'mark_date',
             'person_name',
             'person_lastname'
         );
@@ -387,9 +405,9 @@ class Territory_controller extends CI_Controller
                     $resultrow->lainassa = $value;
                     break;
                     
-                case "alue_lastdate":
-                    $alue_lastdate = new DateTime($value);
-                    $resultrow->alue_lastdate = $alue_lastdate->format('j.n.Y');
+                case "mark_date":
+                    $mark_date = new DateTime($value);
+                    $resultrow->mark_date = $mark_date->format('j.n.Y');
                     break;
                     
                 case "person_name":
@@ -429,8 +447,8 @@ class Territory_controller extends CI_Controller
         $person_id_old = $this->get_person_id($this->input->post('jnimi_old'));
         $person_id_new = $this->get_person_id($this->input->post('djnimi'));
         
-        $alue_lastdate = new DateTime($this->input->post('dmerk'));
-        $new_lastdate = $alue_lastdate->format('Y-m-d');
+        $mark_date = new DateTime($this->input->post('dmerk'));
+        $new_lastdate = $mark_date->format('Y-m-d');
         
         if ($this->session->userdata('lainassa_uusi') == "0") {  //palautus
             $event_data_new = array(

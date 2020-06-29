@@ -123,10 +123,9 @@
  	    				<?php } else if ($field_name == "alue_code") { ?>
  	    				  <?php $terr_url = base_url("index.php/Territory_controller/update") . "/" . $alue->$field_name . "/" . $filter; ?>
     			    	  <td id="<?php echo $field_name_data; ?>"> 
-    			    	      	<a id="<?php echo $alue->$field_name; ?>" href="#" onClick='jsFunction3("<?php echo $terr_url; ?>")'>
-    			    	    <?php echo $alue->$field_name; ?> 
-   				    	   </a>
-    			    	  
+    			    	      	<a id="<?php echo $alue->$field_name; ?>" href="<?php echo $terr_url; ?>">
+    			    	          <?php echo $alue->$field_name; ?> 
+   				     	        </a>
     			    	  </td>
  	    				<?php } else { ?>
     			    	  <td id="<?php echo $field_name_data; ?>"> <?php echo $alue->$field_name; ?> </td>
@@ -184,12 +183,6 @@ function jsFunction2() {
       newUrl = newUrl + "\\" + document.getElementById("selDateOld").value;
       newUrl = newUrl + "\\" + document.getElementById("selCodeOld").value;
       newUrl = newUrl + "\\" + document.getElementById("filter_param").value;
-	  //alert(newUrl);
-	  location.replace(newUrl);
-}
-
-function jsFunction3(param) {
-	var newUrl = param + "\\" + document.getElementById("filter_param").value;
 	  //alert(newUrl);
 	  location.replace(newUrl);
 }

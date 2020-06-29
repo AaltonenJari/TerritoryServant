@@ -31,7 +31,11 @@
     <?php $this->load->view('common/navbar.php')?>
     
     <!-- Asetetaan sivun pääotsikko -->
-    <h1>Alueet - käyntitilanne <?php echo $report_date; ?></h1>
+    <?php if ($is_cw_coming) { ?>
+      <h1>Kierrosvalvojan alueraportti <?php echo $report_date; ?></h1>
+    <?php } else { ?>
+      <h1>Alueet - käyntitilanne <?php echo $report_date; ?></h1>
+    <?php } ?>
  
  	<div id="content">
       <div class="tyhja_rivi"> 

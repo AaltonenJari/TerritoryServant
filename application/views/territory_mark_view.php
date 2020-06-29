@@ -80,8 +80,8 @@
    		                        switch ($key1) {
    		                            case "alue_number": 
    		                            case "alue_name":
-   		                            case "event_date":
-   		                            case "alue_lastdate": ?>
+   		                            case "event_last_date":
+   		                            case "mark_date": ?>
    		                              <td class="<?php echo $key1; ?>">
    		                                <?php echo $value1;  ?>
    		                              </td>

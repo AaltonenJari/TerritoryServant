@@ -266,8 +266,8 @@ class Event_controller extends CI_Controller
         $config['prev_tag_open'] = '<span class="prevlink">';
         $config['prev_tag_close'] = '</span>';
         
-        $config['cur_tag_open'] = '<div class="tooltip_pagination"><span class="curlink">';
-        $config['cur_tag_close'] = '</span><span class="tooltiptext_pagination">'. $page_data['code_sel'] .'</span></div>';
+        $config['cur_tag_open'] = '<span class="curlink">';
+        $config['cur_tag_close'] = '</span>';
         
         $config['num_tag_open'] = '<span class="numlink">';
         $config['num_tag_close'] = '</span>';

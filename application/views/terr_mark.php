@@ -77,8 +77,8 @@
         </td>
         <td>
           <?php 
-            echo form_label($alue_lastdate);
-            echo form_hidden('lastdate_old', $alue_lastdate);
+            echo form_label($mark_date);
+            echo form_hidden('lastdate_old', $mark_date);
           ?>
         </td>
       </tr>

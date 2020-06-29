@@ -250,8 +250,9 @@ a slight movement of the header row */
 }
 
 .otsikko_numero {
+  padding-left: 45px;	
   font-weight: bold;
-  text-align: center;
+  text-align: left;
   width: 10%;
 }
 
@@ -268,10 +269,11 @@ a slight movement of the header row */
 }
 
 .alue_number {
-  text-align: center;
+  padding-left: 45px;	
+  text-align: left;
 }
 
-.alue_lastdate, .event_date {
+.mark_date, .event_last_date {
   text-align: right;
   padding-right: 15px;	
 }
