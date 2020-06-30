@@ -40,6 +40,14 @@ class Territory_controller extends CI_Controller
         //Näytetäänkö liikeakueet?
         $bt_switch = $this->session->userdata('bt_switch');
         
+        $limit_date_sw = $this->session->userdata('limit_date_sw');
+        //Jos parametreja ei ole annettu, älä käytä kv-viikon alkupäivää rajauksessa
+        $numargs = func_num_args();
+        if ($numargs == 0) {
+            $limit_date_sw = "0";
+        }
+        
+        
         //State variables for territory_view
         $territory_view_state_data = array(
             'sort_by'         => $sort_by,
@@ -48,9 +56,11 @@ class Territory_controller extends CI_Controller
             'date_sel'        => $date_sel,
             'code_sel'        => $code_sel,
             'filter'          => $filter,
-            'sivutunnus'      => "2"
+            'sivutunnus'      => "2",
+            'limit_date_sw'   => $limit_date_sw
         );
         $this->session->set_userdata($territory_view_state_data);
+        
         
         //Common control part
         $this->display_control($sort_by, $sort_order, $chkbox_sel, $date_sel, $code_sel, $bt_switch, $filter);
@@ -74,7 +84,8 @@ class Territory_controller extends CI_Controller
             'date_sel'        => $date_sel,
             'code_sel'        => $code_sel,
             'filter'          => $filter,
-            'sivutunnus'      => "1"
+            'sivutunnus'      => "1",
+            'limit_date_sw'   => "0"
         );
         $this->session->set_userdata($territory_view_state_data);
     
@@ -110,8 +121,11 @@ class Territory_controller extends CI_Controller
         //Korjaa ääkköset takaisin
         $filter = urldecode($filter);
         
+        //Käytetäänkö rajauspäivämääränä kuluvaa päivää vai kierrosviikon alkupäivää
+        $limit_date_sw = $this->session->userdata('limit_date_sw');
+
         //Hae tiedot
-        $results = $this->Territory_model->search($data['database_fields'], $sort_by, $sort_order, $chkbox_sel, $date_sel, $code_sel, $bt_switch, '0');
+        $results = $this->Territory_model->search($data['database_fields'], $sort_by, $sort_order, $chkbox_sel, $date_sel, $code_sel, $bt_switch, $limit_date_sw);
         
         $data['alueet'] = $this->create_terr_displayrows($results);
         
@@ -202,7 +216,7 @@ class Territory_controller extends CI_Controller
         $isFuture = true;
       
         $today = date("Y-m-d");
-        $cwStart = $this->session->userdata('circuit_week_start');
+        $cwStart = $this->session->userdata('circuit_week_end');
         
         $today_time = strtotime($today);
         $expire_time = strtotime($cwStart);
@@ -213,6 +227,55 @@ class Territory_controller extends CI_Controller
         }
         
         return $isFuture;
+    }
+    
+    public function kierrosviikon_alusta($param_checked) 
+    {
+      
+        //Vaihda kierrosviikon raja, jos parametrissa sama kuin session muuttujassa
+        if ($this->session->userdata('limit_date_sw') == $param_checked) {
+            if ($this->session->userdata('limit_date_sw') == '1') {
+                $territory_view_state_data = array(
+                    'limit_date_sw'          => '0'
+                );
+                $this->session->set_userdata($territory_view_state_data);
+                
+            } else if ($this->session->userdata('limit_date_sw') == '0') {
+                $territory_view_state_data = array(
+                    'limit_date_sw'          => '1'
+                );
+                $this->session->set_userdata($territory_view_state_data);
+            }
+        } else {
+            $territory_view_state_data = array(
+                'limit_date_sw'          => $param_checked
+            );
+            $this->session->set_userdata($territory_view_state_data);
+        }
+        
+        $limit_date_sw = $this->session->userdata('limit_date_sw');
+        
+        //Jos pvm-rajaus on kv-viikon alku, hae oletuksena kaikki yli 12 kk käymättä olleet alueet
+        if (!empty($limit_date_sw)) {
+            $sort_by = 'name';
+            $chkbox_sel = '0';
+            $date_sel = '1';
+            $code_sel = '0';
+        } else {
+            $sort_by = $this->session->userdata('sort_by');
+            $chkbox_sel = $this->session->userdata('chkbox_sel');
+            $date_sel = $this->session->userdata('date_sel');
+            $code_sel = $this->session->userdata('code_sel');
+        }
+        
+        //Palaa pääsivulle
+        $this->display($sort_by,
+            $this->session->userdata('sort_order'),
+            $chkbox_sel,
+            $date_sel,
+            $code_sel,
+            $this->session->userdata('filter'));
+        
     }
     
     public function create_terr_displayrows($results) 

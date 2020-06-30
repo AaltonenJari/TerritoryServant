@@ -194,7 +194,7 @@ class Territory_model extends CI_Model {
         return ($res2[0]->count);
 	}
 	
-	function search_mark_exhort($fields, $date_switch = '0')
+	function search_mark_exhort($fields)
 	{
 	    $fetch_columns = array();
 	    foreach ($fields as $field_name => $field_display) {
@@ -209,12 +209,7 @@ class Territory_model extends CI_Model {
 	    $this->db->join('(SELECT ee.event_alue, event_user, ee.event_date as event_last_date FROM alue_events ee JOIN (SELECT event_alue, MAX(event_id) AS max_event_id FROM alue_events GROUP BY event_alue) groupedee ON ee.event_alue = groupedee.event_alue AND ee.event_id = groupedee.max_event_id) e', 'alue.alue_id = e.event_alue','left');
 	    $this->db->join('person', 'e.event_user = person.person_id','left');
 	    
-	    if ($date_switch == '0') {
-	        $srchDate = ""; // today
-	    } else {
-	        //Circuit week starting date
-	        $srchDate = date_format(date_create_from_format('j.n.Y', $this->session->userdata('circuit_week_start')), 'Y-m-d');
-	    }
+        $srchDate = ""; // today
 	    
 	    $this->db->group_start(); // Open bracket
 	    

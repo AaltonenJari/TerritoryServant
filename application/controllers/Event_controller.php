@@ -26,6 +26,7 @@ class Event_controller extends CI_Controller
 	    $page_data = $this->get_event_page($code, $offset, $limit,
 	        $this->session->userdata('archive_time'),
 	        $this->session->userdata('event_date_order'));
+
 	    foreach ($page_data as $key=>$value) {
 	        $data[$key] = $page_data[$key];
 	    }

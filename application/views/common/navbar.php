@@ -22,12 +22,17 @@
           'name_presentation'  => '1',  //0 = firstname lsatname, 1 = lastmame, firstname; (default)
           'bt_switch' => '0',  //0 = ei näytetä (default), 1 = näytetään 
           'circuit_week_start' => "30.6.2020",
-          'circuit_week_end' => "5.7.2020"
-      );
+          'circuit_week_end' => "5.7.2020",
+          'limit_date_sw' => "0"
+              );
       $this->session->set_userdata($setting_data_terr);
   } else {
       //print_r($this->session->userdata);
   }?>
+ 
+  <?php $base_url = base_url("index.php/territory_controller") ?>
+  <input type="hidden" id="baseUrl" value="<?php echo $base_url; ?>" />
+  
   <div class="naw_wrapper">
     <ul>
       <li>
@@ -55,9 +60,10 @@
           <div class="dropdown-content">
             <div class="nav-sub">
               <ul>
+                <li><a href="<?php echo base_url("index.php/territory_controller/display/name/asc/2/2/0"); ?>">Alueet, saa merkitä</a></li>
                 <li><a href="<?php echo base_url("index.php/territory_controller/display_marklist"); ?>">Merkitsemiskehotuslistat</a></li>
                 <li><a href="<?php echo base_url("index.php/territory_controller/display_co_report"); ?>">KV-raportti</a></li>
-                <li><a href="#"><input type="checkbox" id="cweek_check_id" name="cweek_check" value="0">Kierrosviikon alusta</a></li>
+                <li><a href="#" class="link"><input type="checkbox" id="cweek_check_id" name="cweek_check" value="<?php echo $this->session->userdata('limit_date_sw'); ?>" <?php if (!empty($this->session->userdata('limit_date_sw'))) { ?>checked <?php } ?>>Kierrosviikon alusta</a></li>
               </ul>
             </div>
           </div>
@@ -67,7 +73,11 @@
         <div class="dropdown">
           <?php if ($sivu_tunnus == "3") { $dropbtn_classes = $dropbtn_classes_base . " active"; } else { $dropbtn_classes = $dropbtn_classes_base; } ?>
           <a href="<?php echo base_url("index.php/event_controller/display"); ?>" >
-            <button class="<?php echo $dropbtn_classes; ?>">Tapahtumat</button>
+            <button class="<?php echo $dropbtn_classes; ?>">
+              <div class="tooltip">Tapahtumat
+                <span class="tooltiptext">Alueet - Kirjanpito</span>
+              </div>
+            </button>
           </a>
           <div class="dropdown-content">
             <div class="nav-sub">
@@ -82,7 +92,11 @@
         <div class="dropdown">
           <?php if ($sivu_tunnus == "4") { $dropbtn_classes = $dropbtn_classes_base . " active"; } else { $dropbtn_classes = $dropbtn_classes_base; } ?>
           <a href="<?php echo base_url("index.php/maintenance_controller/maintain"); ?>" >
-            <button class="<?php echo $dropbtn_classes; ?>">Ylläpito</button>
+            <button class="<?php echo $dropbtn_classes; ?>">
+              <div class="tooltip">Ylläpito
+                <span class="tooltiptext">Alueet - Ylläpito</span>
+              </div>
+            </button>
           </a>
         </div>
       </li>
@@ -90,7 +104,11 @@
         <div class="dropdown">
           <?php if ($sivu_tunnus == "5") { $dropbtn_classes = $dropbtn_classes_base . " active"; } else { $dropbtn_classes = $dropbtn_classes_base; } ?>
           <a href="<?php echo base_url("index.php/settings_controller/settings"); ?>" >
-            <button class="<?php echo $dropbtn_classes; ?>">Asetukset</button>
+            <button class="<?php echo $dropbtn_classes; ?>">
+              <div class="tooltip">Asetukset
+                <span class="tooltiptext">Ohjelman asetukset</span>
+              </div>
+            </button>
           </a>
         </div>
       </li>
@@ -115,6 +133,16 @@ $(document).ready(function()
 			} else {
 			   $('#cweek_check_id').val('1');
 		    }
+		    //Linkin asetus checkboxin tilan muutoksen jälkeen
+		    var val = document.getElementById("cweek_check_id").value;
+			var str = document.getElementById("baseUrl").value;
+			str = str + "/kierrosviikon_alusta/" + val;
+			$(".link").attr('href', str);
 		  });   
+		  //Linkin asetus alussa
+		  var val = document.getElementById("cweek_check_id").value;
+		  var str = document.getElementById("baseUrl").value;
+		  str = str + "/kierrosviikon_alusta/" + val;
+		  $(".link").attr('href', str);
 		});
 </script>
