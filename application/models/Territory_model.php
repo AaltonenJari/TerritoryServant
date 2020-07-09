@@ -83,45 +83,53 @@ class Territory_model extends CI_Model {
         //Järjestys
         switch ($sort_by) {
             case "alue_code":
-                $query = $this->db->order_by("alue_id", $sort_order);
+                $query = $this->db->order_by("SUBSTR(alue_code FROM 1 FOR 1)", $sort_order);
+                $query = $this->db->order_by("CAST(SUBSTR(alue_code FROM 2) AS UNSIGNED)", $sort_order);
                 break;
                 
             case "alue_detail":
                 $query = $this->db->order_by($sort_by, $sort_order);
-                $query = $this->db->order_by("alue_id", "ASC");
+                $query = $this->db->order_by("SUBSTR(alue_code FROM 1 FOR 1)", "ASC");
+                $query = $this->db->order_by("CAST(SUBSTR(alue_code FROM 2) AS UNSIGNED)", "ASC");
                 break;
                 
             case "alue_location":
                 $query = $this->db->order_by($sort_by, $sort_order);
-                $query = $this->db->order_by("alue_id", "ASC");
+                $query = $this->db->order_by("SUBSTR(alue_code FROM 1 FOR 1)", "ASC");
+                $query = $this->db->order_by("CAST(SUBSTR(alue_code FROM 2) AS UNSIGNED)", "ASC");
                 break;
                 
             case "lainassa":
                 $query = $this->db->order_by($sort_by, $sort_order);
                 $query = $this->db->order_by("mark_date", "ASC");
-                $query = $this->db->order_by("alue_id", "ASC");
+                $query = $this->db->order_by("SUBSTR(alue_code FROM 1 FOR 1)", "ASC");
+                $query = $this->db->order_by("CAST(SUBSTR(alue_code FROM 2) AS UNSIGNED)", "ASC");
                 break;
                 
             case "mark_date":
                 $query = $this->db->order_by($sort_by, $sort_order);
-                $query = $this->db->order_by("alue_id", "ASC");
+                $query = $this->db->order_by("SUBSTR(alue_code FROM 1 FOR 1)", "ASC");
+                $query = $this->db->order_by("CAST(SUBSTR(alue_code FROM 2) AS UNSIGNED)", "ASC");
                 break;
                 
             case "event_last_date":
                 $query = $this->db->order_by("lainassa", "DESC");
                 $query = $this->db->order_by($sort_by, $sort_order);
-                $query = $this->db->order_by("alue_id", "ASC");
+                $query = $this->db->order_by("SUBSTR(alue_code FROM 1 FOR 1)", "ASC");
+                $query = $this->db->order_by("CAST(SUBSTR(alue_code FROM 2) AS UNSIGNED)", "ASC");
                 break;
                 
             case "name":
                 $this->db->order_by("lainassa", "DESC");
                 $this->db->order_by("person_lastname", $sort_order);
                 $this->db->order_by("person_name", $sort_order);
-                $this->db->order_by("alue_id", "ASC");
+                $query = $this->db->order_by("SUBSTR(alue_code FROM 1 FOR 1)", "ASC");
+                $query = $this->db->order_by("CAST(SUBSTR(alue_code FROM 2) AS UNSIGNED)", "ASC");
                 break;
                 
             default:
-                $query = $this->db->order_by("alue_id", $sort_order);
+                $query = $this->db->order_by("SUBSTR(alue_code FROM 1 FOR 1)", $sort_order);
+                $query = $this->db->order_by("CAST(SUBSTR(alue_code FROM 2) AS UNSIGNED)", $sort_order);
                 break;
         } // switch
         
@@ -231,7 +239,8 @@ class Territory_model extends CI_Model {
 	    //Järjestys
 	    $query = $this->db->order_by("person_lastname", "ASC");
 	    $query = $this->db->order_by("person_name", "ASC");
-	    $query = $this->db->order_by("alue_id", "ASC");
+	    $query = $this->db->order_by("SUBSTR(alue_code FROM 1 FOR 1)", "ASC");
+	    $query = $this->db->order_by("CAST(SUBSTR(alue_code FROM 2) AS UNSIGNED)", "ASC");
 	    
 	    $ret['rows'] = $query->get()->result();
 	    

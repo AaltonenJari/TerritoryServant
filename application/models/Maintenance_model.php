@@ -27,22 +27,25 @@ class Maintenance_model extends CI_Model
         //J�rjestys
         switch ($sort_by) {
             case "alue_code":
-                $query = $this->db->order_by("alue_id", $sort_order);
+                $query = $this->db->order_by("SUBSTR(alue_code FROM 1 FOR 1)", $sort_order);
+                $query = $this->db->order_by("CAST(SUBSTR(alue_code FROM 2) AS UNSIGNED)", $sort_order);
                 break;
                 
             case "alue_detail":
                 $query = $this->db->order_by($sort_by, $sort_order);
-                $query = $this->db->order_by("alue_id", "ASC");
+                $query = $this->db->order_by("SUBSTR(alue_code FROM 1 FOR 1)", "ASC");
+                $query = $this->db->order_by("CAST(SUBSTR(alue_code FROM 2) AS UNSIGNED)", "ASC");
                 break;
                 
             case "alue_location":
                 $query = $this->db->order_by($sort_by, $sort_order);
-                $query = $this->db->order_by("alue_id", "ASC");
+                $query = $this->db->order_by("SUBSTR(alue_code FROM 1 FOR 1)", "ASC");
+                $query = $this->db->order_by("CAST(SUBSTR(alue_code FROM 2) AS UNSIGNED)", "ASC");
                 break;
                 
             default:
-                $query = $this->db->order_by($sort_by, $sort_order);
-                $query = $this->db->order_by("alue_id", $sort_order);
+                $query = $this->db->order_by("SUBSTR(alue_code FROM 1 FOR 1)", $sort_order);
+                $query = $this->db->order_by("CAST(SUBSTR(alue_code FROM 2) AS UNSIGNED)", $sort_order);
                 break;
         } // switch
         

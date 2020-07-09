@@ -30,15 +30,15 @@ class Event_controller extends CI_Controller
 	    foreach ($page_data as $key=>$value) {
 	        $data[$key] = $page_data[$key];
 	    }
-	    
 	    $terr_count = $this->Event_model->get_alue_count($code);
-	    $first = $offset + 1;
-	    $last = $limit + $offset;
-	    if ($last > $terr_count) {
-	        $last = $terr_count;
-	    }
-	    $code_sel = $code . $first . "-" . $last;
+	    
+	    //Hae sivun otsaikkorivi alasvetovalikkoa varten
+	    $page_hdr = $this->get_event_page_headers($code, $offset, $limit);
+	    //Array to string conversion
+	    $code_sel = $page_hdr['code'] . $page_hdr['first'] . "-" . $page_hdr['last'];
 	    $data['code_sel'] = $code_sel;
+	    $data['offset'] = $offset;
+	    
 	    
 	    //Number of cards
 	    $data['num_headers'] = $terr_count;
@@ -168,32 +168,46 @@ class Event_controller extends CI_Controller
     {
         $limit = 5;
         $last = 5;
-        $terrgroup = array();
         $terrgroup_selection = array();
         
         //Hae aluekoodit
         $tresults = $this->Event_model->get_terr_codes();
         
-        //Tee taulukko, jossa on avaimena aluekoodi ja arvona korttien lkm
+        //Tee taulukko, jossa on avaimena aluekoodi ja sivun ensimmäinen ja viimeinen alue
         foreach ($tresults['rows'] as $territory_codes) {
             foreach ($territory_codes as $key=>$value) {
                 $terr_count = $this->Event_model->get_alue_count($value);
                 
                 for ($offset = 0; $offset < $terr_count; $offset = $offset + $limit) {
-                    //Lisätään avain ja arvo taulukkoon
-                    $terrgroup['code'] = $value;
-                    $terrgroup['offset'] = $offset+1;
-                    $last = $offset + $limit;
-                    if ($last > $terr_count) {
-                        $last = $terr_count;
-                    }
-                    $terrgroup['last'] = $last;
-                    $terrgroup_selection[] = $terrgroup;
+                    //Haetaan arvot kannasta
+                    $page_hdrs = $this->get_event_page_headers($value, $offset, $limit);
+                    
+                    //Lisätään haettu alkio taulukkoon
+                    $terrgroup_selection[] = $page_hdrs;
                     
                 }
              }
         }
         return $terrgroup_selection;
+    }
+    
+    function get_event_page_headers($code = 'A', $offset = 0, $limit = 5) 
+    {
+        $page_hdr_fields = array(
+            'alue_code'		=> 'alue_koodi'
+        );
+        
+        $results = $this->Event_model->search_headers($page_hdr_fields, $code, $limit, $offset);
+        $page_hdrs = array();
+        
+        $last_column = $results['num_rows'] - 1;
+        
+        $page_hdrs['code'] = $code;
+        $page_hdrs['offset'] = $offset;
+        $page_hdrs['first'] =substr($results['rows'][0]->alue_code, 1);
+        $page_hdrs['last'] = substr($results['rows'][$last_column]->alue_code, 1);
+       
+        return $page_hdrs;
     }
     
     function get_terr_selectors($code) 

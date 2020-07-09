@@ -52,16 +52,20 @@
                     $sel_string = $value;
                     break;
                     
-                case "offset":
+                case "first":
                     $sel_string .= $value;
                     break;
                     
+                case "offset":
+                    $sel_offset = $value;
+                    break;
+                
                 case "last":
                     $sel_string .= "-" . $value;
                     break;
             }
         }?>
-  		<option value="<?php echo $sel_string; ?>" <?php if ($code_sel == $sel_string) echo "selected=\"selected\""?> ><?php echo $sel_string; ?></option>
+  		<option value="<?php echo $sel_string; ?>" page_offset="<?php echo $sel_offset; ?>" <?php if ($code_sel == $sel_string) { echo "selected='selected'"; } ?> ><?php echo $sel_string; ?></option>
         <?php 
       }
       ?>
@@ -208,8 +212,8 @@ function jsFunction4() {
     var selString = document.getElementById("selCodeOld").value;
     var matchStrings = selString.match(/([A-Z])(\d+)-(\d+)/);
     var code = matchStrings[1];
-    var offset = parseInt(matchStrings[2])-1;
-
+    var offset = myselect.options[myselect.selectedIndex].getAttribute('page_offset');
+    
     var newUrl = document.getElementById("displayBaseUrl").value;
     newUrl = newUrl + "\\" + code;
     newUrl = newUrl + "\\" + offset;

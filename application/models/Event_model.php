@@ -20,7 +20,8 @@ class Event_model extends CI_Model
             ->like('alue_code', $code)
             ->limit($limit, $offset);
         
-		$query = $this->db->order_by("alue_id", "ASC");
+		$query = $this->db->order_by("SUBSTR(alue_code FROM 1 FOR 1)", "ASC");
+		$query = $this->db->order_by("CAST(SUBSTR(alue_code FROM 2) AS UNSIGNED)", "ASC");
 		
         $ret['rows'] = $query->get()->result();
         

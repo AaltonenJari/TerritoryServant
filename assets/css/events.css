@@ -131,6 +131,22 @@ a slight movement of the header row */
   border-bottom-right-radius: 5px;
 }
 
+#selector_area
+{
+  font-family: sans-serif;
+  font-weight: 500;
+  font-size: 20px;
+  padding-bottom: 5px;
+  padding-left: 2px;	
+}
+
+#terrCodeChkBoxChooser
+{
+  font-family: sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+}
+
 .pagination {
 	clear:both;
     position:relative;
