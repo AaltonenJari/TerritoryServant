@@ -101,8 +101,8 @@
         <td>
           <?php 
             $attributes = 'id="djnimi" placeholder="Nimi"';
-            echo form_input('djnimi', set_value('djnimi', $name), $attributes); 
-            echo form_hidden('jnimi_old', $name); 
+            echo form_input('djnimi', set_value('djnimi', $name), $attributes);
+            echo form_hidden('jnimi_old', $name);
           ?>
          </td>
       </tr>
@@ -119,12 +119,13 @@
     
     <table id="cardbuttons">
       <tr>
-        <td width="30%">
+        <td width="40%">
           <?php echo form_submit(array('id' => 'submit', 'name' => 'action', 'value' => 'Päivitä')); ?>
         </td>
         <td width="30%">
+          <?php echo form_submit(array('id' => 'submit', 'name' => 'action', 'value' => 'Historia')); ?>
         </td>
-        <td width="40%">
+        <td width="30%">
           <?php echo form_submit(array('id' => 'submit', 'name' => 'action', 'value' => 'Paluu')); ?>
         </td>
       </tr>

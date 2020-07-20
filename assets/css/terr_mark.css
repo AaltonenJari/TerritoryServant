@@ -1,7 +1,10 @@
 #container{
   width:960px;
   height:610px;
-  margin:50px auto
+  margin-top:50px;
+  margin-left:auto; 
+  margin-bottom:50px;
+  margin-right:auto;  
 }
 
 table {
@@ -21,7 +24,10 @@ form{
   box-shadow:0 0 5px;
   font-family:'Marcellus',serif;
   float:left;
-  margin-top:10px
+  margin-top:10px;
+  margin-left:200px; 
+  margin-bottom:50px;
+  margin-right:auto;  
 }
 
 h1{
@@ -67,6 +73,35 @@ input#submit:hover{
   background:linear-gradient(#36caf0 5%,#22abe9 100%)
 }
 
+button#submit{
+  margin-top:20px;
+  font-size:18px;
+  background:linear-gradient(#22abe9 5%,#36caf0 100%);
+  border:1px solid #0F799E;
+  color:#fff;
+  font-weight:700;
+  cursor:pointer;
+  text-shadow:0 1px 0 #13506D
+}
+
+button#submit:hover{
+  background:linear-gradient(#36caf0 5%,#22abe9 100%)
+}
+
 #cardbuttons tr td:nth-child(3) {
   text-align: right;
+}
+
+#cardbuttons tr td:nth-child(4) {
+  text-align: right;
+}
+
+.table_history {
+  border-collapse: collapse;
+}
+
+.submit_undo{
+    height: 22px;  
+    width: 18px;
+	text-align: right;
 }

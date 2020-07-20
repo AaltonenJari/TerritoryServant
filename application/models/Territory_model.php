@@ -289,7 +289,7 @@ class Territory_model extends CI_Model {
 	    $query = $this->db->select($columns)
 	    ->from('alue');
 	    
-	    $this->db->join('(SELECT ee.event_alue, event_user, ee.event_date as mark_date FROM alue_events ee JOIN (SELECT event_alue, MAX(event_id) AS max_event_id FROM alue_events GROUP BY event_alue) groupedee ON ee.event_alue = groupedee.event_alue AND ee.event_id = groupedee.max_event_id) e', 'alue.alue_id = e.event_alue','left');
+	    $this->db->join('(SELECT ee.event_alue, event_id, event_user, ee.event_date as mark_date FROM alue_events ee JOIN (SELECT event_alue, MAX(event_id) AS max_event_id FROM alue_events GROUP BY event_alue) groupedee ON ee.event_alue = groupedee.event_alue AND ee.event_id = groupedee.max_event_id) e', 'alue.alue_id = e.event_alue','left');
 	    $this->db->join('person', 'e.event_user = person.person_id','left');
 	    
 	    $this->db->where('alue_code', $alue_numero);
@@ -336,7 +336,8 @@ class Territory_model extends CI_Model {
 	    return $terr_id;
 	}
 	
-	public function insert_person ($data) {
+	public function insert_person ($data) 
+	{
 	    if ($this->db->insert("person", $data)) {
 	        return true;
 	    }

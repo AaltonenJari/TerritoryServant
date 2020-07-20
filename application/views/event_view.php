@@ -89,8 +89,11 @@
                   </th>
                   <th class="table3HdrRow" width="5%">
                     <div class="hdrnbr">
-                      <?php echo $event_hdr->$field_name; ?>
-                    </div>
+                      <?php $terr_url = base_url("index.php/Territory_controller/territory_history") . "/" . $event_hdr->$field_name . "/event_view"; ?>
+ 	    	            <a id="<?php echo $event_hdr->$field_name; ?>" href="<?php echo $terr_url; ?>">
+    			    	  <?php echo $event_hdr->$field_name; ?> 
+   				        </a>
+    	            </div>
                   </th>
                   <th class="table3HdrRow" width="5%"></th>
                   <th class="table3HdrRow" width="5%"></th>

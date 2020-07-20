@@ -3,6 +3,7 @@ we must use table-collapse to avoid
 a slight movement of the header row */
 .table3 {
   border-collapse: collapse;
+  background-color: #ffff;
 }
 
 /* Set header to stick to the top of the container. */

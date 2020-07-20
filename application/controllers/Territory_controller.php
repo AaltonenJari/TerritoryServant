@@ -11,6 +11,8 @@ class Territory_controller extends CI_Controller
         // to *all* of the controller's actions
         $this->load->model('Territory_model');
         $this->load->model('Event_model');
+        $this->load->model('Maintenance_model');
+        $this->load->model('UndoRedoStack');
     }
     
     /**
@@ -428,7 +430,7 @@ class Territory_controller extends CI_Controller
         return $terr_result;
     }
         
-    public function update ($alue_numero, $filter = '') 
+    public function update ($terr_nbr, $filter = '') 
     {
         //State variables of territory_view
         $territory_view_state_data = array(
@@ -446,10 +448,17 @@ class Territory_controller extends CI_Controller
             'person_lastname'
         );
         
-        $alue_rivi = $this->Territory_model->get_alue_row($columns, $alue_numero);
- 
+        $resultrow = $this->get_latest_territory_row($columns, $terr_nbr);
+        
+        $this->load->view('terr_mark', $resultrow);
+        
+    }
+    public function get_latest_territory_row($columns, $terr_nbr)
+    {
+        $alue_rivi = $this->Territory_model->get_alue_row($columns, $terr_nbr);
+        
         $resultrow = new stdClass;
-            
+        
         foreach ($alue_rivi as $key=>$value) {
             switch ($key) {
                 case "alue_code":
@@ -468,6 +477,10 @@ class Territory_controller extends CI_Controller
                     $resultrow->lainassa = $value;
                     break;
                     
+                case "event_id":
+                    $resultrow->event_id = $value;
+                    break;
+                
                 case "mark_date":
                     $mark_date = new DateTime($value);
                     $resultrow->mark_date = $mark_date->format('j.n.Y');
@@ -491,14 +504,12 @@ class Territory_controller extends CI_Controller
                         $resultrow->name = "";
                     }
                     break;
-                
+                    
                 default:
                     break;
             } // switch
         } // foreach aluerivi
-        
-        $this->load->view('terr_mark', $resultrow);
-        
+        return $resultrow;
     }
     
     public function update_alue()
@@ -536,10 +547,8 @@ class Territory_controller extends CI_Controller
                 
                 $this->Event_model->insert($event_data_old);
                 
-                //Merkitään alue käydyksi ja palautuneeksi vain, jos lainaaja vaihtuu
-                if ($person_id_old != $person_id_new) {
-                    $alue_kayty = true;
-                }
+                //Merkitään alue käydyksi
+                $alue_kayty = true;
             }
             $event_data_new = array(
                 'event_type' => "1",
@@ -621,41 +630,55 @@ class Territory_controller extends CI_Controller
     public function check_territory() 
     {
         $action = $this->input->post('action');
-        if ($action == 'Päivitä') {
-            // set validation rules
-            $rules = array(
+        switch ($action) {
+            case "Päivitä":
+                // set validation rules
+                $rules = array(
                 array('field' => 'djnimi',
-                    'label' => 'Kenellä',
-                    'rules' => 'callback_verify_alue')
-            ) ;
-            // check input data
-            $this->form_validation->set_rules($rules);
+                'label' => 'Kenellä',
+                'rules' => 'callback_verify_alue')
+                ) ;
+                // check input data
+                $this->form_validation->set_rules($rules);
+                
+                if ($this->form_validation->run() == false) {
+                    $this->update($this->input->post('alue_code'));
+                } else {
+                    $this->update_alue();
+                }
+                break;
+                
+            case "Historia":
+                //Alusta tietorakenne undo/redo - toimintoa varten
+                $undo_redo_stack = new UndoRedoStack();
+                
+                $_SESSION['undo_redo_stack'] = serialize($undo_redo_stack);
+                $this->territory_history($this->input->post('alue_code'));
+                break;
+                
+            case "Paluu":
+                //Palataan päänäytölle siinä tilassa, kuin se oli ennen päivitystä
+                if ($this->session->userdata('sivutunnus') == 1) {
+                    $this->display_frontpage($this->session->userdata('sort_by'),
+                        $this->session->userdata('sort_order'),
+                        $this->session->userdata('chkbox_sel'),
+                        $this->session->userdata('date_sel'),
+                        $this->session->userdata('code_sel'),
+                        $this->session->userdata('filter'));
+                } else {
+                    $this->display($this->session->userdata('sort_by'),
+                        $this->session->userdata('sort_order'),
+                        $this->session->userdata('chkbox_sel'),
+                        $this->session->userdata('date_sel'),
+                        $this->session->userdata('code_sel'),
+                        $this->session->userdata('filter'));
+                }
+                break;
             
-            if ($this->form_validation->run() == false) {
-                $this->update($this->input->post('alue_code'));
-            } else {
-                $this->update_alue();
-            }
-        }
-        if ($action == 'Paluu') {
-            //Palataan päänäytölle siinä tilassa, kuin se oli ennen päivitystä
-             if ($this->session->userdata('sivutunnus') == 1) {
-                $this->display_frontpage($this->session->userdata('sort_by'),
-                    $this->session->userdata('sort_order'),
-                    $this->session->userdata('chkbox_sel'),
-                    $this->session->userdata('date_sel'),
-                    $this->session->userdata('code_sel'),
-                    $this->session->userdata('filter'));
-            } else {
-                $this->display($this->session->userdata('sort_by'),
-                    $this->session->userdata('sort_order'),
-                    $this->session->userdata('chkbox_sel'),
-                    $this->session->userdata('date_sel'),
-                    $this->session->userdata('code_sel'),
-                    $this->session->userdata('filter'));
-            }
-        }
-        
+            default:
+                break;
+        } // switch
+         
         return;
     }
     
@@ -726,23 +749,213 @@ class Territory_controller extends CI_Controller
         
         print_r($r);
    
+        return 0;
+    }
+    
+    public function territory_history($terr_nbr, $main_display="territory_view")
+    {
+        $columns = array(
+            'alue_id',
+            'alue_code'
+        );
         
+        $resultrow = $this->Maintenance_model->get_alue_row($columns, $terr_nbr);
         
-//         $count = count($this->input->post('numero'));
-//         for ($i = 0; $i < $count; $i++) {
-//             $data[] = array(
-//                 'numero' => $this->input->post('numero'),
-//                 'alue_nimi'	=>  $this->input->post('alue_nimi'),
-//                 'lisätieto'	=> $this->input->post('lisätieto'),
-//                 'lainassa'	=> $this->input->post('lainassa'),
-//                 'käyty'	    => $this->input->post('käyty'),
-//                 'otettu'	=> $this->input->post('otettu'),
-//                 'kenellä'	=> $this->input->post('kenellä')
-//             );
-//         }
+        $event_fields = array(
+            'alue_code'		=> 'alue_koodi',
+            'event_type'	=> 'event_tyyppi',
+            'event_date'	=> 'event_date',
+            'person_name'	=> 'etunimi',
+            'person_lastname'	=> 'sukunimi'
+        );
+        //Hae alueen tapahtumat tunnuksella
+        $event_results = $this->Event_model->search_event_data($event_fields, $resultrow['alue_id'],
+            $this->session->userdata('archive_time'),
+            $this->session->userdata('event_date_order'));
+        $events_alue = $this->Event_model->tabulate_alue_events($event_results, $this->session->userdata('event_date_order'));
+        $events_data = array();
+        $events_data[] = $events_alue;
+        $data['terr_nbr'] = $terr_nbr;
+        $data['main_display'] = $main_display;
+        $data['event_data'] = $this->Event_model->tabulate($events_data);
+    
+         
+        $this->load->view('terr_history', $data);
+    }
+    
+    public function check_history($terr_nbr, $main_display="territory_view")
+    {
         
-//         print_r($data);
-      return 0;
+        /** UNSERIALIZE **/
+        $undo_redo_stack = unserialize($_SESSION['undo_redo_stack']);
+        
+        $action = $this->input->post('action');
+        
+        switch ($action) {
+            case "Poista":
+                $event_data = $this->remove_event($terr_nbr);
+                 //Tapahtuman tiedot muistiin
+                $undo_redo_stack->execute($event_data);
+                $_SESSION['undo_redo_stack'] = serialize($undo_redo_stack);
+                
+                //$undo_redo_stack->showstat();
+                    
+                $this->territory_history($terr_nbr, $main_display);
+                break;
+                
+            case "Undo":
+                if ($undo_redo_stack->can_undo()) {
+                    $event_data = $undo_redo_stack->undo();
+                    $_SESSION['undo_redo_stack'] = serialize($undo_redo_stack);
+                    $this->add_event($terr_nbr, $event_data);
+                
+                    //$undo_redo_stack->showstat();
+                } else {
+                    $this->session->set_flashdata("error", "Can't undo.");
+                }
+                $this->territory_history($terr_nbr, $main_display);
+                break;
+                
+            case "Redo":
+                if ($undo_redo_stack->can_redo()) {
+                    $event_data = $undo_redo_stack->redo();
+                    $_SESSION['undo_redo_stack'] = serialize($undo_redo_stack);
+                    $event_data_deleted = $this->remove_event($terr_nbr);
+                
+                    //$undo_redo_stack->showstat();
+                } else {
+                    $this->session->set_flashdata("error", "Can't redo.");
+                }
+                $this->territory_history($terr_nbr, $main_display);
+                break;
+ 
+            case "Paluu":
+                //Palataan päänäytölle siinä tilassa, kuin se oli ennen päivitystä
+                if ($main_display == "event_view") {
+                    $code = $this->session->userdata('page_code');
+                    $offset = $this->session->userdata('page_offset');
+                    $this->redirect_to_event_page($code, $offset);
+
+                } else {
+                    if ($this->session->userdata('sivutunnus') == 1) {
+                        $this->display_frontpage($this->session->userdata('sort_by'),
+                            $this->session->userdata('sort_order'),
+                            $this->session->userdata('chkbox_sel'),
+                            $this->session->userdata('date_sel'),
+                            $this->session->userdata('code_sel'),
+                            $this->session->userdata('filter'));
+                    } else {
+                        $this->display($this->session->userdata('sort_by'),
+                            $this->session->userdata('sort_order'),
+                            $this->session->userdata('chkbox_sel'),
+                            $this->session->userdata('date_sel'),
+                            $this->session->userdata('code_sel'),
+                            $this->session->userdata('filter'));
+                    }
+                }
+                break;
+                
+            default:
+                $this->territory_history($terr_nbr, $main_display);
+                break;
+        } // switch
+        
+        return ;
+    }
+    
+    public function remove_event($terr_nbr)
+    {
+        //Hae alue_id
+        $alue_id = $this->Territory_model->get_terr_id($terr_nbr);
+        
+        //Hae alueen viimeisin tapahtuma
+        $columns_event = array(
+            'event_id',
+            'event_type',
+            'event_date',
+            'event_user',
+            'event_alue'
+        );
+        $results = $this->Event_model->get_latest_event_data($columns_event, $alue_id);
+        
+        $resultrow = $results['rows'][0];
+        $event_data = array(
+            'event_type' => $resultrow->event_type,
+            'event_date' => $resultrow->event_date,
+            'event_user' => $resultrow->event_user,
+            'event_alue' => $resultrow->event_alue
+        );
+        
+        //Poista tapahtuma
+        $this->Event_model->delete($resultrow->event_id);
+        
+        //Poiston jälkeen haetaan viimeisin tapahtuma
+        $results2 = $this->Event_model->get_latest_event_data($columns_event, $alue_id);
+        
+        $resultrow2 = $results2['rows'][0];
+        if ($resultrow2->event_type == 2) {
+            $data = array(
+                'lainassa' => '0',
+                'alue_lastdate' => $resultrow2->event_date,
+            );
+            $this->Territory_model->update($data, $terr_nbr);
+            
+        } else {
+            $results3 = $this->Event_model->get_latest_return_event_data($columns_event, $alue_id);
+            $resultrow3 = $results3['rows'][0];
+            $data = array(
+                'lainassa' => '1',
+                'alue_lastdate' => $resultrow3->event_date,
+            );
+            $this->Territory_model->update($data, $terr_nbr);
+        }
+        return $event_data;
+    }
+
+    public function add_event($terr_nbr, $event_data)
+    {
+        //Hae alue_id
+        $alue_id = $this->Territory_model->get_terr_id($terr_nbr);
+        
+        //Hae alueen viimeisin tapahtuma
+        $columns_event = array(
+            'event_id',
+            'event_type',
+            'event_date',
+            'event_user',
+            'event_alue'
+        );
+        
+        //Lisää tapahtuma
+        $this->Event_model->insert($event_data);
+        
+        //Lisäyksen jälkeen haetaan viimeisin tapahtuma
+        $results2 = $this->Event_model->get_latest_event_data($columns_event, $alue_id);
+        
+        $resultrow2 = $results2['rows'][0];
+        if ($resultrow2->event_type == 2) {
+            $data = array(
+                'lainassa' => '0',
+                'alue_lastdate' => $resultrow2->event_date,
+            );
+            $this->Territory_model->update($data, $terr_nbr);
+            
+        } else {
+            $results3 = $this->Event_model->get_latest_return_event_data($columns_event, $alue_id);
+            $resultrow3 = $results3['rows'][0];
+            $data = array(
+                'lainassa' => '1',
+                'alue_lastdate' => $resultrow3->event_date,
+            );
+            $this->Territory_model->update($data, $terr_nbr);
+        }
+        return ;
+    }
+    
+    public function redirect_to_event_page($code = 'A', $offset = 0)
+    {
+        $new_url = "Event_controller/display/" . $code . "/" . $offset;
+        redirect($new_url);
     }
     
     public function index()

@@ -51,6 +51,7 @@
       		<input type="hidden" id="displayBaseUrl" value="<?php echo $display_baseurl; ?>" />
 
 	        <input type="hidden" id="filter_param" value="<?php echo $filter; ?>"/>
+	        <input type="hidden" id="base_update_url" value="<?php echo base_url("index.php/Territory_controller/update"); ?>" />
           </td>
 		  <td>
 		    <input type="hidden" id="selCodeOld" value="<?php echo $code_sel; ?>" />
@@ -123,9 +124,9 @@
  	    				<?php } else if ($field_name == "alue_code") { ?>
  	    				  <?php $terr_url = base_url("index.php/Territory_controller/update") . "/" . $alue->$field_name . "/" . $filter; ?>
     			    	  <td id="<?php echo $field_name_data; ?>"> 
-    			    	      	<a id="<?php echo $alue->$field_name; ?>" href="<?php echo $terr_url; ?>">
-    			    	          <?php echo $alue->$field_name; ?> 
-   				     	        </a>
+    			    	    <a id="<?php echo $alue->$field_name; ?>" href="<?php echo $terr_url; ?>" onClick='jsFunction3("<?php echo $alue->$field_name; ?>")'>
+    			    	      <?php echo $alue->$field_name; ?> 
+   				     	    </a>
     			    	  </td>
  	    				<?php } else { ?>
     			    	  <td id="<?php echo $field_name_data; ?>"> <?php echo $alue->$field_name; ?> </td>
@@ -185,6 +186,14 @@ function jsFunction2() {
       newUrl = newUrl + "\\" + document.getElementById("filter_param").value;
 	  //alert(newUrl);
 	  location.replace(newUrl);
+}
+
+function jsFunction3(alue_code) {
+    var newUrl = document.getElementById("base_update_url").value;
+	var newUrl = newUrl + "/" + alue_code + "/" + document.getElementById("filter_param").value;
+	document.getElementById(alue_code).href = newUrl;
+//	  alert(newUrl);
+//	  location.replace(newUrl);
 }
 
 function jsFunction4() {
