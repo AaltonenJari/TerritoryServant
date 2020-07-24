@@ -17,6 +17,8 @@ class Settings_model extends CI_Model
         
         $ret['circuit_week_start'] = $this->session->userdata('circuit_week_start');
         $ret['circuit_week_end'] = $this->session->userdata('circuit_week_end');
+
+        $ret['event_save_switch'] = $this->session->userdata('event_save_switch');
         
         return $ret;
 	}

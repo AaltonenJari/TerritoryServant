@@ -81,7 +81,7 @@
    		                            case "alue_number": 
    		                            case "alue_name":
    		                            case "event_last_date":
-   		                            case "mark_date": ?>
+   		                            case "alue_lastdate": ?>
    		                              <td class="<?php echo $key1; ?>">
    		                                <?php echo $value1;  ?>
    		                              </td>

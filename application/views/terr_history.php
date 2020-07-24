@@ -91,18 +91,26 @@
            <table id="cardbuttons">
              <tr>
                <td width="35%">
-                 <?php echo form_submit(array('id' => 'submit', 'name' => 'action', 'value' => 'Poista')); ?>
+                 <?php echo form_submit(array('id' => 'submit_remove', 'class'=> 'submit_btn', 'name' => 'action', 'value' => 'Poista')); ?>
                </td>
                <td width="10%">
-                 <?php echo form_submit(array('id' => 'submit', 'name' => 'action', 'value' => 'Undo')); ?>
+                 <?php if ($can_undo) { 
+                   echo form_submit(array('id' => 'submit_undo', 'class'=> 'submit_btn', 'name' => 'action', 'value' => 'Undo')); 
+                 } else {
+                     echo form_submit(array('id' => 'submit_undo_disabled', 'class'=> 'submit_btn_disabled', 'name' => 'action', 'value' => 'Undo', 'disabled'  => 'true'));
+                 } ?>
                 </td>
                <td width="25%">
-                 <?php echo form_submit(array('id' => 'submit', 'name' => 'action', 'value' => 'Redo')); ?>
-               </td>
+                 <?php if ($can_redo) { 
+                   echo form_submit(array('id' => 'submit_redo', 'class'=> 'submit_btn', 'name' => 'action', 'value' => 'Redo'));
+                 } else {
+                   echo form_submit(array('id' => 'submit_redo_disabled', 'class'=> 'submit_btn_disabled', 'name' => 'action', 'value' => 'Redo', 'disabled'  => 'true'));
+                 } ?>
+                </td>
                <td width="10%">
                </td>
                <td width="20%">
-                 <?php echo form_submit(array('id' => 'submit', 'name' => 'action', 'value' => 'Paluu')); ?>
+                 <?php echo form_submit(array('id' => 'submit_return_history', 'class'=> 'submit_btn', 'name' => 'action', 'value' => 'Paluu')); ?>
                </td>
              </tr>
              <tr>

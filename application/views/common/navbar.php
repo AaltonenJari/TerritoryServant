@@ -23,8 +23,9 @@
           'bt_switch' => '0',  //0 = ei näytetä (default), 1 = näytetään 
           'circuit_week_start' => "30.6.2020",
           'circuit_week_end' => "5.7.2020",
-          'limit_date_sw' => "0"
-              );
+          'limit_date_sw' => "0",
+          'event_save_switch' => "0"
+      );
       $this->session->set_userdata($setting_data_terr);
   } else {
       //print_r($this->session->userdata);

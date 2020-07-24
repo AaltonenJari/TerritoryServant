@@ -12,7 +12,10 @@ class Event_controller extends CI_Controller
 
         // Load the model 
         $this->load->model('Event_model');
-     }
+    
+        // Load the undo/redo class
+        $this->load->model('UndoRedoStack');
+    }
     
      public function display($code = 'A', $offset = 0) 
 	 {
@@ -54,6 +57,10 @@ class Event_controller extends CI_Controller
 	   
 	    //Muodostetaan sivutusvalikot sivun loppuun
         $data = $this->set_pagination_rows($data, $code, $limit);
+        
+        //Alusta tietorakenne undo/redo - toimintoa varten
+        $undo_redo_stack = new UndoRedoStack();
+        $_SESSION['undo_redo_stack'] = serialize($undo_redo_stack);
         
         
         $this->load->view('event_view', $data);

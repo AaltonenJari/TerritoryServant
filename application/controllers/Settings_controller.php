@@ -26,6 +26,8 @@ class Settings_controller extends CI_Controller
         $data['circuit_week_start'] = $results['circuit_week_start'];
         $data['circuit_week_end'] = $results['circuit_week_end'];
         
+        $data['event_save_switch'] = $results['event_save_switch'];
+        
         $this->load->view('settings_view', $data);
     }
        
@@ -60,7 +62,8 @@ class Settings_controller extends CI_Controller
             'name_presentation'  => $this->input->post('namePresentationOld'),
             'bt_switch'  => $this->input->post('btSwitchOld'),
             'circuit_week_start' => $alkaa,
-            'circuit_week_end' => $this->input->post('kvviikko_loppuu')
+            'circuit_week_end' => $this->input->post('kvviikko_loppuu'),
+            'event_save_switch'  => $this->input->post('eventSaveSwitchOld')
         );
         
         $this->Settings_model->update($settings_data);

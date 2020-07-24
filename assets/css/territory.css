@@ -271,16 +271,22 @@ a slight movement of the header row */
 .alue_number {
   padding-left: 45px;	
   text-align: left;
+  width: 10%;
 }
 
-.mark_date, .event_last_date {
+.alue_name {
+  text-align: left;
+  width: 50%;
+}
+
+.alue_lastdate, .event_last_date {
   text-align: right;
   padding-right: 15px;	
+  width: 20%;
 }
 
 #settings_content {
   margin: auto;
-  width: 40%;
 }
 
 .coReportRow {

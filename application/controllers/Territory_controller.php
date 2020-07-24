@@ -70,7 +70,7 @@ class Territory_controller extends CI_Controller
     
     public function display_frontpage() 
     {
-        $sort_by = 'mark_date';
+        $sort_by = 'alue_lastdate';
         $sort_order = 'asc';
         $chkbox_sel = '1';
         $date_sel = '2';
@@ -103,7 +103,7 @@ class Territory_controller extends CI_Controller
             'alue_detail'	=> 'alue_nimi',
             'alue_location'	=> 'lisätieto',
             'lainassa'		=> 'lainassa',
-            'mark_date'	    => 'käyty',
+            'alue_lastdate'	    => 'käyty',
             'event_last_date'	=> 'otettu',
             'name'	        => 'kenellä'
         );
@@ -114,7 +114,7 @@ class Territory_controller extends CI_Controller
             'alue_detail'	=> 'alue_nimi',
             'alue_location'	=> 'alue_tietoja',
             'lainassa'		=> 'alue_lainassa',
-            'mark_date'	    => 'merkitty',
+            'alue_lastdate'	    => 'merkitty',
             'event_last_date'	=> 'otettu',
             'person_name'	=> 'etunimi',
             'person_lastname'	=> 'sukunimi'
@@ -159,7 +159,7 @@ class Territory_controller extends CI_Controller
             'alue_location'	=> 'alue_tietoja',
             'lainassa'		=> 'alue_lainassa',
             'event_last_date'	=> 'alue_muutospvm',
-            'mark_date'	=> 'event_lastdate',
+            'alue_lastdate'	=> 'event_lastdate',
             'person_name'	=> 'etunimi',
             'person_lastname'	=> 'sukunimi'
         );
@@ -184,16 +184,22 @@ class Territory_controller extends CI_Controller
         //Käytä raportin vertailupäivänä kierrosviikon alkupäivää
         $date_sw = '1';
         
-        $isCwComing = $this->vertaaPvm();
-        $data['is_cw_coming'] = $isCwComing;
-        
-        if (!$isCwComing) {
-            //Jos kierrosviikko on mennyt, raporttipäiväksi kuluva päivä.
-            //Vierailun ajankohtaa ei mäytetä.
-            $today = date("Y-m-d");
-            $unixDate = strtotime($today);
-            $data['report_date'] = date('j.n.Y', $unixDate);
-            $date_sw = '0'; //Vertailupäiväksi kuluva päivä
+        $limit_date_sw = $this->session->userdata('limit_date_sw');
+        //Jos Kierrosviikon alusta -täppä on päällä, käytä kv-viikon alkupäivää vaikka se olisi jo mennyt
+        if (!empty($limit_date_sw)) {
+            $data['is_cw_coming'] = true;
+        } else {
+            $isCwComing = $this->vertaaPvm();
+            $data['is_cw_coming'] = $isCwComing;
+            
+            if (!$isCwComing) {
+                //Jos kierrosviikko on mennyt, raporttipäiväksi kuluva päivä.
+                //Vierailun ajankohtaa ei mäytetä.
+                $today = date("Y-m-d");
+                $unixDate = strtotime($today);
+                $data['report_date'] = date('j.n.Y', $unixDate);
+                $date_sw = '0'; //Vertailupäiväksi kuluva päivä
+            }
         }
         
         //Total count query
@@ -304,9 +310,9 @@ class Territory_controller extends CI_Controller
                         $resultrow->lainassa = $value;
                         break;
                         
-                    case "mark_date":
+                    case "alue_lastdate":
                         $mark_date = new DateTime($value);
-                        $resultrow->mark_date = $mark_date->format('j.n.Y');
+                        $resultrow->alue_lastdate = $mark_date->format('j.n.Y');
                         break;
                         
                     case "person_name":
@@ -314,15 +320,19 @@ class Territory_controller extends CI_Controller
                         
                     case "person_lastname":
                         if ($aluerivi->lainassa == "1") {
-                            if ($this->session->userdata('name_presentation') == "0") {
-                                //0 = firstname lsatname, 1 = lastmame, firstname; (default)
-                                $name_delim = ' ';
-                                $resultrow->name = $aluerivi->person_name . $name_delim . $value;
+                            if (empty($aluerivi->person_name) && empty($aluerivi->person_lastname)) {
+                                $resultrow->name = "Ei henkilöä";
                             } else {
-                                $name_delim = ', ';
-                                $resultrow->name = $value . $name_delim . $aluerivi->person_name;
+                                if ($this->session->userdata('name_presentation') == "0") {
+                                    //0 = firstname lsatname, 1 = lastmame, firstname; (default)
+                                    $name_delim = ' ';
+                                    $resultrow->name = $aluerivi->person_name . $name_delim . $value;
+                                } else {
+                                    $name_delim = ', ';
+                                    $resultrow->name = $value . $name_delim . $aluerivi->person_name;
+                                }
                             }
-                        } else {
+                         } else {
                             $resultrow->name = "";
                         }
                         break;
@@ -377,9 +387,9 @@ class Territory_controller extends CI_Controller
                     case "lainassa":
                         break;
                         
-                    case "mark_date":
+                    case "alue_lastdate":
                         $mark_date = new DateTime($value);
-                        $territoty['mark_date'] = $mark_date->format('j.n.Y');
+                        $territoty['alue_lastdate'] = $mark_date->format('j.n.Y');
                         break;
                         
                     case "event_last_date":
@@ -443,14 +453,23 @@ class Territory_controller extends CI_Controller
             'alue_detail',
             'alue_location',
             'lainassa',
-            'mark_date',
+            'alue_lastdate',
             'person_name',
             'person_lastname'
         );
         
-        $resultrow = $this->get_latest_territory_row($columns, $terr_nbr);
+        $territory_row = $this->get_latest_territory_row($columns, $terr_nbr);
+        $data = array();
+        $data['alue_code'] = $territory_row->alue_code;
+        $data['alue_detail'] = $territory_row->alue_detail;
+        $data['alue_location'] = $territory_row->alue_location;
+        $data['lainassa'] = $territory_row->lainassa;
+        $data['alue_lastdate'] = $territory_row->alue_lastdate;
+        $data['name'] = $territory_row->name;
         
-        $this->load->view('terr_mark', $resultrow);
+        $data['lenders'] = $this->get_lenders();
+        
+        $this->load->view('terr_mark', $data);
         
     }
     public function get_latest_territory_row($columns, $terr_nbr)
@@ -481,9 +500,9 @@ class Territory_controller extends CI_Controller
                     $resultrow->event_id = $value;
                     break;
                 
-                case "mark_date":
+                case "alue_lastdate":
                     $mark_date = new DateTime($value);
-                    $resultrow->mark_date = $mark_date->format('j.n.Y');
+                    $resultrow->alue_lastdate = $mark_date->format('j.n.Y');
                     break;
                     
                 case "person_name":
@@ -514,6 +533,9 @@ class Territory_controller extends CI_Controller
     
     public function update_alue()
     {
+        //Kirjataanko myös merkkaukset events-tauluun?
+        $event_save_switch = $this->session->userdata('event_save_switch');
+        
         $alue_kayty = false;
         $alue_id = $this->Territory_model->get_terr_id($this->input->post('alue_code'));
         
@@ -536,28 +558,34 @@ class Territory_controller extends CI_Controller
             //Merkitään alue käydyksi, palautuneeksi
             $alue_kayty = true;
         } else { //lainaus
-            if ($this->input->post('lainassa_old') == "1") { //Alueen vaihto
-                //Lisää alueen palautumistapahtuma
-                $event_data_old = array(
-                    'event_type' => "2",
-                    'event_date' => $new_lastdate,
-                    'event_user' => $person_id_old,
-                    'event_alue' => $alue_id
-                );
-                
-                $this->Event_model->insert($event_data_old);
+            if ($this->input->post('lainassa_old') == "1") { 
+                //Jos lainaaja vaihtuu, tai kirjataanko myös merkkaukset,
+                if (($person_id_old != $person_id_new) || $event_save_switch > 0) {
+                    //Lisää alueen palautumistapahtuma
+                    $event_data_old = array(
+                        'event_type' => "2",
+                        'event_date' => $new_lastdate,
+                        'event_user' => $person_id_old,
+                        'event_alue' => $alue_id
+                    );
+                    
+                    $this->Event_model->insert($event_data_old);
+                }
                 
                 //Merkitään alue käydyksi
                 $alue_kayty = true;
             }
-            $event_data_new = array(
-                'event_type' => "1",
-                'event_date' => $new_lastdate,
-                'event_user' => $person_id_new,
-                'event_alue' => $alue_id
-            );
-            
-            $this->Event_model->insert($event_data_new);
+            //Jos lainaaja vaihtuu, tai kirjataanko myös merkkaukset,
+            if (($person_id_old != $person_id_new) || $event_save_switch > 0) {
+                $event_data_new = array(
+                    'event_type' => "1",
+                    'event_date' => $new_lastdate,
+                    'event_user' => $person_id_new,
+                    'event_alue' => $alue_id
+                );
+                
+                $this->Event_model->insert($event_data_new);
+            }
         }
                
         if ($alue_kayty) {
@@ -609,22 +637,90 @@ class Territory_controller extends CI_Controller
                 $sukunimi = $nimet[0];
             }
             
-            $data = array(
-                'person_name' => $etunimi,
-                'person_lastname' => $sukunimi,
-                'person_group' => '0'
-            );
-            
             //Onko nimi kannassa?
             $person_id = $this->Territory_model->get_name_id($etunimi, $sukunimi);
             if ($person_id < 0) {
                 //Ei, lisätään
+                $data = array(
+                    'person_name' => $etunimi,
+                    'person_lastname' => $sukunimi,
+                    'person_group' => '5'
+                );
+                
                 $this->Territory_model->insert_person ($data);
                 $person_id = $this->Territory_model->get_name_id($etunimi, $sukunimi);
+            } else {
+                //Tarkistetaan vielä, onko löytynyt lainaaja aktiivinen
+                $columns = array(
+                    'person_group'
+                );
+                
+                $resultrow = $this->Territory_model->get_person($columns, $person_id);
+                if ($resultrow['person_group'] == 0) {
+                    //Ellei ole, päivitetään aktiiviseksi
+                    $data = array(
+                        'person_group' => '5'
+                    );
+                    $this->Territory_model->update_person($data, $person_id);
+                }
+                    
             }
         }
         
         return $person_id;
+    }
+    
+    public function get_lenders()
+    {
+        $person_fields = array(
+            'person_name'	=> 'etunimi',
+            'person_lastname'	=> 'sukunimi',
+            'person_group'	=> 'ryhmä'
+        );
+        //Hae lainaajien nimet
+        $person_results = $this->Territory_model->search_persons($person_fields, "ASC");
+        //Muokkaa haetut tiedot näytölle sopiviksi
+        $lenders = $this->create_lender_rows($person_results);
+    
+        return $lenders;
+    }
+    
+    public function create_lender_rows($results) 
+    {
+        $options = array();
+        $options[' '] = ' ';
+        
+        foreach ($results['rows'] as $person_row) {
+            //Poimitaan vain ahtiiviset lainaajat
+            if ($person_row->person_group > 0) {
+                $resultrow = array();
+                foreach ($person_row as $key=>$value) {
+                    switch ($key) {
+                        case "person_name":
+                            break;
+                            
+                        case "person_lastname":
+                            if ($this->session->userdata('name_presentation') == "0") {
+                                //0 = firstname lsatname, 1 = lastmame, firstname; (default)
+                                $name_delim = ' ';
+                                $resultrow['name'] = $person_row->person_name . $name_delim . $value;
+                            } else {
+                                $name_delim = ', ';
+                                $resultrow['name'] = $value . $name_delim . $person_row->person_name;
+                            }
+                            $resultrow['show_name'] = $value . ' ' . $person_row->person_name;
+                            break;
+                            
+                        default:
+                            break;
+                    } // switch
+                } // foreach person_row
+                $options[$resultrow['name']] = $resultrow['show_name'];
+            } // end if aktiivinen
+        }
+        $options['uusinimi'] = 'uusinimi'; //Mahdollisuus lisätä uusi nimi
+        
+        return $options;
     }
     
     public function check_territory() 
@@ -778,8 +874,12 @@ class Territory_controller extends CI_Controller
         $data['terr_nbr'] = $terr_nbr;
         $data['main_display'] = $main_display;
         $data['event_data'] = $this->Event_model->tabulate($events_data);
-    
-         
+
+        /** UNSERIALIZE **/
+        $undo_redo_stack = unserialize($_SESSION['undo_redo_stack']);
+        $data['can_undo'] = $undo_redo_stack->can_undo();
+        $data['can_redo'] = $undo_redo_stack->can_redo();
+        
         $this->load->view('terr_history', $data);
     }
     
@@ -834,6 +934,7 @@ class Territory_controller extends CI_Controller
                 if ($main_display == "event_view") {
                     $code = $this->session->userdata('page_code');
                     $offset = $this->session->userdata('page_offset');
+                    
                     $this->redirect_to_event_page($code, $offset);
 
                 } else {
@@ -866,8 +967,15 @@ class Territory_controller extends CI_Controller
     public function remove_event($terr_nbr)
     {
         //Hae alue_id
-        $alue_id = $this->Territory_model->get_terr_id($terr_nbr);
+        $columns = array(
+            'alue_id',
+            'alue_lastdate'
+        );
         
+        $resultrow = $this->Maintenance_model->get_alue_row($columns, $terr_nbr);
+        $alue_id = $resultrow['alue_id'];
+        $alue_lastdate = $resultrow['alue_lastdate'];
+         
         //Hae alueen viimeisin tapahtuma
         $columns_event = array(
             'event_id',
@@ -883,7 +991,8 @@ class Territory_controller extends CI_Controller
             'event_type' => $resultrow->event_type,
             'event_date' => $resultrow->event_date,
             'event_user' => $resultrow->event_user,
-            'event_alue' => $resultrow->event_alue
+            'event_alue' => $resultrow->event_alue,
+            'alue_lastdate' => $alue_lastdate
         );
         
         //Poista tapahtuma
@@ -912,7 +1021,7 @@ class Territory_controller extends CI_Controller
         return $event_data;
     }
 
-    public function add_event($terr_nbr, $event_data)
+    public function add_event($terr_nbr, $event_history_data)
     {
         //Hae alue_id
         $alue_id = $this->Territory_model->get_terr_id($terr_nbr);
@@ -926,8 +1035,17 @@ class Territory_controller extends CI_Controller
             'event_alue'
         );
         
+        $event_data = array(
+            'event_type' => $event_history_data['event_type'],
+            'event_date' => $event_history_data['event_date'],
+            'event_user' => $event_history_data['event_user'],
+            'event_alue' => $event_history_data['event_alue']
+        );
+        
         //Lisää tapahtuma
         $this->Event_model->insert($event_data);
+        
+        $alue_lastdate = $event_history_data['alue_lastdate'];
         
         //Lisäyksen jälkeen haetaan viimeisin tapahtuma
         $results2 = $this->Event_model->get_latest_event_data($columns_event, $alue_id);
@@ -936,16 +1054,14 @@ class Territory_controller extends CI_Controller
         if ($resultrow2->event_type == 2) {
             $data = array(
                 'lainassa' => '0',
-                'alue_lastdate' => $resultrow2->event_date,
+                'alue_lastdate' => $alue_lastdate
             );
             $this->Territory_model->update($data, $terr_nbr);
             
         } else {
-            $results3 = $this->Event_model->get_latest_return_event_data($columns_event, $alue_id);
-            $resultrow3 = $results3['rows'][0];
             $data = array(
                 'lainassa' => '1',
-                'alue_lastdate' => $resultrow3->event_date,
+                'alue_lastdate' => $alue_lastdate
             );
             $this->Territory_model->update($data, $terr_nbr);
         }

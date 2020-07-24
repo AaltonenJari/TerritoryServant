@@ -12,16 +12,15 @@ function createPDF()
 
 	
 	style = style + ".tyhja_rivi { height: 15px; } ";
-	style = style + ".kehotus_selite { height: 25px; padding:8px 15px 15px 20px; font-family: \"Arial\", Times, serif; font-size: 10px; }";
-	style = style + ".julistaja { font-family: \"Arial\", Times, serif; font-size: 18px; font-weight: bold; } ";
+	style = style + ".kehotus_selite { height: 25px; padding:8px 5px 5px 30px;   font-family: \"Arial\", Times, serif;  font-size: 12px; }";
+	style = style + ".julistaja { padding-left: 20px; font-family: \"Arial\", Times, serif; font-size: 18px;  font-weight: bold; } ";
 	style = style + ".ohjeteksti { padding-left: 30px; } ";
-	style = style + ".otsikko_numero { font-weight: bold;  text-align: center; width: 10%; } ";
-	style = style + ".otsikko_nimi { padding-left: 15px; font-weight: bold; width: 50%; } ";
+	style = style + ".otsikko_numero { padding-left: 45px; font-weight: bold; text-align: left; width: 20%; } ";
+	style = style + ".otsikko_nimi { font-weight: bold; width: 40%; } ";
 	style = style + ".otsikko_kayty, .otsikko_otettu { text-align: right; font-weight: bold; padding-right: 15px; width: 20%; } ";
-	style = style + ".alue_number { text-align: center; } ";
-	style = style + ".alue_name { padding-left: 15px; } ";
-	style = style + ".alue_lastdate, .event_date { text-align: right;  padding-right: 15px;	} ";
-	
+	style = style + ".alue_number { padding-left: 45px;	text-align: left; width: 20%; } ";
+	style = style + ".alue_name { text-align: left; width: 40%; } ";
+	style = style + ".alue_lastdate, .event_last_date { text-align: right; padding-right: 15px;	width: 20%; } ";
 	style = style + "</style>";
 	
 	//CREATE A WINDOW OBJECT

@@ -146,6 +146,23 @@
             </td>
           </tr>
 		  
+           <tr>
+             <td>
+              <?php echo form_label('Merkintöjen tallennustapa: '); ?>
+            </td>
+            <td>
+              <?php echo form_hidden('eventSaveSwitchOld', $event_save_switch); 
+              $options_event_save_switch = array(
+                       '0'         => 'Vain lainaukset ja palautukset',
+                       '1'         => 'Kaikki merkkaukset',
+               );
+
+		 	  $js5 = 'id="eventSwitchChooser" onChange="jsFunction5();"';
+		 	  echo form_dropdown('eventSwitchChooser', $options_event_save_switch, $event_save_switch, $js5);
+              ?>
+            </td>
+          </tr>
+
 	      <tr>
            <td>
            </td>
@@ -238,6 +255,11 @@ function jsFunction3() {
 function jsFunction4() {
 	  var myselect = document.getElementById("btSwitchChooser");
 	  document.getElementsByName("btSwitchOld")[0].value = myselect.options[myselect.selectedIndex].value;
+	}
+
+function jsFunction5() {
+	  var myselect = document.getElementById("eventSwitchChooser");
+	  document.getElementsByName("eventSaveSwitchOld")[0].value = myselect.options[myselect.selectedIndex].value;
 	}
 
 </script>   	

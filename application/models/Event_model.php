@@ -222,12 +222,16 @@ class Event_model extends CI_Model
                         break;
                         
                     case "person_lastname":
-                        if ($this->session->userdata('name_presentation') == "0") {
-                            $name_delim = ' ';
-                            $event_result_row->name = $event_row->person_name . $name_delim . $value;
+                        if (empty($event_row->person_name) && empty($event_row->person_lastname)) {
+                            $event_result_row->name = "Ei henkilöä";
                         } else {
-                            $name_delim = ', ';
-                            $event_result_row->name =  $value . $name_delim . $event_row->person_name;
+                            if ($this->session->userdata('name_presentation') == "0") {
+                                $name_delim = ' ';
+                                $event_result_row->name = $event_row->person_name . $name_delim . $value;
+                            } else {
+                                $name_delim = ', ';
+                                $event_result_row->name =  $value . $name_delim . $event_row->person_name;
+                            }
                         }
                         
                         if ($event_date_order == "DESC") {

@@ -20,7 +20,6 @@
     <?php echo form_open('territory_controller/check_territory'); ?>
     
     <h1>Merkitse alue</h1>
-    
     <table id="cardtable">
       <tr>
         <td>
@@ -77,8 +76,15 @@
         </td>
         <td>
           <?php 
-            echo form_label($mark_date);
-            echo form_hidden('lastdate_old', $mark_date);
+            echo form_label($alue_lastdate);
+            $data = [
+                'type'  => 'hidden',
+                'name'  => 'lastdate_old',
+                'id'    => 'hidden_lastdate_old',
+                'value' =>  $alue_lastdate,
+                'class' => 'hidden_lastdate_old'
+            ];
+            echo form_input($data);
           ?>
         </td>
       </tr>
@@ -99,10 +105,35 @@
           <?php echo form_label('Kenellä:'); ?>
         </td>
         <td>
-          <?php 
-            $attributes = 'id="djnimi" placeholder="Nimi"';
-            echo form_input('djnimi', set_value('djnimi', $name), $attributes);
-            echo form_hidden('jnimi_old', $name);
+           <?php 
+           $js = [
+               'id'       => 'djnimi',
+               'onChange' => 'jsFunction();'
+           ];
+           echo form_dropdown('djnimi', $lenders, $name, $js);
+           
+           //input field for name other than inte drop-down list
+           $data = [
+               'type'  => 'text',
+               'name'  => 'djnimi',
+               'id'    => 'djnimi_id',
+               'value' =>  $name,
+               'style' => 'display:none'
+           ];
+           
+           echo form_input($data);
+           
+            
+           //Save the old name (selected value from server)
+           $data = [
+           'type'  => 'hidden',
+           'name'  => 'jnimi_old',
+           'id'    => 'hidden_jnimi_old',
+           'value' =>  $name,
+           'class' => 'hidden_jnimi_old'
+           ];
+           
+           echo form_input($data);
           ?>
          </td>
       </tr>
@@ -120,13 +151,13 @@
     <table id="cardbuttons">
       <tr>
         <td width="40%">
-          <?php echo form_submit(array('id' => 'submit', 'name' => 'action', 'value' => 'Päivitä')); ?>
+          <?php echo form_submit(array('id' => 'submit_update', 'class'=> 'submit_btn', 'name' => 'action', 'value' => 'Päivitä')); ?>
         </td>
         <td width="30%">
-          <?php echo form_submit(array('id' => 'submit', 'name' => 'action', 'value' => 'Historia')); ?>
+          <?php echo form_submit(array('id' => 'submit_history', 'class'=> 'submit_btn', 'name' => 'action', 'value' => 'Historia')); ?>
         </td>
         <td width="30%">
-          <?php echo form_submit(array('id' => 'submit', 'name' => 'action', 'value' => 'Paluu')); ?>
+          <?php echo form_submit(array('id' => 'submit_return_mark', 'class'=> 'submit_btn', 'name' => 'action', 'value' => 'Paluu')); ?>
         </td>
       </tr>
       <tr>
@@ -156,9 +187,39 @@ $("#dmerk").datepicker(
 $('input[type="checkbox"]').click(function() {
     if (!this.checked) {
         $('#djnimi').val('');
+    } else {
+        $('#djnimi').val($('#hidden_jnimi_old').val());
     }
 
 });
+
+function jsFunction() {
+	// Päivitä checkbox sen mukaan, onko nimi annettu vai ei
+	var myselect = document.getElementById("djnimi");
+	var chk_lainassa = document.getElementsByName("dlainassa")[0];
+
+	if (myselect.options[myselect.selectedIndex].value != ' ') {
+	  chk_lainassa.value = "1";
+	  chk_lainassa.checked = true;
+	  if (myselect.options[myselect.selectedIndex].value != 'uusinimi') {
+	    document.getElementById("djnimi_id").value = myselect.options[myselect.selectedIndex].value;
+	  }
+	} else {
+	  chk_lainassa.value = "0";
+	  chk_lainassa.checked = false;
+    }
+
+	//Lisätäänkö uusi nimi? Laitetaan silloin lisäkenttä näkyviin
+	if ($('#djnimi').val() == 'uusinimi') {
+		$('#djnimi_id').val('');
+        $('#djnimi_id').show();
+    } else {
+        $('#djnimi_id').hide();
+    }
+    
+}
+
+
 </script>         
          
 </html>

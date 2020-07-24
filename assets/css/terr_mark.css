@@ -58,7 +58,7 @@ input {
   height:30px;
 }
 
-input#submit{
+input.submit_btn {
   margin-top:20px;
   font-size:18px;
   background:linear-gradient(#22abe9 5%,#36caf0 100%);
@@ -69,8 +69,13 @@ input#submit{
   text-shadow:0 1px 0 #13506D
 }
 
-input#submit:hover{
+input.submit_btn:hover {
   background:linear-gradient(#36caf0 5%,#22abe9 100%)
+}
+
+input.submit_btn_disabled {
+  margin-top:20px;
+  font-size:18px;
 }
 
 button#submit{
