@@ -152,7 +152,7 @@
           </td>
           <td width="15%">
 		    <div id="reportPrint">
-  	  		  <input type="button" value="Raportti" id="btPrint" onclick="createPDF()" />
+  	  		  <input type="button" value="Raportti" class="btnAction" onclick="createPDF()" />
     		</div>
           </td>
         </tr>
@@ -192,8 +192,6 @@ function jsFunction3(alue_code) {
     var newUrl = document.getElementById("base_update_url").value;
 	var newUrl = newUrl + "/" + alue_code + "/" + document.getElementById("filter_param").value;
 	document.getElementById(alue_code).href = newUrl;
-//	  alert(newUrl);
-//	  location.replace(newUrl);
 }
 
 function jsFunction4() {

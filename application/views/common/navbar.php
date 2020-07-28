@@ -61,8 +61,8 @@
           <div class="dropdown-content">
             <div class="nav-sub">
               <ul>
-                <li><a href="<?php echo base_url("index.php/territory_controller/display/name/asc/2/2/0"); ?>">Alueet, saa merkitä</a></li>
-                <li><a href="<?php echo base_url("index.php/territory_controller/display_marklist"); ?>">Merkitsemiskehotuslistat</a></li>
+                <li><a href="<?php echo base_url("index.php/territory_controller/display_mark_exhort"); ?>">Merkitsemiskehotuslistat</a></li>
+                <li><a href="<?php echo base_url("index.php/territory_controller/display_return_exhort"); ?>">Palauttamiskehotuslistat</a></li>
                 <li><a href="<?php echo base_url("index.php/territory_controller/display_co_report"); ?>">KV-raportti</a></li>
                 <li><a href="#" class="link"><input type="checkbox" id="cweek_check_id" name="cweek_check" value="<?php echo $this->session->userdata('limit_date_sw'); ?>" <?php if (!empty($this->session->userdata('limit_date_sw'))) { ?>checked <?php } ?>>Kierrosviikon alusta</a></li>
               </ul>

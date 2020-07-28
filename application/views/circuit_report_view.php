@@ -143,7 +143,7 @@
           </td>
           <td width="15%">
 		    <div id="reportPrint">
-  	  		  <input type="button" value="Raportti" id="btPrint" onclick="createPDF()" />
+  	  		  <input type="button" value="Raportti" class="btnAction" onclick="createPDF()" />
     		</div>
           </td>
         </tr>

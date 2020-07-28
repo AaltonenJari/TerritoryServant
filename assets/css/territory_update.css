@@ -154,7 +154,7 @@ button {
 	float: right;
 }
 
-#btPrint {
+.btnAction {
   float: right;
   padding:8px 5px 5px 5px; 
   font-family: "Arial", Times, serif;

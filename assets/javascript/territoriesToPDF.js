@@ -29,6 +29,8 @@ function createPDF()
 	style = style + "a { text-decoration: none !important; color: black; }";
 	
 	style = style + "</style>";
+
+	var totalCount = document.getElementById('totalcount').innerHTML;
 	
 	//CREATE A WINDOW OBJECT
 	var win = window.open('', '', 'height=700,width=700');
@@ -40,6 +42,8 @@ function createPDF()
 	win.document.write('<body>');
 	win.document.write('<H1>Alueluettelo</H1>');
 	win.document.write(sTable);
+	win.document.write('</br>');
+	win.document.write(totalCount);
 	win.document.write('</body></html>');
 	
 	win.document.close();

@@ -22,6 +22,10 @@ function createPDF()
 	style = style + ".alue_name { text-align: left; width: 40%; } ";
 	style = style + ".alue_lastdate, .event_last_date { text-align: right; padding-right: 15px;	width: 20%; } ";
 	style = style + "</style>";
+
+	var listheader = document.getElementById('listhdr').innerHTML;
+
+	var totalCount = document.getElementById('totalcount').innerHTML;
 	
 	//CREATE A WINDOW OBJECT
 	var win = window.open('', '', 'height=700,width=700');
@@ -31,8 +35,11 @@ function createPDF()
 	win.document.write(style);
 	win.document.write('</head>');
 	win.document.write('<body>');
-	win.document.write('<H1>Merkitsemiskehotuslista</H1>');
+	win.document.write(listheader);
 	win.document.write(sTable);
+	win.document.write('</br>');
+	win.document.write('</br>');
+	win.document.write(totalCount);
 	win.document.write('</body></html>');
 	
 	win.document.close();

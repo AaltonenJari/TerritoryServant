@@ -177,12 +177,12 @@
 		<table id="settings_buttons">
         <tr>
           <td width="30%">
-            <?php echo form_submit(array('id' => 'submit', 'name' => 'action', 'value' => 'Päivitä')); ?>
           </td>
           <td width="30%">
+            <?php echo form_submit(array('id' => 'submit', 'class' => 'btnFormAction', 'name' => 'action', 'value' => 'Päivitä')); ?>
           </td>
           <td width="40%">
-            <?php echo form_submit(array('id' => 'submit', 'name' => 'action', 'value' => 'Paluu')); ?>
+            <?php echo form_submit(array('id' => 'submit', 'class' => 'btnFormAction', 'name' => 'action', 'value' => 'Paluu')); ?>
           </td>
         </tr>
         <tr>

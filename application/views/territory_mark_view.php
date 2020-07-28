@@ -30,7 +30,21 @@
     <?php $this->load->view('common/navbar.php')?>
  
     <!-- Asetetaan sivun pääotsikko -->
-    <h1>Alueet - merkitsemiskehotukset</h1>
+    <?php 
+    if ($exhort == "RETURN") {
+        $hdr_string = "Alueet - palautuskehotukset";
+        $explainer = "Alue saa olla lainassa samalla julistajalla korkeintaan vuoden.";
+        $terr_url = base_url("index.php/territory_controller/display/event_last_date/asc/2/4/0");
+        
+    } else {
+        $hdr_string = "Alueet - merkitsemiskehotukset";
+        $explainer = "Alue tulisi käydä läpi neljässä kuukaudessa. Sitten siitä tulisi ilmoittaa aluepöytään, jotta alue voidaan merkitä käydyksi (km 4/07 s. 8, od s. 98).";
+        $terr_url = base_url("index.php/territory_controller/display/name/asc/2/2/0");
+    }
+    ?>
+    <div id="listhdr">
+      <h1><?php echo $hdr_string; ?></h1>
+    </div>
 
 	<div id="content">
 	  <div class="tableWrap">
@@ -52,11 +66,21 @@
    		                </tr>
    		               	<tr>
    		                  <td class="ohjeteksti" colspan="4"> 
-   		                  <?php if (count($publisher['territories']) == 1) { 
-   		                      echo "merkitsehän seuraava alue aluepöydässä:";
-   		                  } else { 
-   		                      echo "merkitsehän seuraavat alueet aluepöydässä:";
-   		                  } ?>
+   		                  <?php 
+   		                  if ($exhort == "RETURN") {
+   		                      if (count($publisher['territories']) == 1) {
+   		                          echo "palauta seuraava alue aluepöytään:";
+   		                      } else {
+   		                          echo "palauta seuraavat alueet aluepöytään:";
+   		                      }
+   		                  } else {
+   		                      if (count($publisher['territories']) == 1) {
+   		                          echo "merkitsehän seuraava alue aluepöydässä:";
+   		                      } else {
+   		                          echo "merkitsehän seuraavat alueet aluepöydässä:";
+   		                      }
+   		                  }
+    		                  ?>
    		                  </td>
    		                </tr>
    		               	<tr>
@@ -71,12 +95,16 @@
     		              <tr>
     		                <td class="otsikko_numero">Numero</td>
     		                <td class="otsikko_nimi">Nimi</td>
-    		                <td class="otsikko_otettu">Otettu</td>
-    		                <td class="otsikko_kayty">Käyty viimeksi</td>
+    		                <?php if ($exhort == "RETURN") { ?>
+     		                  <td class="otsikko_otettu">Lainattu</td>
+    		                <?php } else { ?>
+    		                  <td class="otsikko_otettu">Otettu</td>
+    		                  <td class="otsikko_kayty">Käyty viimeksi</td>
+    		                <?php } ?>
     		              </tr>
-    		              <tr>
-   		                    <?php foreach ($territories as $territory) {  
-   		                      foreach ($territory as $key1=>$value1) {
+   		                  <?php foreach ($territories as $territory) { ?>
+   		                     <tr>
+   		                      <?php foreach ($territory as $key1=>$value1) {
    		                        switch ($key1) {
    		                            case "alue_number": 
    		                            case "alue_name":
@@ -102,7 +130,7 @@
    		      if ($rowidx > 0) { //Taulukkoon lopuksi selite ?>
    		        <tr>
    		          <td class="kehotus_selite" colspan="4">
-   		            Alue tulisi käydä läpi neljässä kuukaudessa. Sitten siitä tulisi ilmoittaa aluepöytään, jotta alue voidaan merkitä käydyksi (km 4/07 s. 8, od s. 98).
+   		            <?php echo $explainer;?>
    		          </td>
    		        </tr>
               <?php } ?>
@@ -118,14 +146,19 @@
     <div id="bottomArea" class="bottomArea">
       <table id="bottomtable">
         <tr>
-          <td width="85%">
+          <td width="60%">
 	 	    <div id="totalcount">
   		      <span>Löytyi: <span id="tableRowCount"> <?php echo $num_results; ?></span> aluetta</span>
     	    </div>
           </td>
           <td width="15%">
 		    <div id="reportPrint">
-  	  		  <input type="button" value="Raportti" id="btPrint" onclick="createPDF()" />
+  	  		  <input type="button" value="Näytä" class="btnAction" onclick='jsFunction3("<?php echo $terr_url; ?>")'" />
+    		</div>
+          </td>
+          <td width="15%">
+		    <div id="reportPrint">
+  	  		  <input type="button" value="Raportti" class="btnAction" onclick="createPDF()" />
     		</div>
           </td>
         </tr>
@@ -135,4 +168,11 @@
 
   </div><!-- wrapper -->
 </body>
+<script>
+function jsFunction3(param) {
+	var newUrl = param;
+	  //alert(newUrl);
+	  location.replace(newUrl);
+}
+</script>
 </html>
