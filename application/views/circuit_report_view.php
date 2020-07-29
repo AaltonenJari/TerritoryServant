@@ -37,6 +37,7 @@
       <h1>Alueet - käyntitilanne <?php echo $report_date; ?></h1>
     <?php } ?>
  
+    <?php $terr_url = base_url("index.php/territory_controller/display/lainassa/asc/0/1/0"); ?>
  	<div id="content">
       <div class="tyhja_rivi"> 
    	  </div>
@@ -139,7 +140,12 @@
     <div id="bottomArea" class="bottomArea">
       <table id="bottomtable">
         <tr>
-          <td width="85%">
+          <td width="60%">
+          </td>
+          <td width="15%">
+		    <div id="reportPrint">
+  	  		  <input type="button" value="Näytä" class="btnAction" onclick='jsFunction3("<?php echo $terr_url; ?>")'" />
+    		</div>
           </td>
           <td width="15%">
 		    <div id="reportPrint">
@@ -152,4 +158,11 @@
 
   </div><!-- wrapper -->
 </body>
+<script>
+function jsFunction3(param) {
+	var newUrl = param;
+	  //alert(newUrl);
+	  location.replace(newUrl);
+}
+</script>
 </html>

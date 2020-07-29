@@ -1198,7 +1198,7 @@ class Territory_controller extends CI_Controller
                 
             } else {
                 $data = array(
-                    'lainassa' => '0',
+                    'lainassa' => '1',
                     'alue_lastdate' => $resultrow2->event_date
                 );
                 $this->Territory_model->update($data, $terr_nbr);

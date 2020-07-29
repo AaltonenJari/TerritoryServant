@@ -108,9 +108,19 @@ class Territory_model extends CI_Model {
                 
             case "lainassa":
                 $query = $this->db->order_by($sort_by, $sort_order);
-                $query = $this->db->order_by("alue_lastdate", "ASC");
-                $query = $this->db->order_by("SUBSTR(alue_code FROM 1 FOR 1)", "ASC");
-                $query = $this->db->order_by("CAST(SUBSTR(alue_code FROM 2) AS UNSIGNED)", "ASC");
+                if ($chkbox_sel == '1') {
+                    //Jos haetaan seurakuntaan olevia, järjestä ensin käyntipäivän mukaan
+                    $query = $this->db->order_by("alue_lastdate", "ASC");
+                    $query = $this->db->order_by("SUBSTR(alue_code FROM 1 FOR 1)", "ASC");
+                    $query = $this->db->order_by("CAST(SUBSTR(alue_code FROM 2) AS UNSIGNED)", "ASC");
+                } else {
+                    //Jos haetaan lainassa olevia, järjestä ensin nimen mukaan
+                    $query = $this->db->order_by("person_lastname", $sort_order);
+                    $query = $this->db->order_by("person_name", $sort_order);
+                    $query = $this->db->order_by("alue_lastdate", "ASC");
+                    $query = $this->db->order_by("SUBSTR(alue_code FROM 1 FOR 1)", "ASC");
+                    $query = $this->db->order_by("CAST(SUBSTR(alue_code FROM 2) AS UNSIGNED)", "ASC");
+                }
                 break;
                 
             case "alue_lastdate":
@@ -127,9 +137,9 @@ class Territory_model extends CI_Model {
                 break;
                 
             case "name":
-                $this->db->order_by("lainassa", "DESC");
-                $this->db->order_by("person_lastname", $sort_order);
-                $this->db->order_by("person_name", $sort_order);
+                $query = $this->db->order_by("lainassa", "DESC");
+                $query = $this->db->order_by("person_lastname", $sort_order);
+                $query = $this->db->order_by("person_name", $sort_order);
                 $query = $this->db->order_by("SUBSTR(alue_code FROM 1 FOR 1)", "ASC");
                 $query = $this->db->order_by("CAST(SUBSTR(alue_code FROM 2) AS UNSIGNED)", "ASC");
                 break;
