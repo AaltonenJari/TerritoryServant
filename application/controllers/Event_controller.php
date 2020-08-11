@@ -311,6 +311,10 @@ class Event_controller extends CI_Controller
         return $page_data;
     }
     
+    public function index()
+    {
+        $this->display();
+    }
     
  
 }

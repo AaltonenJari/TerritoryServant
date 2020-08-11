@@ -39,7 +39,7 @@
     } else {
         $hdr_string = "Alueet - merkitsemiskehotukset";
         $explainer = "Alue tulisi käydä läpi neljässä kuukaudessa. Sitten siitä tulisi ilmoittaa aluepöytään, jotta alue voidaan merkitä käydyksi (km 4/07 s. 8, od s. 98).";
-        $terr_url = base_url("index.php/territory_controller/display/name/asc/2/2/0");
+        $terr_url = base_url("index.php/territory_controller/display/name/asc/2/5/0");
     }
     ?>
     <div id="listhdr">

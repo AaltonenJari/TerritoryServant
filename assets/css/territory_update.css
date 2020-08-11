@@ -1,6 +1,6 @@
 /* Set a fixed scrollable wrapper */
 .tableWrap {
-  height: 480px;
+  height: 360px;
   border: 1px solid black;
   overflow: auto;
 }
@@ -16,6 +16,7 @@
  rather than on thead */
 #table2 th {
   padding: 6px;
+  padding-left: 15px;
   border-left: 1px dotted rgba(200, 209, 224, 0.6);
   border-bottom: 1px solid #e8e8e8;
   text-transform: uppercase;
@@ -51,7 +52,7 @@ table {
 
 #filterArea
 {
-  padding-bottom: 12px;
+  padding-bottom: 10px;
   padding-left: 2px;	
 }
 
@@ -256,24 +257,31 @@ a slight movement of the header row */
   text-align: center;
 }
 
-.alue_lastdate, .event_date {
+
+input.submit_btn {
+  margin-top:20px;
+  font-size:18px;
+  background:linear-gradient(#00cccc 5%,#36caf0 100%);
+  border:1px solid #0F799E;
+  color:#fff;
+  font-weight:700;
+  cursor:pointer;
+  text-shadow:0 1px 0 #13506D
+}
+
+input.submit_btn:hover {
+  background:linear-gradient(#36caf0 5%,#22abe9 100%)
+}
+
+input.submit_btn_disabled {
+  margin-top:20px;
+  font-size:18px;
+}
+
+#cardbuttons tr td:nth-child(3) {
   text-align: right;
-  padding-right: 15px;	
 }
 
-#settings_content {
-  margin: auto;
-  width: 40%;
-}
-
-.coReportRow {
-  height: 15px;
-  padding:5px 5px 5px 50px; 
-  font-family: "Arial", Times, serif;
-}
-
-.coReportRow2 {
-  height: 15px;
-  padding:5px 5px 5px 80px; 
-  font-family: "Arial", Times, serif;
+#cardbuttons tr td:nth-child(4) {
+  text-align: right;
 }

@@ -92,7 +92,7 @@
       <li>
         <div class="dropdown">
           <?php if ($sivu_tunnus == "4") { $dropbtn_classes = $dropbtn_classes_base . " active"; } else { $dropbtn_classes = $dropbtn_classes_base; } ?>
-          <a href="<?php echo base_url("index.php/maintenance_controller/maintain"); ?>" >
+          <a href="<?php echo base_url("index.php/maintenance_controller/display"); ?>" >
             <button class="<?php echo $dropbtn_classes; ?>">
               <div class="tooltip">Ylläpito
                 <span class="tooltiptext">Alueet - Ylläpito</span>

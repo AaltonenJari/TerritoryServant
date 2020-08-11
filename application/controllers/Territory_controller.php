@@ -147,7 +147,6 @@ class Territory_controller extends CI_Controller
         $tresults = $this->Event_model->get_terr_codes();
         $data['territory_codes'] = $tresults['rows'];
         
-        //$this->load->view('territory_edit', $data);
         $this->load->view('territory_view', $data);
     }
     
@@ -157,7 +156,7 @@ class Territory_controller extends CI_Controller
         $sort_by = 'name';
         $sort_order = 'asc';
         $chkbox_sel = '2';
-        $date_sel = '2';
+        $date_sel = '5'; //Merkitty viimeksi 4 kk sitten
         $code_sel = '0';
         $bt_switch = '0';
         $filter = '';
@@ -933,8 +932,8 @@ class Territory_controller extends CI_Controller
             case "Historia":
                 //Alusta tietorakenne undo/redo - toimintoa varten
                 $undo_redo_stack = new UndoRedoStack();
-                
                 $_SESSION['undo_redo_stack'] = serialize($undo_redo_stack);
+
                 $this->territory_history($this->input->post('alue_code'));
                 break;
                 
@@ -1006,34 +1005,6 @@ class Territory_controller extends CI_Controller
         }
     }
     
-    public function update_territories() 
-    {
-        $fieldA = $this->input->post('numero');
-        $fieldB = $this->input->post('alue_nimi');
-        $fieldC = $this->input->post('lisätieto');
-        $fieldD = $this->input->post('lainassa');
-        $fieldE = $this->input->post('käyty');
-        $fieldF = $this->input->post('otettu');
-        $fieldG = $this->input->post('kenellä');
-        $r = array();
-        
-        for ($i = 0; $i < sizeof($fieldA); $i++) {
-            $array = array('numero' => $fieldA[$i],
-                'alue_nimi' => $fieldB[$i],
-                'lisätieto' => $fieldC[$i],
-                'lainassa' => $fieldD[$i],
-                'käyty' => $fieldE[$i],
-                'otettu' => $fieldF[$i],
-                'kenellä' => $fieldG[$i]
-            );
-            $r[] = $array;
-        }
-        
-        print_r($r);
-   
-        return 0;
-    }
-    
     public function territory_history($terr_nbr, $main_display="territory_view")
     {
         $columns = array(
@@ -1041,7 +1012,7 @@ class Territory_controller extends CI_Controller
             'alue_code'
         );
         
-        $resultrow = $this->Maintenance_model->get_alue_row($columns, $terr_nbr);
+        $resultrow = $this->Maintenance_model->get_row_by_key($columns, $terr_nbr);
         
         $event_fields = array(
             'alue_code'		=> 'alue_koodi',
@@ -1071,7 +1042,6 @@ class Territory_controller extends CI_Controller
     
     public function check_history($terr_nbr, $main_display="territory_view")
     {
-        
         /** UNSERIALIZE **/
         $undo_redo_stack = unserialize($_SESSION['undo_redo_stack']);
         
@@ -1084,8 +1054,6 @@ class Territory_controller extends CI_Controller
                 $undo_redo_stack->execute($event_data);
                 $_SESSION['undo_redo_stack'] = serialize($undo_redo_stack);
                 
-                //$undo_redo_stack->showstat();
-                    
                 $this->territory_history($terr_nbr, $main_display);
                 break;
                 
@@ -1094,8 +1062,6 @@ class Territory_controller extends CI_Controller
                     $event_data = $undo_redo_stack->undo();
                     $_SESSION['undo_redo_stack'] = serialize($undo_redo_stack);
                     $this->add_event($terr_nbr, $event_data);
-                
-                    //$undo_redo_stack->showstat();
                 } else {
                     $this->session->set_flashdata("error", "Can't undo.");
                 }
@@ -1107,8 +1073,6 @@ class Territory_controller extends CI_Controller
                     $event_data = $undo_redo_stack->redo();
                     $_SESSION['undo_redo_stack'] = serialize($undo_redo_stack);
                     $event_data_deleted = $this->remove_event($terr_nbr);
-                
-                    //$undo_redo_stack->showstat();
                 } else {
                     $this->session->set_flashdata("error", "Can't redo.");
                 }
@@ -1158,7 +1122,7 @@ class Territory_controller extends CI_Controller
             'alue_lastdate'
         );
         
-        $resultrow = $this->Maintenance_model->get_alue_row($columns, $terr_nbr);
+        $resultrow = $this->Maintenance_model->get_row_by_key($columns, $terr_nbr);
         $alue_id = $resultrow['alue_id'];
         $alue_lastdate = $resultrow['alue_lastdate'];
          

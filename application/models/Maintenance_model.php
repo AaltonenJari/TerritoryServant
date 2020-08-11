@@ -7,7 +7,8 @@ class Maintenance_model extends CI_Model
         parent::__construct();
     }
     
-    public function get_all_entries($fields, $sort_by, $sort_order) {
+    public function search($fields, $sort_by, $sort_order, $code_sel)
+    {
         $sort_order = ($sort_order == 'desc') ? 'desc' : 'asc';
         
         $sort_columns = array();
@@ -24,7 +25,13 @@ class Maintenance_model extends CI_Model
         // Results query
         $query = $this->db->select($fetch_columns)
         ->from('alue');
-        //J�rjestys
+
+        // Onko rajattu alueryhmän mukaan?
+        if ($code_sel != '0') {
+            $this->db->like('alue_code', $code_sel);
+        }
+        
+        //Järjestys
         switch ($sort_by) {
             case "alue_code":
                 $query = $this->db->order_by("SUBSTR(alue_code FROM 1 FOR 1)", $sort_order);
@@ -58,16 +65,50 @@ class Maintenance_model extends CI_Model
         return $ret;
     }
     
-    public function terrExists($terr_nbr) {
+    public function get_first_vacant_number($terr_group_code) 
+    {
+        //Oletus: ensimmäinen on vapaa
+        $terr_nbr = $terr_group_code . "1";
+        
+        $found = $this->row_exists($terr_nbr);
+        if ($found > 0) {
+            //Jos löytyi, haetaan ensimmäinen vapaa kolo
+            $terr_nbr = $this->get_first_hole($terr_group_code);
+        }
+        
+        return $terr_nbr;
+    }
+    
+    public function get_first_hole($terr_group_code)
+    {
+        $limit = 1;
+        
+        // Results query
+        $query = $this->db->select("CONCAT(SUBSTR(p.alue_code FROM 1 FOR 1), CAST(SUBSTR(p.alue_code FROM 2) AS UNSIGNED) + 1) AS top")
+        ->from('alue as p');
+        $this->db->join('alue as alt', 'CAST(SUBSTR(alt.alue_code FROM 2) AS UNSIGNED) = CAST(SUBSTR(p.alue_code FROM 2) AS UNSIGNED) + 1 AND SUBSTR(alt.alue_code FROM 1 FOR 1) = SUBSTR(p.alue_code FROM 1 FOR 1)','left');
+        $this->db->where('alt.alue_code',null);
+        $this->db->where('SUBSTR(p.alue_code FROM 1 FOR 1) = ',$terr_group_code);
+        $this->db->order_by("CAST(SUBSTR(p.alue_code FROM 2) AS UNSIGNED)", "ASC");
+        $this->db->limit($limit);
+        
+        $reault_array = $this->db->get()->result_array();
+        $terr_nbr = $reault_array[0]['top'];
+        return $terr_nbr;
+    }
+    
+    public function row_exists($terr_nbr) 
+    {
         $query = $this->db->select('COUNT(*) as count', FALSE)
         ->from('alue');
         $this->db->where('alue_code', $terr_nbr);
         
         $res2 = $query->get()->result();
+        
         return ($res2[0]->count);
     }
     
-    function get_alue_row($columns, $terr_nbr)
+    function get_row_by_key($columns, $terr_nbr)
     {
         // Results query
         $query = $this->db->select($columns)
@@ -80,7 +121,7 @@ class Maintenance_model extends CI_Model
         return $reault_array[0];
     }
     
-    public function insert ($data) {
+    public function insert($data) {
         if ($this->db->insert("alue", $data)) {
             return true;
         }
@@ -92,10 +133,10 @@ class Maintenance_model extends CI_Model
         $result = $this->db->delete('alue');
     }
     
-    public function update($data, $old_terr_nbr) 
+    public function update($data, $key) 
     {
         $this->db->set($data);
-        $this->db->where("alue_code", $old_terr_nbr);
+        $this->db->where("alue_code", $key);
         $this->db->update("alue", $data);
     }
     

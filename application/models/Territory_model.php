@@ -77,6 +77,15 @@ class Territory_model extends CI_Model {
             $this->db->where('event_last_date <=', $limit_date);
         }
         
+        // event_last_date < 4 monhts && alue_lastdate < 4 monhts
+        if ($date_sel == '5') {
+            $date_4_months = strtotime($srchDate ." -4 months");
+            $limit_date = date ('Y-m-d' , $date_4_months);
+            $this->db->where('event_last_date <=', $limit_date);
+        
+            $this->db->where('alue_lastdate <=', $limit_date);
+        }
+        
         // Onko rajattu alueryhmän mukaan?
         if ($code_sel != '0') {
             $this->db->like('alue_code', $code_sel);

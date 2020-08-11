@@ -17,7 +17,7 @@
 <body>
 
   <div id="container">
-    <?php echo form_open('maintenance_controller/check_territory'); ?>
+    <?php echo form_open('maintenance_controller/check_insert'); ?>
     
     <h1>Lisää alue</h1>
     
@@ -64,14 +64,19 @@
     <table id="cardbuttons">
       <tr>
         <td width="30%">
-          <?php echo form_submit(array('id' => 'submit', 'name' => 'action', 'value' => 'Lisää')); ?>
+          <?php echo form_submit(array('id' => 'submit', 'class'=> 'submit_btn', 'name' => 'action', 'value' => 'Lisää')); ?>
         </td>
         <td width="30%">
         </td>
         <td width="40%">
-          <?php echo form_submit(array('id' => 'submit', 'name' => 'action', 'value' => 'Paluu')); ?>
+          <?php echo form_submit(array('id' => 'submit', 'class'=> 'submit_btn', 'name' => 'action', 'value' => 'Paluu')); ?>
         </td>
       </tr>
+             <tr>
+               <td colspan="4">
+                 <?php echo $this->session->flashdata("error");	?>
+               </td>
+             </tr>
     </table>
     
     <?php echo form_close(); ?>
