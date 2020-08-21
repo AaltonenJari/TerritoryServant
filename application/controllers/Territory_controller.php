@@ -12,6 +12,7 @@ class Territory_controller extends CI_Controller
         $this->load->model('Territory_model');
         $this->load->model('Event_model');
         $this->load->model('Maintenance_model');
+        $this->load->model('Person_model');
         $this->load->model('UndoRedoStack');
     }
     
@@ -128,7 +129,7 @@ class Territory_controller extends CI_Controller
 
         //Hae tiedot
         $results = $this->Territory_model->search($data['database_fields'], $sort_by, $sort_order, $chkbox_sel, $date_sel, $code_sel, $bt_switch, $limit_date_sw);
-        
+        //Tiedot näytölle sopiviksi
         $data['alueet'] = $this->create_terr_displayrows($results);
         
         $data['num_results'] = $results['num_rows'];
@@ -823,32 +824,34 @@ class Territory_controller extends CI_Controller
             }
             
             //Onko nimi kannassa?
-            $person_id = $this->Territory_model->get_name_id($etunimi, $sukunimi);
+            $person_id = $this->Person_model->get_person_id($etunimi, $sukunimi);
             if ($person_id < 0) {
                 //Ei, lisätään
-                $data = array(
+                $insert_data = array(
                     'person_name' => $etunimi,
                     'person_lastname' => $sukunimi,
-                    'person_group' => '5'
+                    'person_group'	=> '5',
+                    'person_leader'	=> '0',
+                    'person_show'	=> '1'
                 );
                 
-                $this->Territory_model->insert_person ($data);
-                $person_id = $this->Territory_model->get_name_id($etunimi, $sukunimi);
+                //Lisää uusi
+                $this->Person_model->insert($insert_data);
+                $person_id = $this->Person_model->get_person_id($etunimi, $sukunimi);
             } else {
                 //Tarkistetaan vielä, onko löytynyt lainaaja aktiivinen
                 $columns = array(
                     'person_group'
                 );
                 
-                $resultrow = $this->Territory_model->get_person($columns, $person_id);
+                $resultrow = $this->Person_model->get_person($columns, $person_id);
                 if ($resultrow['person_group'] == 0) {
                     //Ellei ole, päivitetään aktiiviseksi
                     $data = array(
                         'person_group' => '5'
                     );
-                    $this->Territory_model->update_person($data, $person_id);
+                    $this->Person_model->update($data, $person_id);
                 }
-                    
             }
         }
         
@@ -863,7 +866,8 @@ class Territory_controller extends CI_Controller
             'person_group'	=> 'ryhmä'
         );
         //Hae lainaajien nimet
-        $person_results = $this->Territory_model->search_persons($person_fields, "ASC");
+        $person_results = $this->Person_model->search($person_fields, "person_lastname", "ASC");
+        
         //Muokkaa haetut tiedot näytölle sopiviksi
         $lenders = $this->create_lender_rows($person_results);
     

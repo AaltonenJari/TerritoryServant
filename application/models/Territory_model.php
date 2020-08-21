@@ -276,17 +276,6 @@ class Territory_model extends CI_Model {
 	    return $result_array[0];
 	}
 	
-	function get_person($columns, $person_id)
-	{
-	    // Results query
-	    $query = $this->db->select($columns)
-	    ->from('person');
-	    $this->db->where('person_id', $person_id);
-	    
-	    $result_array = $this->db->get()->result_array();
-	    return $result_array[0];
-	}
-	
 	function get_lending_start_date($terr_nbr) 
 	{
 	    $lending_date = null;
@@ -355,46 +344,6 @@ class Territory_model extends CI_Model {
 	    return $lending_date;
 	}
 	
-	function search_persons($fields, $sort_order) 
-	{
-	    $fetch_columns = array();
-	    foreach ($fields as $field_name => $field_display) {
-	        $fetch_columns[] = $field_name;
-	    }
-	    
-	    // Results query
-	    $query = $this->db->select($fetch_columns)
-	    ->from('person');
-	    $this->db->order_by("person_lastname", $sort_order);
-	    $this->db->order_by("person_name", $sort_order);
-	    
-	    $ret['rows'] = $query->get()->result();
-	    
-	    //count query
-	    $ret['num_rows'] = count($ret['rows']);
-	    
-	    return $ret;
-	}
-	
-	function get_name_id($first_name, $last_name) 
-	{
-	    $name_id = -1;
-	    // Results query
-	    $query = $this->db->select('person_id')
-	    ->from('person');
-	    
-	    $this->db->where('person_name', $first_name);
-	    $this->db->where('person_lastname', $last_name);
-	    
-	    $result_array = $this->db->get()->result_array();
-	    if (!empty($result_array)) {
-	        $name_id = $result_array[0]['person_id'];
-	    } else {
-	        $name_id = -1;
-	    }
-	    return $name_id;
-	}
-	
 	function get_terr_id($terr_code)
 	{
 	    $terr_id = -1;
@@ -411,20 +360,6 @@ class Territory_model extends CI_Model {
 	        $terr_id = -1;
 	    }
 	    return $terr_id;
-	}
-	
-	public function insert_person ($data) 
-	{
-	    if ($this->db->insert("person", $data)) {
-	        return true;
-	    }
-	}
-	
-	public function update_person($data, $person_id)
-	{
-	    $this->db->set($data);
-	    $this->db->where("person_id", $person_id);
-	    $this->db->update("person", $data);
 	}
 	
 	public function update($data, $old_terr_nbr) 

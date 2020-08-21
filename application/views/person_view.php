@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Alueet - Ylläpito</title>
+  <title>Henkilötiedot - ylläpito</title>
   <link rel="stylesheet" type="text/css" href="<?php echo base_url("assets/css/navbar.css"); ?>">
-  <link rel="stylesheet" type="text/css" href="<?php echo base_url("assets/css/territory_update.css"); ?>">
+  <link rel="stylesheet" type="text/css" href="<?php echo base_url("assets/css/person.css"); ?>">
   
   <script src="<?php echo base_url("assets/javascript/territoriesToPDF.js"); ?>"></script> 
 
@@ -32,13 +32,13 @@
     <?php $this->load->view('common/navbar.php')?>
 
     <!-- Asetetaan sivun pääotsikko -->
-    <h1>Alueet - Ylläpito</h1>
+    <h1>Henkilötiedot - Ylläpito</h1>
 
     <div id="filterArea" class="filterArea">
       <table id="selectortable">
         <tr>
           <th width="15%">Etsi / Rajaa</th>
-          <th width="35%">Koodi</th>
+          <th width="35%"></th>
           <th width="35%"></th>
           <th width="15%">Perustilaan</th>
         </tr>
@@ -46,59 +46,52 @@
           <td>
  		    <input type="search" id="filterString" class="light-table-filter" data-table="order-table" placeholder="Filter">
 
-	  		<?php $display_baseurl = base_url("index.php/maintenance_controller/display") . "/" . $sort_by . "/" . $sort_order; ?>
+	  		<?php $display_baseurl = base_url("index.php/Person_controller/display") . "/" . $sort_by . "/" . $sort_order; ?>
       		<input type="hidden" id="displayBaseUrl" value="<?php echo $display_baseurl; ?>" />
 
+	  		<?php $form_action_baseurl = base_url("index.php/Person_controller/check_update"); ?>
+      		<input type="hidden" id="formBaseUrl" value="<?php echo $form_action_baseurl; ?>" />
+
 	        <input type="hidden" id="filter_param" value="<?php echo $filter; ?>"/>
-	        <input type="hidden" id="base_update_url" value="<?php echo base_url("index.php/Maintenance_controller/delete"); ?>" />
+	        <input type="hidden" id="base_update_url" value="<?php echo base_url("index.php/Person_controller/delete"); ?>" />
           </td>
-		  <td>
-		    <input type="hidden" id="selCodeOld" value="<?php echo $code_sel; ?>" />
-      		<select name="terrCodeChkBoxChooser" id="terrCodeChkBoxChooser" onChange="jsFunction4()">
-         	  <option value="0" <?php if ($code_sel == "0") echo "selected=\"selected\""?> >Kaikki</option>
-			  <?php 
-                foreach ($territory_codes as $territory_code) {
-                  foreach ($territory_code as $key=>$value) { ?>
-  		            <option value="<?php echo $value; ?>" <?php if ($code_sel == $value) echo "selected=\"selected\""?> ><?php echo $value; ?></option>
-                  <?php }
-                }
-              ?>
-      	    </select> 
-		  </td>
           <td>
           </td>
           <td>
-            <a href="<?php echo base_url("index.php/maintenance_controller/display"); ?>" target="_parent" class="btn-clear"><button>CLR</button></a>
+          </td>
+          <td>
+            <a href="<?php echo base_url("index.php/Person_controller/display"); ?>" target="_parent" class="btn-clear"><button>CLR</button></a>
           </td>
   		</tr>
       </table>
     </div>
 
     <div id="content">
-      <?php $form_open_parameter = "maintenance_controller/check_update/" . $code_sel; ?>
-      <?php echo form_open($form_open_parameter); ?>
+      <?php 
+        $form_open_parameter = "Person_controller/check_update/" . $filter; 
+        $attributes = ['id' => 'person_update_form'];
+        echo form_open($form_open_parameter,$attributes); 
+      ?>
         <div class="tableWrap">
           <table id="table2" class="order-table table">
             <thead>
               <tr>
                   <?php foreach ($display_fields as $field_name => $field_display) { ?>
                       <th <?php if ($sort_by == $field_name) echo "class=\"sort_" . $sort_order . "\"" ?>><span>
-                          <?php $hdrurl = base_url("index.php/maintenance_controller/display") . "/" . $field_name . "/" .
+                          <?php $hdrurl = base_url("index.php/Person_controller/display") . "/" . $field_name . "/" .
                               (($sort_order == 'asc' && $sort_by == $field_name) ? 'desc' : 'asc'); ?>
                           <?php $field_name_old = $field_display ."old" ?>
                           <input type="hidden" id="<?php echo $field_name_old; ?>" value="<?php echo $hdrurl; ?>" />
-                          <?php if (!empty($code_sel)) { $hdrurl .= "/" . $code_sel; } ?>
                           <?php if (!empty($filter)) { $hdrurl .= "/" . $filter; } ?>
                           <a id="<?php echo $field_display; ?>"
                              href="<?php echo $hdrurl; ?>"><?php echo $field_display; ?></a>
                       </span></th>
                   <?php } ?>
-                  <th>Poisto</th>
               </tr>
             </thead>
             <tbody>
               <?php $rowidx = 0; ?>
-              <?php foreach ($alueet as $alue) { ?>
+              <?php foreach ($persons as $person) { ?>
                   <tr>
                       <?php $rowidx++; ?>
                        <?php foreach ($display_fields as $field_name => $field_display) {
@@ -110,22 +103,80 @@
                            $field_input_name_old_data = "input_old_". $field_name . $rowidx;
                            $field_name_old = $field_name . "_old";
                            
-                           if ($field_name == "alue_code") { ?>
+                           if ($field_name == "person_id") { ?>
                              <td id="<?php echo $field_id_data; ?>"> 
-                              <?php 
+                              <?php
                               $attributes = [
                                   'class' => $field_name
                               ];
-                              echo form_label($alue->$field_name, $field_id_data, $attributes);
+                              echo form_label($person->$field_name, $field_id_data, $attributes);
+  
                               $data_hidden = [
                                      'type'  => 'hidden',
                                      'id'    => $field_input_name_old_data,
                                      'name'  => $field_name_old_data,
-                                     'value' =>  $alue->$field_name,
+                                     'value' =>  $person->$field_name,
                                      'class' => $field_name_old
                                  ];
                               echo form_input($data_hidden);
                               ?> 
+                            </td>
+                          <?php } else if ($field_name == "group") { ?>
+                            <td id="<?php echo $field_id_data; ?>"> 
+                              <?php
+                                //Muodosta ryhmätunnus ja piilota se
+                                preg_match("|\d+|", $person->$field_name, $matches);
+                                $field_id_data2 = "group_id" . $rowidx;
+                                $field_name_data2 = "group_id[]";
+                                $field_name_old_data2 = "group_id_old[]";
+                                
+                                $field_input_name_data2 = "input_group_id" . $rowidx;
+                                $field_input_name_old_data2 = "input_old_group_id" . $rowidx;
+                                $field_name2 =  "group_id";
+                                $field_name_old2 =  "group_id_old";
+                                
+                                $data2 = [
+                                    'type'  => 'hidden',
+                                    'id'    => $field_input_name_data2,
+                                    'name'  => $field_name_data2,
+                                    'value' =>  $matches[0],
+                                    'class' => $field_name2
+                                ];
+                                echo form_input($data2);
+                                
+                                $data_hidden2 = [
+                                    'type'  => 'hidden',
+                                    'id'    => $field_input_name_old_data2,
+                                    'name'  => $field_name_old_data2,
+                                    'value' =>  $matches[0],
+                                    'class' => $field_name_old2
+                                ];
+                                echo form_input($data_hidden2);
+                                
+                                $js = [
+                                    'id'       => $field_input_name_data,
+                                    'onChange' => "jsFunction4(this, " . $field_input_name_data2 .")"
+                               ];
+                                echo form_dropdown($field_input_name_data, $groups, $person->$field_name, $js);
+                                
+                                
+                                $data_hidden = [
+                                    'type'  => 'hidden',
+                                    'id'    => $field_input_name_old_data,
+                                    'name'  => $field_name_old_data,
+                                    'value' =>  $person->$field_name,
+                                    'class' => $field_name_old
+                                ];
+                                echo form_input($data_hidden);
+                                ?>
+                            </td>
+                          <?php } else if ($field_name == "event_count") { ?>
+                            <td id="<?php echo $field_id_data; ?>"> 
+                              <?php
+                              if (empty($person->$field_name)) {
+                                  $terr_url = base_url("index.php/Person_controller/delete") . "/" . $person->person_id . "/" . $filter; ?>
+    	             		      <a href="<?php echo $terr_url; ?>" onClick='jsFunction3("<?php echo $person->person_id; ?>")'>Poista</a>
+                              <?php } ?>
                             </td>
                           <?php } else { ?>
                             <td id="<?php echo $field_id_data; ?>"> 
@@ -134,7 +185,7 @@
                                   'type'  => 'text',
                                   'id'    => $field_input_name_data,
                                   'name'  => $field_name_data,
-                                  'value' =>  $alue->$field_name,
+                                  'value' =>  $person->$field_name,
                                   'class' => $field_name
                               ];
                               echo form_input($data);
@@ -143,7 +194,7 @@
                                   'type'  => 'hidden',
                                   'id'    => $field_input_name_old_data,
                                   'name'  => $field_name_old_data,
-                                  'value' =>  $alue->$field_name,
+                                  'value' =>  $person->$field_name,
                                   'class' => $field_name_old
                               ];
                               echo form_input($data_hidden);
@@ -152,10 +203,6 @@
                             </td>
                           <?php } ?>
                       <?php } ?>
-                    <td>
-                      <?php $terr_url = base_url("index.php/maintenance_controller/delete") . "/" . $alue->alue_code . "/" . $filter; ?>
-    			      <a href="<?php echo $terr_url; ?>" onClick='jsFunction3("<?php echo $alue->alue_code; ?>")'>Poista</a>
-                    </td>
                   </tr>
                <?php } ?>
             </tbody>
@@ -202,7 +249,7 @@
         <tr>
           <td width="85%">
             <div id="totalcount">
-              <span>Löytyi: <span id="tableRowCount"> <?php echo $num_results; ?></span> aluetta</span>
+              <span>Löytyi: <span id="tableRowCount"> <?php echo $num_results; ?></span> henkilöä</span>
             </div>
           </td>
           <td width="15%">
@@ -247,17 +294,29 @@ $('#filterString').keyup(function() {
   //Display settings
   document.getElementById("filter_param").value = searchText;
 
-  document.getElementById("numero").href = document.getElementById("numeroold").value +
- 	    "\\" + document.getElementById("selCodeOld").value +
+  document.getElementById("tunnus").href = document.getElementById("tunnusold").value +
  	    "\\" + document.getElementById("filter_param").value;
 
-  document.getElementById("alue_nimi").href = document.getElementById("alue_nimiold").value +
-        "\\" + document.getElementById("selCodeOld").value +
+  document.getElementById("etunimi").href = document.getElementById("etunimiold").value +
         "\\" + document.getElementById("filter_param").value;
 
-	document.getElementById("lisätieto").href = document.getElementById("lisätietoold").value +
-	    "\\" + document.getElementById("selCodeOld").value +
+  document.getElementById("sukunimi").href = document.getElementById("sukunimiold").value +
+        "\\" + document.getElementById("filter_param").value;
+
+  document.getElementById("ryhmä").href = document.getElementById("ryhmäold").value +
  	    "\\" + document.getElementById("filter_param").value;
+
+  document.getElementById("ryhmänvalvoja").href = document.getElementById("ryhmänvalvojaold").value +
+   "\\" + document.getElementById("filter_param").value;
+
+  document.getElementById("näytetään").href = document.getElementById("näytetäänold").value +
+   "\\" + document.getElementById("filter_param").value;
+
+  document.getElementById("näytetään").href = document.getElementById("poistoold").value +
+  "\\" + document.getElementById("filter_param").value;
+
+  document.getElementById('person_update_form').action = document.getElementById("formBaseUrl").value +
+  "\\" + document.getElementById("filter_param").value;
 });
 
 $(document).ready(function() {
@@ -306,14 +365,13 @@ function jsFunction3(alue_code) {
 	document.getElementById(alue_code).href = newUrl;
 }
 
-function jsFunction4() {
-	var myselect = document.getElementById("terrCodeChkBoxChooser");
-	document.getElementById("selCodeOld").value = myselect.options[myselect.selectedIndex].value;
-    var newUrl = document.getElementById("displayBaseUrl").value;
-    newUrl = newUrl + "\\" + document.getElementById("selCodeOld").value;
-    newUrl = newUrl + "\\" + document.getElementById("filter_param").value;
-	//alert(newUrl);
-	location.replace(newUrl);
+function jsFunction4(selectObject,fieldObject) {
+	var selectedString = selectObject.value;
+	var selectedGroupId = selectedString.match(/\d/g);
+	selectedGroupId = Number(selectedGroupId);
+	document.getElementById(fieldObject.id).value = selectedGroupId;
+	
 }
+
 </script>
 </html>

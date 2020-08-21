@@ -99,6 +99,13 @@
               </div>
             </button>
           </a>
+          <div class="dropdown-content">
+            <div class="nav-sub">
+              <ul>
+                <li><a href="<?php echo base_url("index.php/Person_controller/display"); ?>">Henkilötiedot</a></li>
+              </ul>
+            </div>
+          </div>
         </div>
       </li>
       <li>
