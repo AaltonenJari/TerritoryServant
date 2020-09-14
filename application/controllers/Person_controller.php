@@ -39,8 +39,8 @@ class Person_controller extends CI_Controller
             'person_id'		=> 'tunnus',
             'person_name'		=> 'etunimi',
             'person_lastname'	=> 'sukunimi',
-            'person_group'	=> 'ryhmätunnus',
-            'group_name'	=> 'ryhmä',
+            'person_group'	=> 'palvelusryhmä',
+            'group_name'	=> 'ryhmänimi',
             'person_leader'	=> 'ryhmänvalvoja',
             'person_show'	=> 'näytetään',
             'event_count'	=> 'määrä'
@@ -71,6 +71,12 @@ class Person_controller extends CI_Controller
         //Muokkaa haetut tiedot näytölle sopiviksi
         $data['groups'] = $this->create_group_rows($group_results);
         
+        $overseers = array(
+            '0'		=> ' ',
+            '1'		=> 'ryhmänvalvoja',
+            '2'	    => 'ryhmänvalvojan apulainen'
+        );
+        $data['overseers'] = $overseers;
         
         //Alusta tietorakenne undo/redo - toimintoa varten
         //Jos parametreja ei ole annettu, alusta tietorakenne
@@ -195,6 +201,11 @@ class Person_controller extends CI_Controller
                 ($field_person_groups[$i] != $field_old_person_groups[$i]) ||
                 ($field_person_leaders[$i] != $field_old_person_leaders[$i]) ||
                 ($field_person_shows[$i] != $field_old_person_shows[$i])) {
+                    
+                    if ($field_person_groups[$i] == '0' || $field_person_groups[$i] == '5') {
+                        //Jos ei-aktiivinen tai ei ryhmää, ei voi olla ryhmänvalvoja.
+                        $field_person_leaders[$i] = '0';
+                    }
                     $update_data = array(
                         'person_name'		=> $field_person_names[$i],
                         'person_lastname'	=> $field_person_lastnames[$i],
@@ -233,6 +244,122 @@ class Person_controller extends CI_Controller
             $this->session->userdata('sort_order'),
             $this->session->userdata('filter'));
         
+        return ;
+    }
+    
+    public function update($person_id, $field_name, $field_value, $filter = '')
+    {
+        //State variables of person_view
+        $person_view_state_data = array(
+            'filter'          => $filter
+        );
+        $this->session->set_userdata($person_view_state_data);
+        
+        //Haetaan henkilön tiedot kannasta
+        $columns = array(
+            'person_name',
+            'person_lastname',
+            'person_group',
+            'person_leader',
+            'person_show'
+        );
+        $resultrow = $this->Person_model->get_person($columns, $person_id);
+        
+        $update_data = array();
+        
+        foreach ($resultrow as $key=>$value) {
+            switch ($key) {
+                case "person_name":
+                    if ($field_name == "person_name") {
+                        if ($field_value == '0') {
+                            $update_data['person_name'] = " ";
+                        } else {
+                            $update_data['person_name'] = $field_value;
+                        }
+                    } else {
+                        $update_data['person_name'] = $value;
+                    }
+                    break;
+                    
+                case "person_lastname":
+                    if ($field_name == "person_lastname") {
+                        if ($field_value == '0') {
+                            $update_data['person_lastname'] = " ";
+                        } else {
+                            $update_data['person_lastname'] = $field_value;
+                        }
+                    } else {
+                        $update_data['person_lastname'] = $value;
+                    }
+                    break;
+                
+                case "person_group":
+                    if ($field_name == "group_id") {
+                        $update_data['person_group'] = $field_value;
+                    } else {
+                        $update_data['person_group'] = $value;
+                    }
+                    break;
+                
+                case "person_leader":
+                    if ($update_data['person_group'] == '0' || $update_data['person_group'] == '5') {
+                        //Jos ei-aktiivinen tai ei ryhmää, ei voi olla ryhmänvalvoja eikä apulainen.
+                        $update_data['person_leader'] = '0';
+                    } else {
+                        if ($field_name == "person_leader") {
+                            $update_data['person_leader'] = $field_value;
+                        } else {
+                            $update_data['person_leader'] = $value;
+                        }
+                    }
+                    break;
+                
+                case "person_show":
+                    if ($field_name == "person_show") {
+                        $update_data['person_show'] = $field_value;
+                    } else {
+                        $update_data['person_show'] = $value;
+                    }
+                    break;
+                
+                default:
+                    break;
+            } // switch
+        } //foreach $resultrow
+        
+        /** UNSERIALIZE **/
+        $undo_redo_stack = unserialize($_SESSION['undo_redo_person_edit']);
+        
+        //Päivitys
+        $this->Person_model->update($update_data, $person_id);
+        
+        //Tiedot undo/redo -toimintoa varten
+        $update_data_old = array(
+            'person_name'		=> $resultrow['person_name'],
+            'person_lastname'	=> $resultrow['person_lastname'],
+            'person_group'	    => $resultrow['person_group'],
+            'person_leader' 	=> $resultrow['person_leader'],
+            'person_show'	    => $resultrow['person_show']
+        );
+        
+        $edit_info = array(
+            'operation'	=> 'edit',
+            'key'		=> $person_id,
+            'data_old'	=> $update_data_old,
+            'data_new'	=> $update_data
+        );
+ 
+        //Päivityksen tiedot muistiin
+        $undo_redo_stack->execute($edit_info);
+        
+        $_SESSION['undo_redo_person_edit'] = serialize($undo_redo_stack);
+        
+        
+        //Palataan päänäytölle siinä tilassa, kuin se oli ennen päivitystä
+        $this->display($this->session->userdata('sort_by'),
+            $this->session->userdata('sort_order'),
+            $this->session->userdata('filter'));
+    
         return ;
     }
     

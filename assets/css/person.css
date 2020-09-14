@@ -280,7 +280,7 @@ input.submit_btn_disabled {
 }
 
 #cardbuttons tr td:nth-child(3) {
-  text-align: right;
+  text-align: left;
 }
 
 #cardbuttons tr td:nth-child(4) {

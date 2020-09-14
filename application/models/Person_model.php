@@ -13,7 +13,11 @@ class Person_model extends CI_Model
         
         $sort_columns = array();
         foreach ($fields as $field_name => $field_display) {
-            $sort_columns[] = $field_name;
+            if ($field_display == "palvelusryhmä") {
+                $sort_columns[] = "group";
+            } else {
+                $sort_columns[] = $field_name;
+            }
         }
         $sort_by = (in_array($sort_by, $sort_columns)) ? $sort_by : 'person_lastname';
         
@@ -40,18 +44,23 @@ class Person_model extends CI_Model
                 $query = $this->db->order_by("person_name", $sort_order);
                 break;
                 
-            case "group_name":
+            case "group":
+                $query = $this->db->order_by("person_group", $sort_order);
+                $query = $this->db->order_by("person_lastname", "ASC");
+                $query = $this->db->order_by("person_name", "ASC");
+                break;
+            
             case "person_leader":
             case "person_show":
                 $query = $this->db->order_by($sort_by, $sort_order);
-                $query = $this->db->order_by("person_lastname", $sort_order);
-                $query = $this->db->order_by("person_name", $sort_order);
+                $query = $this->db->order_by("person_lastname", "ASC");
+                $query = $this->db->order_by("person_name", "ASC");
                 break;
                 
             case "event_count":
                 $query = $this->db->order_by($sort_by, $sort_order);
-                $query = $this->db->order_by("person_lastname", $sort_order);
-                $query = $this->db->order_by("person_name", $sort_order);
+                $query = $this->db->order_by("person_lastname", "ASC");
+                $query = $this->db->order_by("person_name", "ASC");
                 break;
             
             default:
