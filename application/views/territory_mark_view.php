@@ -152,8 +152,8 @@
     	    </div>
           </td>
           <td width="15%">
-		    <div id="reportPrint">
-  	  		  <input type="button" value="Näytä" class="btnAction" onclick='jsFunction3("<?php echo $terr_url; ?>")'" />
+		    <div id="reportShow">
+  	  		  <input type="button" value="Näytä" class="btnAction" onclick="jsFunction3('<?php echo $terr_url; ?>')" />
     		</div>
           </td>
           <td width="15%">

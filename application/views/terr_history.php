@@ -82,7 +82,19 @@
               </tbody>
               
             </table>
-          </div>
+            <p>
+            <?php
+            $data_hidden = [
+                'type'  => 'hidden',
+                'id'    => 'submit_action',
+                'name'  => 'action',
+                'value' => 'Update',
+                'class' => 'submit_action_btn'
+            ];
+            echo form_input($data_hidden);
+            ?>
+            </p>
+          </div><!-- tableWrap -->
         </td>
       </tr>
       
@@ -91,27 +103,88 @@
            <table id="cardbuttons">
              <tr>
                <td width="35%">
-                 <?php echo form_submit(array('id' => 'submit_remove', 'class'=> 'submit_btn', 'name' => 'action', 'value' => 'Poista')); ?>
-               </td>
+                 <?php          
+                 $data = [
+                    'type'  => 'submit',
+                    'id'    => 'submit_remove',
+                    'name'  => 'action_btn',
+                    'value' => 'Poista',
+                    'class' => 'submit_btn'
+                 ];
+                    
+                 $js = ['onClick' => 'jsFunction_remove(this);'];
+                 echo form_input($data,' ',$js);
+                 ?>
+                </td>
                <td width="10%">
-                 <?php if ($can_undo) { 
-                   echo form_submit(array('id' => 'submit_undo', 'class'=> 'submit_btn', 'name' => 'action', 'value' => 'Undo')); 
+                 <?php if ($can_undo) {
+                     $data = [
+                         'type'  => 'image',
+                         'id'    => 'submit_undo',
+                         'name'  => 'action_btn',
+                         'value' => 'Undo',
+                         'class' => 'submit_undo',
+                         'src' => base_url("assets/images/undo.jpg")
+                     ];
+                     
+                     $js = ['onClick' => 'jsFunction_undo(this);'];
+                     echo form_submit($data,' ',$js);
                  } else {
-                     echo form_submit(array('id' => 'submit_undo_disabled', 'class'=> 'submit_btn_disabled', 'name' => 'action', 'value' => 'Undo', 'disabled'  => 'true'));
+                     $data = [
+                         'type'  => 'image',
+                         'id'    => 'submit_undo_disabled',
+                         'name'  => 'action_btn_disabled',
+                         'value' => 'Undo',
+                         'class' => 'submit_btn_disabled',
+                         'src' => base_url("assets/images/Undo_disabled.jpg"),
+                         'disabled'  => 'true'
+                     ];
+                     echo form_submit($data);
                  } ?>
-                </td>
+                 </td>
                <td width="25%">
-                 <?php if ($can_redo) { 
-                   echo form_submit(array('id' => 'submit_redo', 'class'=> 'submit_btn', 'name' => 'action', 'value' => 'Redo'));
+                 <?php if ($can_redo) {
+                     $data = [
+                         'type'  => 'image',
+                         'id'    => 'submit_redo',
+                         'name'  => 'action_btn',
+                         'value' => 'Redo',
+                         'class' => 'submit_undo',
+                         'src' => base_url("assets/images/Redo.jpg")
+                     ];
+                     
+                     $js = ['onClick' => 'jsFunction_redo(this);'];
+                     echo form_submit($data,' ',$js);
+                     
                  } else {
-                   echo form_submit(array('id' => 'submit_redo_disabled', 'class'=> 'submit_btn_disabled', 'name' => 'action', 'value' => 'Redo', 'disabled'  => 'true'));
+                     $data = [
+                         'type'  => 'image',
+                         'id'    => 'submit_redo_disabled',
+                         'name'  => 'action_btn_disabled',
+                         'value' => 'Redo',
+                         'class' => 'submit_btn_disabled',
+                         'src' => base_url("assets/images/Redo_disabled.jpg"),
+                         'disabled'  => 'true'
+                     ];
+                     echo form_submit($data);
                  } ?>
-                </td>
+                 </td>
                <td width="10%">
                </td>
                <td width="20%">
-                 <?php echo form_submit(array('id' => 'submit_return_history', 'class'=> 'submit_btn', 'name' => 'action', 'value' => 'Paluu')); ?>
-               </td>
+                 <?php          
+                 $data = [
+                    'type'  => 'submit',
+                    'id'    => 'submit_return_history',
+                    'name'  => 'action_btn',
+                    'value' => 'Paluu',
+                    'class' => 'submit_btn'
+                 ];
+                    
+                 $js = ['onClick' => 'jsFunction_return(this);'];
+                 echo form_input($data,' ',$js);
+                 ?>
+              </td>
              </tr>
              <tr>
                <td colspan="4">
@@ -127,6 +200,22 @@
   </div><!-- container -->
 </body>
 
+<script>
+function jsFunction_remove(me) {
+	document.getElementById("submit_action").value = "Remove";
+}
 
+function jsFunction_return(me) {
+	document.getElementById("submit_action").value = "Return";
+}
+
+function jsFunction_undo(me) {
+	document.getElementById("submit_action").value = "Undo";
+}
+
+function jsFunction_redo(me) {
+	document.getElementById("submit_action").value = "Redo";
+}
+</script>
          
 </html>

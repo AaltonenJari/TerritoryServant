@@ -112,7 +112,7 @@
            ];
            echo form_dropdown('djnimi', $lenders, $name, $js);
            
-           //input field for name other than inte drop-down list
+           //input field for name other than in the drop-down list
            $data = [
                'type'  => 'text',
                'name'  => 'djnimi',

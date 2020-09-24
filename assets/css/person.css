@@ -270,19 +270,29 @@ input.submit_btn {
   text-shadow:0 1px 0 #13506D
 }
 
+input.submit_undo {
+  margin-top:20px;
+  border:1px solid #0F799E;
+  max-width: 40px;
+  max-height: 40px;
+  cursor:pointer;
+}
+
 input.submit_btn:hover {
   background:linear-gradient(#36caf0 5%,#22abe9 100%)
 }
 
 input.submit_btn_disabled {
   margin-top:20px;
-  font-size:18px;
+  border:1px solid #9ea0a0;
+  max-width: 40px;
+  max-height: 40px;
 }
 
 #cardbuttons tr td:nth-child(3) {
-  text-align: left;
+  text-align: center;
 }
 
 #cardbuttons tr td:nth-child(4) {
-  text-align: right;
+  text-align: left;
 }

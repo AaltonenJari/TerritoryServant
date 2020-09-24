@@ -25,7 +25,8 @@ class Maintenance_model extends CI_Model
         // Results query
         $query = $this->db->select($fetch_columns)
         ->from('alue');
-
+        $this->db->join('(SELECT event_alue, count(*) AS event_count FROM alue_events GROUP BY event_alue) ev', 'ev.event_alue = alue.alue_id','left');
+        
         // Onko rajattu alueryhmän mukaan?
         if ($code_sel != '0') {
             $this->db->like('alue_code', $code_sel);
@@ -39,12 +40,9 @@ class Maintenance_model extends CI_Model
                 break;
                 
             case "alue_detail":
-                $query = $this->db->order_by($sort_by, $sort_order);
-                $query = $this->db->order_by("SUBSTR(alue_code FROM 1 FOR 1)", "ASC");
-                $query = $this->db->order_by("CAST(SUBSTR(alue_code FROM 2) AS UNSIGNED)", "ASC");
-                break;
-                
             case "alue_location":
+            case "alue_taloudet":
+            case "event_count":
                 $query = $this->db->order_by($sort_by, $sort_order);
                 $query = $this->db->order_by("SUBSTR(alue_code FROM 1 FOR 1)", "ASC");
                 $query = $this->db->order_by("CAST(SUBSTR(alue_code FROM 2) AS UNSIGNED)", "ASC");

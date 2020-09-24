@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Henkilötiedot - ylläpito</title>
+  <title>Palvelusryhmät - ylläpito</title>
   <link rel="stylesheet" type="text/css" href="<?php echo base_url("assets/css/navbar.css"); ?>">
-  <link rel="stylesheet" type="text/css" href="<?php echo base_url("assets/css/person.css"); ?>">
+  <link rel="stylesheet" type="text/css" href="<?php echo base_url("assets/css/group.css"); ?>">
   
   <script src="<?php echo base_url("assets/javascript/territoriesToPDF.js"); ?>"></script> 
 
@@ -32,7 +32,7 @@
     <?php $this->load->view('common/navbar.php')?>
 
     <!-- Asetetaan sivun pääotsikko -->
-    <h1>Henkilötiedot - Ylläpito</h1>
+    <h1>Palvelusryhmät - Ylläpito</h1>
 
     <div id="filterArea" class="filterArea">
       <table id="selectortable">
@@ -46,22 +46,22 @@
           <td>
  		    <input type="search" id="filterString" class="light-table-filter" data-table="order-table" placeholder="Filter">
 
-	  		<?php $display_baseurl = base_url("index.php/Person_controller/display") . "/" . $sort_by . "/" . $sort_order; ?>
+	  		<?php $display_baseurl = base_url("index.php/Group_controller/display") . "/" . $sort_by . "/" . $sort_order; ?>
       		<input type="hidden" id="displayBaseUrl" value="<?php echo $display_baseurl; ?>" />
 
-	  		<?php $form_action_baseurl = base_url("index.php/Person_controller/check_update"); ?>
+	  		<?php $form_action_baseurl = base_url("index.php/Group_controller/check_update"); ?>
       		<input type="hidden" id="formBaseUrl" value="<?php echo $form_action_baseurl; ?>" />
 
 	        <input type="hidden" id="filter_param" value="<?php echo $filter; ?>"/>
-	        <input type="hidden" id="base_update_url" value="<?php echo base_url("index.php/Person_controller/update"); ?>" />
-	        <input type="hidden" id="base_delete_url" value="<?php echo base_url("index.php/Person_controller/delete"); ?>" />
+	        <input type="hidden" id="base_update_url" value="<?php echo base_url("index.php/Group_controller/update"); ?>" />
+	        <input type="hidden" id="base_delete_url" value="<?php echo base_url("index.php/Group_controller/delete"); ?>" />
           </td>
           <td>
           </td>
           <td>
           </td>
           <td>
-            <a href="<?php echo base_url("index.php/Person_controller/display"); ?>" target="_parent" class="btn-clear"><button>CLR</button></a>
+            <a href="<?php echo base_url("index.php/Group_controller/display"); ?>" target="_parent" class="btn-clear"><button>CLR</button></a>
           </td>
   		</tr>
       </table>
@@ -69,11 +69,11 @@
 
     <div id="content">
       <?php 
-        $form_open_parameter = "Person_controller/check_update"; 
+        $form_open_parameter = "Group_controller/check_update"; 
         if (!empty($filter)) {
             $form_open_parameter .= "/" . $filter;
         }
-        $attributes = ['id' => 'person_update_form'];
+        $attributes = ['id' => 'group_update_form'];
         echo form_open($form_open_parameter,$attributes); 
       ?>
         <div class="tableWrap">
@@ -82,7 +82,7 @@
               <tr>
                   <?php foreach ($display_fields as $field_name => $field_display) { ?>
                       <th <?php if ($sort_by == $field_name) echo "class=\"sort_" . $sort_order . "\"" ?>><span>
-                          <?php $hdrurl = base_url("index.php/Person_controller/display") . "/" . $field_name . "/" .
+                          <?php $hdrurl = base_url("index.php/Group_controller/display") . "/" . $field_name . "/" .
                               (($sort_order == 'asc' && $sort_by == $field_name) ? 'desc' : 'asc'); ?>
                           <?php $field_name_old = $field_display ."old" ?>
                           <input type="hidden" id="<?php echo $field_name_old; ?>" value="<?php echo $hdrurl; ?>" />
@@ -94,8 +94,8 @@
               </tr>
             </thead>
             <tbody>
-              <?php $rowidx = 0; $personid = 0; ?>
-              <?php foreach ($persons as $person) { ?>
+              <?php $rowidx = 0; $groupid = 0; ?>
+              <?php foreach ($groups as $group) { ?>
                   <tr>
                       <?php $rowidx++; ?>
                        <?php foreach ($display_fields as $field_name => $field_display) {
@@ -108,120 +108,45 @@
                            $field_name_old = $field_name . "_old";
                            
                            switch ($field_name) {
-                               case "person_id": ?>
+                               case "group_id": ?>
                                    <td id="<?php echo $field_id_data; ?>">
                                    <?php
                                    $attributes = [
                                    'class' => $field_name
                                    ];
-                                   echo form_label($person->$field_name, $field_id_data, $attributes);
+                                   echo form_label($group->$field_name, $field_id_data, $attributes);
                                    
                                    $data_hidden = [
                                        'type'  => 'hidden',
                                        'id'    => $field_input_name_old_data,
                                        'name'  => $field_name_old_data,
-                                       'value' =>  $person->$field_name,
+                                       'value' =>  $group->$field_name,
                                        'class' => $field_name_old
                                    ];
                                    echo form_input($data_hidden);
-                                   $personid = $person->$field_name;
+                                   $groupid = $group->$field_name;
                                    ?>
                                    </td>
                                    <?php
                                    break;
                                    
-                               case "group": ?>
+                               case "person_count": ?>
                                    <td id="<?php echo $field_id_data; ?>"> 
                                    <?php
-                                   //Muodosta ryhmätunnus ja piilota se
-                                   preg_match("|\d+|", $person->$field_name, $matches);
-                                   $field_id_data2 = "group_id" . $rowidx;
-                                   $field_name_data2 = "group_id[]";
-                                   $field_name_old_data2 = "group_id_old[]";
-                                   
-                                   $field_input_name_data2 = "input_group_id" . $rowidx;
-                                   $field_input_name_old_data2 = "input_old_group_id" . $rowidx;
-                                   $field_name2 =  "group_id";
-                                   $field_name_old2 =  "group_id_old";
-                                   
-                                   $data2 = [
-                                       'type'  => 'hidden',
-                                       'id'    => $field_input_name_data2,
-                                       'name'  => $field_name_data2,
-                                       'value' =>  $matches[0],
-                                       'class' => $field_name2
-                                   ];
-                                   echo form_input($data2);
-                                   
-                                   $data_hidden2 = [
-                                       'type'  => 'hidden',
-                                       'id'    => $field_input_name_old_data2,
-                                       'name'  => $field_name_old_data2,
-                                       'value' =>  $matches[0],
-                                       'class' => $field_name_old2
-                                   ];
-                                   echo form_input($data_hidden2);
-                                   
-                                   $js = [
-                                       'id'       => $field_input_name_data,
-                                       'onChange' => "jsGroupChance(this, " . $field_input_name_data2 .", " . $personid . ")"
-                                   ];
-                                   echo form_dropdown($field_input_name_data, $groups, $person->$field_name, $js);
-                                   
-                                   
-                                   $data_hidden = [
-                                       'type'  => 'hidden',
-                                       'id'    => $field_input_name_old_data,
-                                       'name'  => $field_name_old_data,
-                                       'value' =>  $person->$field_name,
-                                       'class' => $field_name_old
-                                   ];
-                                   echo form_input($data_hidden);
+                                   if (empty($group->$field_name)) {
+                                       if (empty($group->group_events)) {
+                                           //Poisto vain, jos person_count tai group_events on tyhjä
+                                           $terr_url = base_url("index.php/Group_controller/delete") . "/" . $group->group_id . "/" . $filter; ?>
+    	             				       <a href="<?php echo $terr_url; ?>" onClick='jsFunction3("<?php echo $group->group_id; ?>")'>Poista</a>
+                                       <?php } else { 
+                                           $attributes = [
+                                               'class' => $field_name,
+                                               'disabled' => 'true'
+                                           ];
+                                           echo form_label("Poista", $field_id_data, $attributes);
+                                       } 
+                                   } 
                                    ?>
-                                   </td>
-                                   <?php
-                                   break;
-                                   
-                               case "person_leader": ?>
-                                   <td id="<?php echo $field_id_data; ?>">
-                                   <?php 
-                                   $data = [
-                                       'type'  => 'hidden',
-                                       'id'    => $field_input_name_data,
-                                       'name'  => $field_name_data,
-                                       'value' => $person->$field_name,
-                                       'class' => $field_name
-                                   ];
-                                   echo form_input($data);
-                           
-                                   $field_input_name_data2 = "input_overseer_id" . $rowidx;
-                                   $js = [
-                                       'id'       => $field_input_name_data2,
-                                       'onChange' => "jsOverseerChance(this, " . $field_input_name_data .", " . $personid. ")"
-                                   ];
-                                   
-                                   echo form_dropdown($field_input_name_data2, $overseers, $person->$field_name, $js);
-                                   
-                                   $data_hidden = [
-                                       'type'  => 'hidden',
-                                       'id'    => $field_input_name_old_data,
-                                       'name'  => $field_name_old_data,
-                                       'value' =>  $person->$field_name,
-                                       'class' => $field_name_old
-                                   ];
-                                   echo form_input($data_hidden);
-                                   ?> 
-                                   </td>
-                                   <?php
-                                   break;
-                                   
-                               case "event_count": ?>
-                                   <td id="<?php echo $field_id_data; ?>"> 
-                                   <?php
-                                   if (empty($person->$field_name)) {
-                                        $terr_url = base_url("index.php/Person_controller/delete") . "/" . $person->person_id . "/" . $filter; ?>
-    	             					<a href="<?php echo $terr_url; ?>" onClick='jsFunction3("<?php echo $person->person_id; ?>")'>Poista</a>
-                                   <?php } ?>
                                    </td>
                                    <?php
                                    break;
@@ -233,11 +158,11 @@
                                    'type'  => 'text',
                                    'id'    => $field_input_name_data,
                                    'name'  => $field_name_data,
-                                   'value' =>  $person->$field_name,
+                                   'value' =>  $group->$field_name,
                                    'class' => $field_name
                                    ];
                                    
-                                   $js = ['onChange' => 'jsFunction2(' . $field_input_name_data . ', ' . $personid . ');'];
+                                   $js = ['onChange' => 'jsFunction2(' . $field_input_name_data . ', ' . $groupid . ');'];
       
                                    echo form_input($data,' ',$js);
                                    
@@ -245,7 +170,7 @@
                                        'type'  => 'hidden',
                                        'id'    => $field_input_name_old_data,
                                        'name'  => $field_name_old_data,
-                                       'value' =>  $person->$field_name,
+                                       'value' =>  $group->$field_name,
                                        'class' => $field_name_old
                                    ];
                                    echo form_input($data_hidden);
@@ -256,7 +181,7 @@
                            } // switch
                       } //foreach display_fields ?>
                   </tr>
-               <?php } //foreach persons ?>
+               <?php } //foreach groups ?>
             </tbody>
           </table>
           <p>
@@ -374,7 +299,7 @@
         <tr>
           <td width="85%">
             <div id="totalcount">
-              <span>Löytyi: <span id="tableRowCount"> <?php echo $num_results; ?></span> henkilöä</span>
+              <span>Löytyi: <span id="tableRowCount"> <?php echo $num_results; ?></span> ryhmää</span>
             </div>
           </td>
           <td width="15%">
@@ -422,26 +347,17 @@ $('#filterString').keyup(function() {
   document.getElementById("tunnus").href = document.getElementById("tunnusold").value +
  	    "\\" + document.getElementById("filter_param").value;
 
-  document.getElementById("etunimi").href = document.getElementById("etunimiold").value +
+  document.getElementById("nimi").href = document.getElementById("nimiold").value +
         "\\" + document.getElementById("filter_param").value;
 
-  document.getElementById("sukunimi").href = document.getElementById("sukunimiold").value +
-        "\\" + document.getElementById("filter_param").value;
-
-  document.getElementById("ryhmä").href = document.getElementById("ryhmäold").value +
+  document.getElementById("tapahtumia").href = document.getElementById("tapahtumiaold").value +
  	    "\\" + document.getElementById("filter_param").value;
 
-  document.getElementById("ryhmänvalvoja").href = document.getElementById("ryhmänvalvojaold").value +
-   "\\" + document.getElementById("filter_param").value;
-
-  document.getElementById("näytetään").href = document.getElementById("näytetäänold").value +
-   "\\" + document.getElementById("filter_param").value;
-
   document.getElementById("poisto").href = document.getElementById("poistoold").value +
-  "\\" + document.getElementById("filter_param").value;
+        "\\" + document.getElementById("filter_param").value;
 
-  document.getElementById('person_update_form').action = document.getElementById("formBaseUrl").value +
-  "\\" + document.getElementById("filter_param").value;
+  document.getElementById('group_update_form').action = document.getElementById("formBaseUrl").value +
+        "\\" + document.getElementById("filter_param").value;
 });
 
 $(document).ready(function() {
@@ -484,7 +400,7 @@ function filter_table(searchText) {
 	  return rowCount;
 }
 
-function jsFunction2(fieldObject, personId) {
+function jsFunction2(fieldObject, groupId) {
 	var newValue = document.getElementById(fieldObject.id).value;
 	if (!newValue.length) { //Jos tyhjä, käytä arvoa '0'.
 		newValue = "0";
@@ -492,7 +408,7 @@ function jsFunction2(fieldObject, personId) {
 	var fieldName = document.getElementById(fieldObject.id).className;
 	
 	var newUrl = document.getElementById("base_update_url").value;
-	var newUrl = newUrl + "/" + personId + "/" + fieldName + "/" + newValue;
+	var newUrl = newUrl + "/" + groupId + "/" + fieldName + "/" + newValue;
 	var newUrl = newUrl + "/" + document.getElementById("filter_param").value;
 	//alert(newUrl);
 	//location.replace(newUrl);
@@ -502,32 +418,6 @@ function jsFunction3(alue_code) {
     var newUrl = document.getElementById("base_delete_url").value;
 	var newUrl = newUrl + "/" + alue_code + "/" + document.getElementById("filter_param").value;
 	document.getElementById(alue_code).href = newUrl;
-}
-
-function jsGroupChance(selectObject,fieldObject, personId) {
-	var selectedString = selectObject.value;
-	var selectedGroupId = selectedString.match(/\d+/g);
-	selectedGroupId = Number(selectedGroupId);
-	document.getElementById(fieldObject.id).value = selectedGroupId;
-	var fieldName = document.getElementById(fieldObject.id).className;
-
-	var newUrl = document.getElementById("base_update_url").value;
-	var newUrl = newUrl + "/" + personId + "/" + fieldName + "/" + selectedGroupId;
-	var newUrl = newUrl + "/" + document.getElementById("filter_param").value;
-	//alert(newUrl);
-	//location.replace(newUrl);
-}
-
-function jsOverseerChance(selectObject,fieldObject, personId) {
-	var selectedString = selectObject.value;
-	document.getElementById(fieldObject.id).value = selectedString;
-	var fieldName = document.getElementById(fieldObject.id).className;
-
-	var newUrl = document.getElementById("base_update_url").value;
-	var newUrl = newUrl + "/" + personId + "/" + fieldName + "/" + selectedString;
-	var newUrl = newUrl + "/" + document.getElementById("filter_param").value;
-	//alert(newUrl);
-	//location.replace(newUrl);
 }
 
 function jsFunction_update(me) {

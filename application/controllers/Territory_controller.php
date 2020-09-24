@@ -48,7 +48,12 @@ class Territory_controller extends CI_Controller
         $numargs = func_num_args();
         if ($numargs == 0) {
             $limit_date_sw = "0";
-        }
+            
+            //Poistetaan virheteksti näkyvistä
+            if(isset($_SESSION['error'])){
+                unset($_SESSION['error']);
+            }
+         }
         
         
         //State variables for territory_view
@@ -824,7 +829,7 @@ class Territory_controller extends CI_Controller
             }
             
             //Onko nimi kannassa?
-            $person_id = $this->Person_model->get_person_id($etunimi, $sukunimi);
+            $person_id = $this->Person_model->get_id_by_name($etunimi, $sukunimi);
             if ($person_id < 0) {
                 //Ei, lisätään
                 $insert_data = array(
@@ -837,14 +842,14 @@ class Territory_controller extends CI_Controller
                 
                 //Lisää uusi
                 $this->Person_model->insert($insert_data);
-                $person_id = $this->Person_model->get_person_id($etunimi, $sukunimi);
+                $person_id = $this->Person_model->get_id_by_name($etunimi, $sukunimi);
             } else {
                 //Tarkistetaan vielä, onko löytynyt lainaaja aktiivinen
                 $columns = array(
                     'person_group'
                 );
                 
-                $resultrow = $this->Person_model->get_person($columns, $person_id);
+                $resultrow = $this->Person_model->get_row_by_key($columns, $person_id);
                 if ($resultrow['person_group'] == 0) {
                     //Ellei ole, päivitetään aktiiviseksi
                     $data = array(
@@ -938,6 +943,10 @@ class Territory_controller extends CI_Controller
                 $undo_redo_stack = new UndoRedoStack();
                 $_SESSION['undo_redo_stack'] = serialize($undo_redo_stack);
 
+                //Poistetaan aikaisemmin näkynyt virheteksti
+                if(isset($_SESSION['error'])){
+                    unset($_SESSION['error']);
+                }
                 $this->territory_history($this->input->post('alue_code'));
                 break;
                 
@@ -961,6 +970,10 @@ class Territory_controller extends CI_Controller
                 break;
             
             default:
+                $msg = "Tunnistamaton toiminto";
+                $this->session->set_flashdata('error', $msg);
+                
+                $this->update($this->input->post('alue_code'), $this->session->userdata('filter'));
                 break;
         } // switch
          
@@ -1004,9 +1017,12 @@ class Territory_controller extends CI_Controller
                 $this->session->set_flashdata('error', 'Et voi merkitä korttia samana päivänä samalle henkilölle uudelleen');
                 return false;
         }
-        else {
-            return true;
+
+        //Poistetaan aikaisemmin näkynyt virheteksti
+        if(isset($_SESSION['error'])){
+            unset($_SESSION['error']);
         }
+        return true;
     }
     
     public function territory_history($terr_nbr, $main_display="territory_view")
@@ -1053,6 +1069,7 @@ class Territory_controller extends CI_Controller
         
         switch ($action) {
             case "Poista":
+            case "Remove":
                 $event_data = $this->remove_event($terr_nbr);
                  //Tapahtuman tiedot muistiin
                 $undo_redo_stack->execute($event_data);
@@ -1084,6 +1101,7 @@ class Territory_controller extends CI_Controller
                 break;
  
             case "Paluu":
+            case "Return":
                 //Palataan päänäytölle siinä tilassa, kuin se oli ennen päivitystä
                 if ($main_display == "event_view") {
                     $code = $this->session->userdata('page_code');
@@ -1111,6 +1129,9 @@ class Territory_controller extends CI_Controller
                 break;
                 
             default:
+                $msg = "Tunnistamaton toiminto";
+                $this->session->set_flashdata('error', $msg);
+                
                 $this->territory_history($terr_nbr, $main_display);
                 break;
         } // switch

@@ -47,26 +47,32 @@ label{
 }
 
 
-input {
-  padding:3px 5px 3px 5px; 
-  margin-left: 0px;
-  border:none;
-  box-shadow:0 0 3px
-}
-
 #cardtable tr {
   height:30px;
 }
 
 input.submit_btn {
+  padding:3px 5px 3px 5px; 
+  margin-left: 0px;
+  border:none;
+  box-shadow:0 0 3px
   margin-top:20px;
   font-size:18px;
-  background:linear-gradient(#22abe9 5%,#36caf0 100%);
+  background:linear-gradient(#00cccc 5%,#36caf0 100%);
   border:1px solid #0F799E;
   color:#fff;
   font-weight:700;
   cursor:pointer;
   text-shadow:0 1px 0 #13506D
+}
+
+input.submit_undo {
+  margin-top:20px;
+  margin-left: 0px;
+  border:1px solid #0F799E;
+  max-width: 40px;
+  max-height: 46px;
+  cursor:pointer;
 }
 
 input.submit_btn:hover {
@@ -75,23 +81,12 @@ input.submit_btn:hover {
 
 input.submit_btn_disabled {
   margin-top:20px;
-  font-size:18px;
+  margin-left: 0px;
+  border:1px solid #9ea0a0;
+  max-width: 40px;
+  max-height: 46px;
 }
 
-button#submit{
-  margin-top:20px;
-  font-size:18px;
-  background:linear-gradient(#22abe9 5%,#36caf0 100%);
-  border:1px solid #0F799E;
-  color:#fff;
-  font-weight:700;
-  cursor:pointer;
-  text-shadow:0 1px 0 #13506D
-}
-
-button#submit:hover{
-  background:linear-gradient(#36caf0 5%,#22abe9 100%)
-}
 
 #cardbuttons tr td:nth-child(3) {
   text-align: right;
@@ -105,8 +100,3 @@ button#submit:hover{
   border-collapse: collapse;
 }
 
-.submit_undo{
-    height: 22px;  
-    width: 18px;
-	text-align: right;
-}

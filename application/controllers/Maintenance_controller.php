@@ -26,18 +26,32 @@ class Maintenance_controller extends CI_Controller
         );
         $this->session->set_userdata($territory_view_state_data);
         
+        //Hakuparametrit näytölle
         $data['display_fields'] = array(
             'alue_code'		=> 'numero',
             'alue_detail'	=> 'alue_nimi',
             'alue_location'	=> 'lisätieto',
-            'alue_taloudet'	=> 'koko'
+            'alue_taloudet'	=> 'koko',
+            'event_count'	=> 'poisto'
         );
+        
+        //Hakuparametrit kantaan
+        $data['database_fields'] = array(
+            'alue_code'		=> 'numero',
+            'alue_detail'	=> 'alue_nimi',
+            'alue_location'	=> 'lisätieto',
+            'alue_taloudet'	=> 'koko',
+            'event_count'	=> 'määrä'
+        );
+        
         //Korjaa ääkköset takaisin
         $filter = urldecode($filter);
         
-        $results = $this->Maintenance_model->search($data['display_fields'], $sort_by, $sort_order, $code_sel);
-
-        $data['alueet'] = $results['rows'];
+        //Hae tiedot
+        $results = $this->Maintenance_model->search($data['database_fields'], $sort_by, $sort_order, $code_sel);
+        //Tiedot näytölle sopiviksi
+        $data['alueet'] = $this->create_displayrows($results);
+        
         $data['num_results'] = $results['num_rows'];
         
         //Parameters back to view page
@@ -56,6 +70,11 @@ class Maintenance_controller extends CI_Controller
         if ($numargs == 0) {
             /** Initialize **/
             $undo_redo_stack = new UndoRedoStack();
+            
+            //Poistetaan virheteksti näkyvistä
+            if(isset($_SESSION['error'])){
+                unset($_SESSION['error']);
+            }
         } else {
             //Muuten
             if (!isset($_SESSION['undo_redo_terr_edit'])) {
@@ -74,6 +93,31 @@ class Maintenance_controller extends CI_Controller
         $_SESSION['undo_redo_terr_edit'] = serialize($undo_redo_stack);
         
         $this->load->view('maintenance_view', $data);
+    }
+    
+    private function create_displayrows($results)
+    {
+        $r = array();
+        foreach ($results['rows'] as $fetched_row) {
+            
+            $resultrow = new stdClass;
+            foreach ($fetched_row as $key=>$value) {
+                switch ($key) {
+                    case "alue_code":
+                    case "alue_detail":
+                    case "alue_location":
+                    case "alue_taloudet":
+                    case "event_count":
+                        $resultrow->$key = $value;
+                        break;
+                        
+                    default:
+                        break;
+                } // switch
+            } // foreach results row
+            $r[] = $resultrow;
+        }
+        return $r;
     }
     
     public function update_rows()
@@ -166,20 +210,37 @@ class Maintenance_controller extends CI_Controller
         $this->load->view('terr_insert', $data);
     }
     
-    public function check_update($terr_code_group = 'A')
+    public function check_update($terr_code_group = 'A', $filter = '')
     {
         //Jos aluekoodivalitsin hakee kaikki alueet, haetaan ryhmä 'A'
         if ($terr_code_group == '0') {
             $terr_code_group = 'A';
         }
                 
+        //State variables of person_view
+        $territory_view_state_data = array(
+            'filter'          => $filter
+        );
+        $this->session->set_userdata($territory_view_state_data);
+        
+//         echo "Terr update: post [";
+//         print_r($this->input->post()); // to see if the post data is coming just for debugging purpose 
+//         echo "]"; 
+        //echo " Terr group [" . $this->uri->segment(3) . "]";
+        //echo " Filter [" . $this->uri->segment(4) . "]";
+        
+        echo " max_input_vars = ";
+        echo ini_get('max_input_vars'); //Tällä voit tarkistaa, mikä on max_input_vars
+        
         $action = $this->input->post('action');
         switch ($action) {
             case "Päivitä":
+            case "Update":
                 $this->update_rows();
                 break;
                 
             case "Lisää":
+            case "Add":
                 $this->insert($terr_code_group);
                 break;
                 
@@ -192,6 +253,14 @@ class Maintenance_controller extends CI_Controller
                 break;
                 
             default:
+                $msg = "Tunnistamaton toiminto";
+                $this->session->set_flashdata('error', $msg);
+                
+                //Palataan päänäytölle siinä tilassa, kuin se oli ennen päivitystä
+                $this->display($this->session->userdata('sort_by'),
+                    $this->session->userdata('sort_order'),
+                    $this->session->userdata('code_sel'),
+                    $this->session->userdata('filter'));
                 break;
         } // switch
         
@@ -231,6 +300,10 @@ class Maintenance_controller extends CI_Controller
                 break;
                 
             default:
+                $msg = "Tunnistamaton toiminto";
+                $this->session->set_flashdata('error', $msg);
+                
+                $this->insert($this->session->userdata('code_sel'));
                 break;
         } // switch
         
@@ -254,6 +327,10 @@ class Maintenance_controller extends CI_Controller
             return false;
         }
             
+        //Poistetaan aikaisemmin näkynyt virheteksti
+        if(isset($_SESSION['error'])){
+            unset($_SESSION['error']);
+        }
         return true;
     }
     

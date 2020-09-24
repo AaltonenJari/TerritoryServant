@@ -28,6 +28,11 @@ class Settings_controller extends CI_Controller
         
         $data['event_save_switch'] = $results['event_save_switch'];
         
+        //Poistetaan virheteksti näkyvistä
+        if(isset($_SESSION['error'])){
+            unset($_SESSION['error']);
+        }
+        
         $this->load->view('settings_view', $data);
     }
        

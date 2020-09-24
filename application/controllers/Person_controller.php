@@ -10,6 +10,7 @@ class Person_controller extends CI_Controller
         // Load the maintenance model to make it available
         // to *all* of the controller's actions
         $this->load->model('Person_model');
+        $this->load->model('Group_model');
         $this->load->model('UndoRedoStack');
     }
     
@@ -51,8 +52,8 @@ class Person_controller extends CI_Controller
         
         //Hae tiedot
         $results = $this->Person_model->search($data['database_fields'], $sort_by, $sort_order);
-        //Tiedot näytölle sooiviksi
-        $data['persons'] = $this->create_person_displayrows($results);
+        //Tiedot näytölle sopiviksi
+        $data['persons'] = $this->create_displayrows($results);
         
         $data['num_results'] = $results['num_rows'];
         
@@ -66,7 +67,7 @@ class Person_controller extends CI_Controller
             'group_id'		=> 'tunnus',
             'group_name'	=> 'Ryhmän nimi'
         );
-        $group_results = $this->Person_model->search_group($group_fields, 'group_id', 'ASC');
+        $group_results = $this->Group_model->search($group_fields, 'group_id', 'ASC');
         
         //Muokkaa haetut tiedot näytölle sopiviksi
         $data['groups'] = $this->create_group_rows($group_results);
@@ -84,6 +85,11 @@ class Person_controller extends CI_Controller
         if ($numargs == 0) {
             /** Initialize **/
             $undo_redo_stack = new UndoRedoStack();
+            
+            //Poistetaan virheteksti näkyvistä
+            if(isset($_SESSION['error'])){
+                unset($_SESSION['error']);
+            }
         } else {
             //Muuten
             if (!isset($_SESSION['undo_redo_person_edit'])) {
@@ -104,7 +110,7 @@ class Person_controller extends CI_Controller
         $this->load->view('person_view', $data);
     }
  
-    public function create_person_displayrows($results)
+    private function create_displayrows($results)
     {
         $r = array();
         foreach ($results['rows'] as $fetched_row) {
@@ -115,6 +121,9 @@ class Person_controller extends CI_Controller
                     case "person_id":
                     case "person_name":
                     case "person_lastname":
+                    case "person_leader":
+                    case "person_show":
+                    case "event_count":
                         $resultrow->$key = $value;
                         break;
                         
@@ -123,28 +132,16 @@ class Person_controller extends CI_Controller
                         $resultrow->group = $fetched_row->person_group . $delim . $value;
                         break;
                         
-                    case "person_leader":
-                        $resultrow->$key = $value;
-                        break;
-                        
-                    case "person_show":
-                        $resultrow->$key = $value;
-                        break;
-                        
-                    case "event_count":
-                        $resultrow->$key = $value;
-                        break;
-                    
-                    default:
+                     default:
                         break;
                 } // switch
-            } // foreach aluerivi
+            } // foreach results row
             $r[] = $resultrow;
         }
         return $r;
     }
     
-    public function create_group_rows($results)
+    private function create_group_rows($results)
     {
         $options = array();
         $options['inactive'] = '0 = Ei aktiivinen'; //Mahdollisuus lisätä uusi nimi
@@ -206,6 +203,11 @@ class Person_controller extends CI_Controller
                         //Jos ei-aktiivinen tai ei ryhmää, ei voi olla ryhmänvalvoja.
                         $field_person_leaders[$i] = '0';
                     }
+                    
+                    if ($field_person_shows[$i] != '0') {
+                        //Kenttä 'show' voi olla joko 0 tai 1
+                        $field_person_shows[$i] = '1';
+                    }
                     $update_data = array(
                         'person_name'		=> $field_person_names[$i],
                         'person_lastname'	=> $field_person_lastnames[$i],
@@ -263,7 +265,7 @@ class Person_controller extends CI_Controller
             'person_leader',
             'person_show'
         );
-        $resultrow = $this->Person_model->get_person($columns, $person_id);
+        $resultrow = $this->Person_model->get_row_by_key($columns, $person_id);
         
         $update_data = array();
         
@@ -368,11 +370,31 @@ class Person_controller extends CI_Controller
          $data = array(
             'person_name'		=> '',
             'person_lastname'	=> '',
-            'person_group'	=> '5',
+            'person_group'	=> '5 = Ei Ryhmää',
             'person_leader'	=> '0',
             'person_show'	=> '1'
         );
         
+         //Hae ryhmien nimet
+         $group_fields = array(
+             'group_id'		=> 'tunnus',
+             'group_name'	=> 'Ryhmän nimi'
+         );
+         $group_results = $this->Group_model->search($group_fields, 'group_id', 'ASC');
+         
+         //Muokkaa haetut tiedot näytölle sopiviksi
+         $data['groups'] = $this->create_group_rows($group_results);
+         $data['person_group_string'] = '5 = Ei Ryhmää';
+         
+         
+         $overseers = array(
+             '0'		=> ' ',
+             '1'		=> 'ryhmänvalvoja',
+             '2'	    => 'ryhmänvalvojan apulainen'
+         );
+         $data['overseers'] = $overseers;
+         $data['overseers_string'] = ' ';
+         
         $this->load->view('person_insert', $data);
     }
     
@@ -383,14 +405,22 @@ class Person_controller extends CI_Controller
             'filter'          => $filter
         );
         $this->session->set_userdata($person_view_state_data);
+
+        //echo "Person: post [";
+        //print_r($this->input->post()); // to see if the post data is coming just for debugging purpose
+       // echo "]"; 
+        //echo "] Filter [" . $this->uri->segment(3) . "]";
+        //echo "] Filter [" . $filter . "]";
         
         $action = $this->input->post('action');
         switch ($action) {
             case "Päivitä":
+            case "Update":
                 $this->update_rows();
                 break;
                 
             case "Lisää":
+            case "Add":
                 $this->insert();
                 break;
                 
@@ -403,6 +433,13 @@ class Person_controller extends CI_Controller
                 break;
                 
             default:
+                $msg = "Tunnistamaton toiminto";
+                $this->session->set_flashdata('error', $msg);
+                
+                //Palataan päänäytölle siinä tilassa, kuin se oli ennen päivitystä
+                $this->display($this->session->userdata('sort_by'),
+                $this->session->userdata('sort_order'),
+                $this->session->userdata('filter'));
                 break;
         } // switch
         
@@ -441,6 +478,10 @@ class Person_controller extends CI_Controller
                 break;
                 
             default:
+                $msg = "Tunnistamaton toiminto";
+                $this->session->set_flashdata('error', $msg);
+                
+                $this->insert();
                 break;
         } // switch
         
@@ -453,7 +494,7 @@ class Person_controller extends CI_Controller
             return false;
         }
         //Tarkista, onko henkilön tiedot jo kannassa
-        $found = $this->Person_model->get_person_id($this->input->post('person_name'), $this->input->post('person_lastname'));
+        $found = $this->Person_model->get_id_by_name($this->input->post('person_name'), $this->input->post('person_lastname'));
         if ($found >= 0)  {
             if ($this->session->userdata('name_presentation') == "0") {
                 //0 = firstname lsatname, 1 = lastmame, firstname; (default)
@@ -469,6 +510,10 @@ class Person_controller extends CI_Controller
             return false;
         }
         
+        //Poistetaan aikaisemmin näkynyt virheteksti
+        if(isset($_SESSION['error'])){
+            unset($_SESSION['error']);
+        }
         return true;
     }
     
@@ -477,19 +522,25 @@ class Person_controller extends CI_Controller
         /** UNSERIALIZE **/
         $undo_redo_stack = unserialize($_SESSION['undo_redo_person_edit']);
         
+        $person_show = $this->input->post('person_show');
+        if ($person_show != '0') {
+            //Kenttä 'show' voi olla joko 0 tai 1
+            $person_show = '1';
+        }
+        
         $insert_data = array(
             'person_name'		=> $this->input->post('person_name'),
             'person_lastname'	=> $this->input->post('person_lastname'),
-            'person_group'	=> '5',
-            'person_leader'	=> '0',
-            'person_show'	=> '1'
+            'person_group'	    => $this->input->post('person_group'),
+            'person_leader'	    => $this->input->post('person_leader'),
+            'person_show'	    => $person_show
         );
         
         //Lisää uusi
         $this->Person_model->insert($insert_data);
         
         //Tiedot undo/redo -toimintoa varten
-        $person_id = $this->Person_model->get_person_id($this->input->post('person_name'), $this->input->post('person_lastname'));
+        $person_id = $this->Person_model->get_id_by_name($this->input->post('person_name'), $this->input->post('person_lastname'));
         
         $edit_info = array(
             'operation'	=> 'add',
@@ -586,7 +637,7 @@ class Person_controller extends CI_Controller
   
                 case "add":
                     //Poista lisätty rivi
-                    $person_id = $this->Person_model->get_person_id($edit_info_data['data_new']['person_name'], $edit_info_data['data_new']['person_lastname']);
+                    $person_id = $this->Person_model->get_id_by_name($edit_info_data['data_new']['person_name'], $edit_info_data['data_new']['person_lastname']);
                     $this->Person_model->delete($person_id);
                     break;
                     
@@ -652,7 +703,7 @@ class Person_controller extends CI_Controller
                     break;
                     
                 case "delete":
-                    $person_id = $this->Person_model->get_person_id($edit_info_data['data_old']['person_name'], $edit_info_data['data_old']['person_lastname']);
+                    $person_id = $this->Person_model->get_id_by_name($edit_info_data['data_old']['person_name'], $edit_info_data['data_old']['person_lastname']);
                     $this->Person_model->delete($person_id);
                     break;
                     

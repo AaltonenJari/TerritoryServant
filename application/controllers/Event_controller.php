@@ -32,6 +32,11 @@ class Event_controller extends CI_Controller
 	    );
 	    $this->session->set_userdata($event_view_state_data);
 	    
+	    //Poistetaan virheteksti näkyvistä
+	    if(isset($_SESSION['error'])){
+	        unset($_SESSION['error']);
+	    }
+	    
 	    //Hae sivun tiedot
 	    $page_data = $this->get_event_page($code, $offset, $limit,
 	        $this->session->userdata('archive_time'),

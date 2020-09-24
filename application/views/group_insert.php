@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Alueen tietojen lisäys</title>
+  <title>Henkilötietojen lisäys</title>
   <link rel="stylesheet" type="text/css" href="<?php echo base_url("assets/css/terr_mark.css"); ?>">
   <!--link jquery ui css-->
   <link type="text/css" rel="stylesheet" href="<?php echo base_url('assets/jquery-ui-1.12.1/jquery-ui.css'); ?>" />
@@ -17,46 +17,27 @@
 <body>
 
   <div id="container">
-    <?php echo form_open('maintenance_controller/check_insert'); ?>
+    <?php echo form_open('Group_controller/check_insert'); ?>
     
-    <h1>Lisää alue</h1>
+    <h1>Lisää palvelusryhmä</h1>
     
     <table id="cardtable">
       <tr>
         <td>
-          <?php echo form_label('Aluenumero: '); ?>
+          <?php echo form_label('Ryhmän nimi: '); ?>
         </td>
         <td>
-          <?php echo form_input(array('id'=>'alue_code',
-              'name'=>'alue_code','value'=> $alue_code)); ?>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <?php echo form_label('Alueen nimi: '); ?>
-        </td>
-        <td>
-          <?php echo form_input(array('id'=>'alue_detail',
-              'name'=>'alue_detail','value'=> $alue_detail)); ?>
+          <?php echo form_input(array('id'=>'group_name',
+              'name'=>'group_name','value'=> $group_name)); ?>
         </td>
       </tr>
       <tr>
         <td>
-          <?php echo form_label('Alueen lisätieto: '); ?>
+          <?php echo form_label('Tapahtumia: '); ?>
         </td>
         <td>
-          <?php echo form_input(array('id'=>'alue_location',
-              'name'=>'alue_location','value'=> $alue_location)); ?>
-        </td>
-      </tr>
-
-      <tr>
-        <td>
-          <?php echo form_label('Alueen koko: '); ?>
-        </td>
-        <td>
-          <?php echo form_input(array('id'=>'alue_taloudet',
-              'name'=>'alue_taloudet','value'=> $alue_taloudet)); ?>
+          <?php echo form_input(array('id'=>'group_events',
+              'name'=>'group_events','value'=> $group_events)); ?>
         </td>
       </tr>
     </table>
@@ -72,11 +53,11 @@
           <?php echo form_submit(array('id' => 'submit', 'class'=> 'submit_btn', 'name' => 'action', 'value' => 'Paluu')); ?>
         </td>
       </tr>
-      <tr>
-        <td colspan="3">
-          <?php echo $this->session->flashdata("error");	?>
-        </td>
-      </tr>
+             <tr>
+               <td colspan="4">
+                 <?php echo $this->session->flashdata("error");	?>
+               </td>
+             </tr>
     </table>
     
     <?php echo form_close(); ?>

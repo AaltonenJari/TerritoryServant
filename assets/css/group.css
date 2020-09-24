@@ -104,21 +104,22 @@ h2 {
 }
 
 /* Select the first column */
-.alue_code {
+.group_id {
   text-align: center;
 }
 
-.alue_detail, .alue_location, .alue_taloudet {
+.group_name, .group_events  {
   padding-left: 6px;
 }
 
-#table2 tr th:nth-child(1), #table2 tr th:nth-child(5) {
+#table2 tr th:nth-child(1), #table2 tr th:nth-child(4) {
   text-align: center;
 }
 
-#table2 tr td:nth-child(1), #table2 tr td:nth-child(5) {
+#table2 tr td:nth-child(1), #table2 tr td:nth-child(4) {
   text-align: center;
 }
+
 
 #table2 tr:hover {
   background: #e6f7ff !important;

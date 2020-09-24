@@ -52,17 +52,12 @@ class Person_model extends CI_Model
             
             case "person_leader":
             case "person_show":
-                $query = $this->db->order_by($sort_by, $sort_order);
-                $query = $this->db->order_by("person_lastname", "ASC");
-                $query = $this->db->order_by("person_name", "ASC");
-                break;
-                
             case "event_count":
                 $query = $this->db->order_by($sort_by, $sort_order);
                 $query = $this->db->order_by("person_lastname", "ASC");
                 $query = $this->db->order_by("person_name", "ASC");
                 break;
-            
+                
             default:
                 $query = $this->db->order_by("person_lastname", $sort_order);
                 $query = $this->db->order_by("person_name", $sort_order);
@@ -78,7 +73,7 @@ class Person_model extends CI_Model
         return $ret;
     }
     
-    function get_person_id($first_name, $last_name)
+    function get_id_by_name($first_name, $last_name)
     {
         $name_id = -1;
         // Results query
@@ -97,17 +92,6 @@ class Person_model extends CI_Model
         return $name_id;
     }
     
-    function get_person($columns, $person_id)
-    {
-        // Results query
-        $query = $this->db->select($columns)
-        ->from('person');
-        $this->db->where('person_id', $person_id);
-        
-        $result_array = $this->db->get()->result_array();
-        return $result_array[0];
-    }
-    
     public function row_exists($key_id) 
     {
         $query = $this->db->select('COUNT(*) as count', FALSE)
@@ -124,11 +108,9 @@ class Person_model extends CI_Model
         // Results query
         $query = $this->db->select($columns)
         ->from('person');
-        
         $this->db->where('person_id', $key_id);
         
         $reault_array = $this->db->get()->result_array();
-        
         return $reault_array[0];
     }
     
@@ -149,48 +131,5 @@ class Person_model extends CI_Model
         $this->db->set($data);
         $this->db->where("person_id", $key);
         $this->db->update("person", $data);
-    }
-    
-    public function search_group($fields, $sort_by, $sort_order) 
-    {
-        $sort_order = ($sort_order == 'desc') ? 'desc' : 'asc';
-        
-        $sort_columns = array();
-        foreach ($fields as $field_name => $field_display) {
-            $sort_columns[] = $field_name;
-        }
-        $sort_by = (in_array($sort_by, $sort_columns)) ? $sort_by : 'group_id';
-        
-        $fetch_columns = array();
-        foreach ($fields as $field_name => $field_display) {
-            $fetch_columns[] = $field_name;
-        }
-        
-        // Results query
-        $query = $this->db->select($fetch_columns)
-        ->from('alue_group');
-        
-        //Järjestys
-        switch ($sort_by) {
-            case "group_id":
-                $query = $this->db->order_by($sort_by, $sort_order);
-                break;
-                
-            case "group_name":
-                $query = $this->db->order_by($sort_by, $sort_order);
-                break;
-                
-            default:
-                $query = $this->db->order_by("group_id", $sort_order);
-                break;
-        } // switch
-        
-        
-        $ret['rows'] = $query->get()->result();
-        
-        //count cuery
-        $ret['num_rows'] = count($ret['rows']);
-        
-        return $ret;
     }
 }

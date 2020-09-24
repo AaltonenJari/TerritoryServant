@@ -20,9 +20,9 @@
           'event_date_order' => "DESC",
           'archive_time' => "12",
           'name_presentation'  => '1',  //0 = firstname lsatname, 1 = lastmame, firstname; (default)
-          'bt_switch' => '0',  //0 = ei näytetä (default), 1 = näytetään 
-          'circuit_week_start' => "30.6.2020",
-          'circuit_week_end' => "5.7.2020",
+          'bt_switch' => '0',  //Liikealueet: 0 = ei näytetä (default), 1 = näytetään 
+          'circuit_week_start' => "8.12.2020",
+          'circuit_week_end' => "13.12.2020",
           'limit_date_sw' => "0",
           'event_save_switch' => "0"
       );
@@ -103,6 +103,7 @@
             <div class="nav-sub">
               <ul>
                 <li><a href="<?php echo base_url("index.php/Person_controller/display"); ?>">Henkilötiedot</a></li>
+                <li><a href="<?php echo base_url("index.php/Group_controller/display"); ?>">Ryhmät</a></li>
               </ul>
             </div>
           </div>

@@ -28,6 +28,9 @@ function createPDF()
 	
 	style = style + "a { text-decoration: none !important; color: black; }";
 	
+    /* Piilota toimintonäppäimet */	
+	style = style + "#cardbuttons { display: none !important; }";
+	
 	style = style + "</style>";
 
 	var totalCount = document.getElementById('totalcount').innerHTML;
