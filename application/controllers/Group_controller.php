@@ -16,6 +16,17 @@ class Group_controller extends CI_Controller
     public function display($sort_by = 'group_id', $sort_order = 'asc', $filter = '') 
     {
         //State variables for group_view
+        if (($sort_by != $this->session->userdata('sort_by')) ||
+            ($sort_order != $this->session->userdata('sort_order')) ||
+            ($filter != $this->session->userdata('filter'))) {
+                
+                //Jos jokin tilamuuttuja muuttuu, poistetaan virheteksti näkyvistä
+                if(isset($_SESSION['error'])){
+                    unset($_SESSION['error']);
+                }
+            }
+            
+        //Tallenna näytön uusi tila
         $group_view_state_data = array(
             'sort_by'         => $sort_by,
             'sort_order'      => $sort_order,
@@ -259,10 +270,6 @@ class Group_controller extends CI_Controller
         );
         $this->session->set_userdata($group_view_state_data);
 
-        //echo "Group post [";
-        //print_r($this->input->post()); // to see if the post data is coming just for debugging purpose
-        //echo "] Filter [" . $this->uri->segment(3) . "]";
-        
         $action = $this->input->post('action');
         switch ($action) {
             case "Päivitä":
@@ -284,7 +291,12 @@ class Group_controller extends CI_Controller
                 break;
                 
             default:
-                $msg = "Tunnistamaton toiminto";
+                $msg = "Tunnistamaton toiminto.";
+                $num_vars = count( explode( '###', http_build_query($_POST, '', '###') ) );
+                $max_num_vars = ini_get('max_input_vars');
+                if ($num_vars > $max_num_vars) {
+                    $msg .= " Input-parametreja on enemmän kuin " . $max_num_vars;
+                }
                 $this->session->set_flashdata('error', $msg);
                 
                 //Palataan päänäytölle siinä tilassa, kuin se oli ennen päivitystä
@@ -330,7 +342,13 @@ class Group_controller extends CI_Controller
                 break;
                 
             default:
-                $msg = "Tunnistamaton toiminto";
+                $msg = "Tunnistamaton toiminto.";
+                $num_vars = count( explode( '###', http_build_query($_POST, '', '###') ) );
+                $max_num_vars = ini_get('max_input_vars');
+                if ($num_vars > $max_num_vars) {
+                    $msg .= " Input-parametreja on enemmän kuin " . $max_num_vars;
+                }
+                
                 $this->session->set_flashdata('error', $msg);
                 
                 $this->insert();

@@ -103,8 +103,8 @@
                            $field_name_data = $field_name . "[]";
                            $field_name_old_data = $field_name . "_old" . "[]";
                            
-                           $field_input_name_data = "input_". $field_name . $rowidx;
-                           $field_input_name_old_data = "input_old_". $field_name . $rowidx;
+                           $field_input_name_id = "input_". $field_name . $rowidx;
+                           $field_input_name_old_id = "input_old_". $field_name . $rowidx;
                            $field_name_old = $field_name . "_old";
                            
                            switch ($field_name) {
@@ -118,7 +118,7 @@
                                    
                                    $data_hidden = [
                                        'type'  => 'hidden',
-                                       'id'    => $field_input_name_old_data,
+                                       'id'    => $field_input_name_old_id,
                                        'name'  => $field_name_old_data,
                                        'value' =>  $group->$field_name,
                                        'class' => $field_name_old
@@ -156,19 +156,19 @@
                                    <?php
                                    $data = [
                                    'type'  => 'text',
-                                   'id'    => $field_input_name_data,
+                                   'id'    => $field_input_name_id,
                                    'name'  => $field_name_data,
                                    'value' =>  $group->$field_name,
                                    'class' => $field_name
                                    ];
                                    
-                                   $js = ['onChange' => 'jsFunction2(' . $field_input_name_data . ', ' . $groupid . ');'];
+                                   $js = ['onChange' => 'jsFunction2(' . $field_input_name_id . ', ' . $groupid . ');'];
       
                                    echo form_input($data,' ',$js);
                                    
                                    $data_hidden = [
                                        'type'  => 'hidden',
-                                       'id'    => $field_input_name_old_data,
+                                       'id'    => $field_input_name_old_id,
                                        'name'  => $field_name_old_data,
                                        'value' =>  $group->$field_name,
                                        'class' => $field_name_old
@@ -235,7 +235,7 @@
                   'name'  => 'action_btn',
                   'value' => 'Undo',
                   'class' => 'submit_undo',
-                  'src' => base_url("assets/images/undo.jpg")
+                  'src' => base_url("assets/images/Undo.jpg")
               ];
               
               $js = ['onClick' => 'jsFunction_undo(this);'];

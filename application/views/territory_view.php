@@ -114,10 +114,10 @@
                		<?php $rowidx++; ?>
 	    			<?php foreach ($display_fields as $field_name => $field_display) { ?>
 	    				<?php $field_name_data = $field_display . $rowidx ?>
-   			    	    <?php $field_input_name_data = $field_display . "input". $rowidx ?>
+   			    	    <?php $field_input_name_id = $field_display . "input". $rowidx ?>
 	    				<?php if ($field_name == "lainassa") { ?>
      			    	  <td id="<?php echo $field_name_data; ?>">
-	    				    <input type="checkbox" name="<?php echo $field_input_name_data; ?>" value="Lainassa" disabled
+	    				    <input type="checkbox" name="<?php echo $field_input_name_id; ?>" value="Lainassa" disabled
 	    				      <?php if ($alue->$field_name == "1") { ?>checked<?php } ?>
 	    				    >
      			    	  </td>

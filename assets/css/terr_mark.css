@@ -68,7 +68,6 @@ input.submit_btn {
 
 input.submit_undo {
   margin-top:20px;
-  margin-left: 0px;
   border:1px solid #0F799E;
   max-width: 40px;
   max-height: 46px;
@@ -81,7 +80,6 @@ input.submit_btn:hover {
 
 input.submit_btn_disabled {
   margin-top:20px;
-  margin-left: 0px;
   border:1px solid #9ea0a0;
   max-width: 40px;
   max-height: 46px;

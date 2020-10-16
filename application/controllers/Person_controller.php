@@ -14,12 +14,24 @@ class Person_controller extends CI_Controller
         $this->load->model('UndoRedoStack');
     }
     
-    public function display($sort_by = 'person_lastname', $sort_order = 'asc', $filter = '') 
+    public function display($sort_by = 'person_lastname', $sort_order = 'asc', $group_limit_sel = '0', $filter = '') 
     {
         //State variables for person_view
+        if (($sort_by != $this->session->userdata('sort_by')) ||
+            ($sort_order != $this->session->userdata('sort_order')) ||
+            ($group_limit_sel != $this->session->userdata('group_limit_sel')) ||
+            ($filter != $this->session->userdata('filter'))) {
+            
+                //Jos jokin tilamuuttuja muuttuu, poistetaan virheteksti näkyvistä
+                if(isset($_SESSION['error'])){
+                    unset($_SESSION['error']);
+                }
+            }
+        //Tallenna näytön uusi tila
         $person_view_state_data = array(
             'sort_by'         => $sort_by,
             'sort_order'      => $sort_order,
+            'group_limit_sel' => $group_limit_sel,
             'filter'          => $filter
         );
         $this->session->set_userdata($person_view_state_data);
@@ -51,7 +63,7 @@ class Person_controller extends CI_Controller
         $filter = urldecode($filter);
         
         //Hae tiedot
-        $results = $this->Person_model->search($data['database_fields'], $sort_by, $sort_order);
+        $results = $this->Person_model->search($data['database_fields'], $sort_by, $sort_order, $group_limit_sel);
         //Tiedot näytölle sopiviksi
         $data['persons'] = $this->create_displayrows($results);
         
@@ -60,6 +72,7 @@ class Person_controller extends CI_Controller
         //Parameters back to view page
         $data['sort_by'] = $sort_by;
         $data['sort_order'] = $sort_order;
+        $data['group_limit_sel'] = $group_limit_sel;
         $data['filter'] = $filter;
         
         //Hae ryhmien nimet
@@ -72,6 +85,18 @@ class Person_controller extends CI_Controller
         //Muokkaa haetut tiedot näytölle sopiviksi
         $data['groups'] = $this->create_group_rows($group_results);
         
+        //Rajoitin valitsimen koodit
+        $group_limit_codes = array();
+        $group_limit_codes['Kaikki paitsi ei-aktiiviset'] = 'A'; //Kaikki paitsi ei-aktiiviset
+        $group_limit_codes['Kaikki jotka on ryhmissä'] = 'B'; //Kaikki paitsi ei-aktiiviset ja ne joilla ei ryhmää
+        $group_limit_codes['Ei-aktiiviset'] = 'X'; //ei-aktiiviset 
+        
+        foreach ($group_results['rows'] as $group_row) {
+            $group_limit_codes[$group_row->group_id] = $group_row->group_id;
+        }
+        $data['group_limit_codes'] = $group_limit_codes;
+        
+        //Ryhmänvalvoja-valitsin
         $overseers = array(
             '0'		=> ' ',
             '1'		=> 'ryhmänvalvoja',
@@ -106,7 +131,7 @@ class Person_controller extends CI_Controller
         
         /** SERIALIZE **/
         $_SESSION['undo_redo_person_edit'] = serialize($undo_redo_stack);
-        
+                
         $this->load->view('person_view', $data);
     }
  
@@ -144,7 +169,7 @@ class Person_controller extends CI_Controller
     private function create_group_rows($results)
     {
         $options = array();
-        $options['inactive'] = '0 = Ei aktiivinen'; //Mahdollisuus lisätä uusi nimi
+        $options['inactive'] = '0 = Ei aktiivinen'; //Älä näytä, kun alueita merkitään
         
         foreach ($results['rows'] as $group_row) {
             $resultrow = array();
@@ -244,6 +269,7 @@ class Person_controller extends CI_Controller
         //Palataan päänäytölle siinä tilassa, kuin se oli ennen päivitystä
         $this->display($this->session->userdata('sort_by'),
             $this->session->userdata('sort_order'),
+            $this->session->userdata('group_limit_sel'),
             $this->session->userdata('filter'));
         
         return ;
@@ -360,6 +386,7 @@ class Person_controller extends CI_Controller
         //Palataan päänäytölle siinä tilassa, kuin se oli ennen päivitystä
         $this->display($this->session->userdata('sort_by'),
             $this->session->userdata('sort_order'),
+            $this->session->userdata('group_limit_sel'),
             $this->session->userdata('filter'));
     
         return ;
@@ -406,12 +433,6 @@ class Person_controller extends CI_Controller
         );
         $this->session->set_userdata($person_view_state_data);
 
-        //echo "Person: post [";
-        //print_r($this->input->post()); // to see if the post data is coming just for debugging purpose
-       // echo "]"; 
-        //echo "] Filter [" . $this->uri->segment(3) . "]";
-        //echo "] Filter [" . $filter . "]";
-        
         $action = $this->input->post('action');
         switch ($action) {
             case "Päivitä":
@@ -434,12 +455,18 @@ class Person_controller extends CI_Controller
                 
             default:
                 $msg = "Tunnistamaton toiminto";
+                $num_vars = count( explode( '###', http_build_query($_POST, '', '###') ) );
+                $max_num_vars = ini_get('max_input_vars');
+                if ($num_vars > $max_num_vars) {
+                    $msg .= " Input-parametreja on enemmän kuin " . $max_num_vars;
+                }
                 $this->session->set_flashdata('error', $msg);
                 
                 //Palataan päänäytölle siinä tilassa, kuin se oli ennen päivitystä
                 $this->display($this->session->userdata('sort_by'),
-                $this->session->userdata('sort_order'),
-                $this->session->userdata('filter'));
+                    $this->session->userdata('sort_order'),
+                    $this->session->userdata('group_limit_sel'),
+                    $this->session->userdata('filter'));
                 break;
         } // switch
         
@@ -474,11 +501,17 @@ class Person_controller extends CI_Controller
                 //Palataan päänäytölle siinä tilassa, kuin se oli ennen päivitystä
                 $this->display($this->session->userdata('sort_by'),
                     $this->session->userdata('sort_order'),
+                    $this->session->userdata('group_limit_sel'),
                     $this->session->userdata('filter'));
                 break;
                 
             default:
                 $msg = "Tunnistamaton toiminto";
+                $num_vars = count( explode( '###', http_build_query($_POST, '', '###') ) );
+                $max_num_vars = ini_get('max_input_vars');
+                if ($num_vars > $max_num_vars) {
+                    $msg .= " Input-parametreja on enemmän kuin " . $max_num_vars;
+                }
                 $this->session->set_flashdata('error', $msg);
                 
                 $this->insert();
@@ -496,7 +529,7 @@ class Person_controller extends CI_Controller
         //Tarkista, onko henkilön tiedot jo kannassa
         $found = $this->Person_model->get_id_by_name($this->input->post('person_name'), $this->input->post('person_lastname'));
         if ($found >= 0)  {
-            if ($this->session->userdata('name_presentation') == "0") {
+            if ($this->session->userdata('namePresentation') == "0") {
                 //0 = firstname lsatname, 1 = lastmame, firstname; (default)
                 $name_delim = ' ';
                 $name = $this->input->post('person_name') . $name_delim . $this->input->post('person_lastname');
@@ -558,6 +591,7 @@ class Person_controller extends CI_Controller
         
         $this->display($this->session->userdata('sort_by'),
             $this->session->userdata('sort_order'),
+            $this->session->userdata('group_limit_sel'),
             $this->session->userdata('filter'));
 
     }
@@ -611,6 +645,7 @@ class Person_controller extends CI_Controller
         //Palataan päänäytölle siinä tilassa, kuin se oli ennen päivitystä
         $this->display($this->session->userdata('sort_by'),
             $this->session->userdata('sort_order'),
+            $this->session->userdata('group_limit_sel'),
             $this->session->userdata('filter'));
     }
 
@@ -667,6 +702,7 @@ class Person_controller extends CI_Controller
         //Palataan päänäytölle siinä tilassa, kuin se oli ennen päivitystä
         $this->display($this->session->userdata('sort_by'),
             $this->session->userdata('sort_order'),
+            $this->session->userdata('group_limit_sel'),
             $this->session->userdata('filter'));
     }
 
@@ -720,6 +756,7 @@ class Person_controller extends CI_Controller
         //Palataan päänäytölle siinä tilassa, kuin se oli ennen päivitystä
         $this->display($this->session->userdata('sort_by'),
             $this->session->userdata('sort_order'),
+            $this->session->userdata('group_limit_sel'),
             $this->session->userdata('filter'));
     }
     

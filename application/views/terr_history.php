@@ -124,7 +124,7 @@
                          'name'  => 'action_btn',
                          'value' => 'Undo',
                          'class' => 'submit_undo',
-                         'src' => base_url("assets/images/undo.jpg")
+                         'src' => base_url("assets/images/Undo.jpg")
                      ];
                      
                      $js = ['onClick' => 'jsFunction_undo(this);'];

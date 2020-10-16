@@ -39,8 +39,8 @@ class Event_controller extends CI_Controller
 	    
 	    //Hae sivun tiedot
 	    $page_data = $this->get_event_page($code, $offset, $limit,
-	        $this->session->userdata('archive_time'),
-	        $this->session->userdata('event_date_order'));
+	        $this->session->userdata('archiveYears'),
+	        $this->session->userdata('eventOrder'));
 
 	    foreach ($page_data as $key=>$value) {
 	        $data[$key] = $page_data[$key];
@@ -86,20 +86,10 @@ class Event_controller extends CI_Controller
         //Hae koko kirjanpito
         $event_data = array();
         
-        //Hidas haku; haetaan nyt vain kaksi riviä
-//         $page_data = $this->get_event_page($code, 0, $limit,
-//             $this->session->userdata('archive_time'),
-//             "ASC");
-//         $event_data[] = $page_data;
-//         $page_data = $this->get_event_page($code, 5, $limit,
-//             $this->session->userdata('archive_time'),
-//             "ASC");
-//         $event_data[] = $page_data;
-        
         foreach ($terr_groups as $code=>$count) {
             for ($offset = 0; $offset < $count; $offset = $offset + $limit) {
                 $page_data = $this->get_event_page($code, $offset, $limit,
-                               $this->session->userdata('archive_time'),
+                               $this->session->userdata('archiveYears'),
                                "ASC");
                 $event_data[] = $page_data;
             }

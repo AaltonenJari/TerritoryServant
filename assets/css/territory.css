@@ -1,6 +1,6 @@
 /* Set a fixed scrollable wrapper */
 .tableWrap {
-  height: 360px;
+  height: 330px;
   border: 1px solid black;
   overflow: auto;
 }
@@ -15,8 +15,7 @@
  we have to apply background styles here
  rather than on thead */
 #table2 th {
-  padding: 6px;
-  padding-left: 15px;
+  padding:3px 3px 3px 15px; 
   border-left: 1px dotted rgba(200, 209, 224, 0.6);
   border-bottom: 1px solid #e8e8e8;
   text-transform: uppercase;
@@ -34,8 +33,7 @@ table {
 }
 
 #table2 td {
-  padding: 3px;
-  padding-left: 15px;
+  padding:3px 3px 3px 15px; 
 }
 
 #table2 tbody tr {
@@ -57,8 +55,7 @@ table {
 
 #filterArea
 {
-  padding-bottom: 10px;
-  padding-left: 2px;	
+  padding:3px 3px 3px 15px; 
 }
 
 #selectortable {
@@ -96,7 +93,7 @@ table {
 }
 
 .middleArea {
-  padding-top: 6px;
+  padding:0px 3px 0px 3px; 
 }
 
 
@@ -146,15 +143,13 @@ h2 {
 #totalcount
 {
   font-size: 16px;
-  padding-top: 2px;
-  padding-left: 5px;	
+  padding:2px 0px 0px 5px; 
 }
 
 #sivutusotsake
 {
   font-size: 16px;
-  padding-top: 2px;
-  padding-left: 5px;
+  padding:2px 0px 0px 5px; 
   font-weight: bold;
 }
 

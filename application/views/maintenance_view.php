@@ -50,11 +50,10 @@
       		<input type="hidden" id="displayBaseUrl" value="<?php echo $display_baseurl; ?>" />
 
 	        <input type="hidden" id="filter_param" value="<?php echo $filter; ?>"/>
-	        <input type="hidden" id="base_update_url" value="<?php echo base_url("index.php/Maintenance_controller/delete"); ?>" />
+	        <input type="hidden" id="base_delete_url" value="<?php echo base_url("index.php/Maintenance_controller/delete"); ?>" />
 
 	  		<?php $form_action_baseurl = base_url("index.php/Maintenance_controller/check_update"); ?>
       		<input type="hidden" id="formBaseUrl" value="<?php echo $form_action_baseurl; ?>" />
-
           </td>
 		  <td>
 		    <input type="hidden" id="selCodeOld" value="<?php echo $code_sel; ?>" />
@@ -79,7 +78,8 @@
     </div>
 
     <div id="content">
-        <?php $form_open_parameter = "Maintenance_controller/check_update";
+      <?php 
+        $form_open_parameter = "Maintenance_controller/check_update";
         if (!empty($code_sel)) {
             $form_open_parameter .= "/" . $code_sel;
         }
@@ -92,7 +92,7 @@
         }
         $attributes = ['id' => 'maintenance_form'];
         echo form_open($form_open_parameter,$attributes);
-        ?>
+      ?>
         <div class="tableWrap">
           <table id="table2" class="order-table table">
             <thead>
@@ -121,8 +121,8 @@
                            $field_name_data = $field_name . "[]";
                            $field_name_old_data = $field_name . "_old" . "[]";
                            
-                           $field_input_name_data = "input_". $field_name . $rowidx;
-                           $field_input_name_old_data = "input_old_". $field_name . $rowidx;
+                           $field_input_name_id = "input_". $field_name . $rowidx;
+                           $field_input_name_old_id = "input_old_". $field_name . $rowidx;
                            $field_name_old = $field_name . "_old";
                            
                            switch ($field_name) {
@@ -135,7 +135,7 @@
                                    echo form_label($alue->$field_name, $field_id_data, $attributes);
                                    $data_hidden = [
                                           'type'  => 'hidden',
-                                          'id'    => $field_input_name_old_data,
+                                          'id'    => $field_input_name_old_id,
                                           'name'  => $field_name_old_data,
                                           'value' =>  $alue->$field_name,
                                           'class' => $field_name_old
@@ -162,7 +162,7 @@
                                      <?php 
                                      $data = [
                                          'type'  => 'text',
-                                         'id'    => $field_input_name_data,
+                                         'id'    => $field_input_name_id,
                                          'name'  => $field_name_data,
                                          'value' =>  $alue->$field_name,
                                          'class' => $field_name
@@ -171,7 +171,7 @@
                          
                                      $data_hidden = [
                                          'type'  => 'hidden',
-                                         'id'    => $field_input_name_old_data,
+                                         'id'    => $field_input_name_old_id,
                                          'name'  => $field_name_old_data,
                                          'value' =>  $alue->$field_name,
                                          'class' => $field_name_old
@@ -238,7 +238,7 @@
                   'name'  => 'action_btn',
                   'value' => 'Undo',
                   'class' => 'submit_undo',
-                  'src' => base_url("assets/images/undo.jpg")
+                  'src' => base_url("assets/images/Undo.jpg")
               ];
               
               $js = ['onClick' => 'jsFunction_undo(this);'];
@@ -370,7 +370,6 @@ $('#filterString').keyup(function() {
   document.getElementById('maintenance_form').action = document.getElementById("formBaseUrl").value +
         "\\" + document.getElementById("selCodeOld").value +
 	    "\\" + document.getElementById("filter_param").value;
-	    
 });
 
 $(document).ready(function() {
@@ -414,7 +413,7 @@ function filter_table(searchText) {
 }
 
 function jsFunction3(alue_code) {
-    var newUrl = document.getElementById("base_update_url").value;
+    var newUrl = document.getElementById("base_delete_url").value;
 	var newUrl = newUrl + "/" + alue_code + "/" + document.getElementById("filter_param").value;
 	document.getElementById(alue_code).href = newUrl;
 }

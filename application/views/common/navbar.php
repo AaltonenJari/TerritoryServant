@@ -4,36 +4,61 @@
 
   <?php if (empty($this->session->userdata('initialized'))) {
       //echo "Userdata empty";
-      $session_data_terr = array(
+      $territory_view_defaults = array(
           'sort_by'         => 'alue_lastdate',
           'sort_order'      => 'asc',
-          'chkbox_sel'      => '1',
-          'date_sel'        => '2',
+          'chkbox_sel'      => '1', //Aluepöydässä
+          'date_sel'        => '2', //yli 4 kk käymättä
+          'code_sel'        => '0', //Kaikki
           'filter'          => '',
-          'sivutunnus'      => '1',
+          'sivutunnus'      => '1', //Etusivu
           'initialized'     => 'K',
+          'limit_date_sw'   => '0' //Jos 1, käytetään rajauksissa kv-viikon alkupäivää 
       );
-      $this->session->set_userdata($session_data_terr);
+      $this->session->set_userdata($territory_view_defaults);
       
-      //echo "Userdata empty";
-      $setting_data_terr = array(
-          'event_date_order' => "DESC",
-          'archive_time' => "12",
-          'name_presentation'  => '1',  //0 = firstname lsatname, 1 = lastmame, firstname; (default)
-          'bt_switch' => '0',  //Liikealueet: 0 = ei näytetä (default), 1 = näytetään 
-          'circuit_week_start' => "8.12.2020",
-          'circuit_week_end' => "13.12.2020",
-          'limit_date_sw' => "0",
-          'event_save_switch' => "0"
+      //default settings
+      $settings_data = array(
+          'congregationName' => 'Kankaanpää',
+          'congregationNumber' => '38703',
+          'useSignIn' => '0', //Kirjautuminen ei käytössä
+          'terrCodePresentation' => 'X999',
+          'useTerritoryDetaiTable' => '0', //Alue_detail-taulu ei käytössä
+          'namePresentation'  => '1',  //0 = firstname lsatname, 1 = lastmame, firstname; (default)
+          'eventOrder' => 'DESC',
+          'archiveYears' => '12',
+          'btSwitch' => '0',  //Liikealueet: 0 = ei näytetä (default), 1 = näytetään
+          'eventSaveSwitch' => '0', //Vain lainaukset ja palautukset
+          'circuitWeekStart' => '8.12.2020',
+          'circuitWeekEnd' => '13.12.2020'
       );
-      $this->session->set_userdata($setting_data_terr);
+      $this->session->set_userdata($settings_data);
+
+      //default user
+      $users_data = array(
+          'user' => "alue",
+          'admin' => "0"
+      );
+      $this->session->set_userdata($users_data);
+      
   } else {
       //print_r($this->session->userdata);
+      //default user
+      $users_data = array(
+      'user' => "alue",
+      'admin' => "0"
+          );
+      $this->session->set_userdata($users_data);
+      
   }?>
  
   <?php $base_url = base_url("index.php/territory_controller") ?>
   <input type="hidden" id="baseUrl" value="<?php echo $base_url; ?>" />
   
+  <?php 
+  $user = $this->session->userdata('user');
+  $admin = $this->session->userdata('admin'); 
+  ?>
   <div class="naw_wrapper">
     <ul>
       <li>
@@ -112,7 +137,7 @@
       <li>
         <div class="dropdown">
           <?php if ($sivu_tunnus == "5") { $dropbtn_classes = $dropbtn_classes_base . " active"; } else { $dropbtn_classes = $dropbtn_classes_base; } ?>
-          <a href="<?php echo base_url("index.php/settings_controller/settings"); ?>" >
+          <a href="<?php echo base_url("index.php/Settings_controller/display"); ?>" >
             <button class="<?php echo $dropbtn_classes; ?>">
               <div class="tooltip">Asetukset
                 <span class="tooltiptext">Ohjelman asetukset</span>
@@ -121,14 +146,31 @@
           </a>
         </div>
       </li>
-      <li>
+     <li>
         <div class="dropdown">
           <?php if ($sivu_tunnus == "6") { $dropbtn_classes = $dropbtn_classes_base . " active"; } else { $dropbtn_classes = $dropbtn_classes_base; } ?>
+          <a href="<?php echo base_url("index.php/User_controller/display"); ?>" >
+            <button class="<?php echo $dropbtn_classes; ?>">
+              <div class="tooltip">Käyttäjät
+                <span class="tooltiptext">Käyttäjähallinta</span>
+              </div>
+            </button>
+          </a>
+        </div>
+      </li>
+      <li>
+        <div class="dropdown">
+          <?php if ($sivu_tunnus == "7") { $dropbtn_classes = $dropbtn_classes_base . " active"; } else { $dropbtn_classes = $dropbtn_classes_base; } ?>
           <a href="#" >
             <button class="<?php echo $dropbtn_classes; ?>">Tietoja</button>
           </a>
         </div>
       </li>
+    <li>
+      <div class="dropdown">
+          <button class="user_info">Käyttäjä: <?php echo $user; ?></button>
+      </div>
+    </li>
     </ul>
   </div>
 </nav>

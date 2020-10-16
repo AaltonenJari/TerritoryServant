@@ -47,7 +47,7 @@ class Territory_model extends CI_Model {
             $srchDate = ""; // today
         } else {
             //Circuit week starting date
-            $srchDate = date_format(date_create_from_format('j.n.Y', $this->session->userdata('circuit_week_start')), 'Y-m-d');
+            $srchDate = date_format(date_create_from_format('j.n.Y', $this->session->userdata('circuitWeekStart')), 'Y-m-d');
         }
         
         // alue_lastdate < 12 monhts
@@ -191,7 +191,7 @@ class Territory_model extends CI_Model {
             $srchDate = ""; // today
         } else {
             //Circuit week starting date
-            $srchDate = date_format(date_create_from_format('j.n.Y', $this->session->userdata('circuit_week_start')), 'Y-m-d');
+            $srchDate = date_format(date_create_from_format('j.n.Y', $this->session->userdata('circuitWeekStart')), 'Y-m-d');
         }
         
         // alue_lastdate < 12 monhts

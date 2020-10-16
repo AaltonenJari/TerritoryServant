@@ -7,7 +7,7 @@ class Person_model extends CI_Model
         parent::__construct();
     }
     
-    public function search($fields, $sort_by, $sort_order)
+    public function search($fields, $sort_by, $sort_order, $group_limit_sel)
     {
         $sort_order = ($sort_order == 'desc') ? 'desc' : 'asc';
         
@@ -31,6 +31,29 @@ class Person_model extends CI_Model
         ->from('person');
         $this->db->join('alue_group', 'person.person_group = alue_group.group_id','left');
         $this->db->join('(SELECT event_user, count(*) AS event_count FROM alue_events GROUP BY event_user) ev', 'ev.event_user = person.person_id','left');
+        
+        // Onko rajattu alueryhmän mukaan?
+        switch ($group_limit_sel) {
+            case "0";
+              break;
+            
+            case "A";
+              $this->db->where('person_group != 0');
+              break;
+              
+            case "B";
+              $this->db->where('person_group != 0');
+              $this->db->where('person_group != 5');
+              break;
+            
+            case "X";
+              $this->db->where('person_group = 0');
+              break;
+            
+            default;
+              $this->db->where('person_group', $group_limit_sel);
+              break;
+        }
         
         //Järjestys
         switch ($sort_by) {

@@ -13,6 +13,7 @@ class Territory_controller extends CI_Controller
         $this->load->model('Event_model');
         $this->load->model('Maintenance_model');
         $this->load->model('Person_model');
+        $this->load->model('Settings_model');
         $this->load->model('UndoRedoStack');
     }
     
@@ -40,10 +41,6 @@ class Territory_controller extends CI_Controller
      */
     public function display($sort_by = 'alue_code', $sort_order = 'asc', $chkbox_sel = '0', $date_sel = '0', $code_sel = '0', $filter = '') 
     {
-        //Näytetäänkö liikeakueet?
-        $bt_switch = $this->session->userdata('bt_switch');
-        
-        $limit_date_sw = $this->session->userdata('limit_date_sw');
         //Jos parametreja ei ole annettu, älä käytä kv-viikon alkupäivää rajauksessa
         $numargs = func_num_args();
         if ($numargs == 0) {
@@ -53,11 +50,15 @@ class Territory_controller extends CI_Controller
             if(isset($_SESSION['error'])){
                 unset($_SESSION['error']);
             }
-         }
+        }
+ 
+        //Näytetäänkö liikeakueet?
+        $bt_switch = $this->session->userdata('btSwitch');
         
+        $limit_date_sw = $this->session->userdata('limit_date_sw');
         
         //State variables for territory_view
-        $territory_view_state_data = array(
+        $territory_view_state = array(
             'sort_by'         => $sort_by,
             'sort_order'      => $sort_order,
             'chkbox_sel'      => $chkbox_sel,
@@ -67,7 +68,7 @@ class Territory_controller extends CI_Controller
             'sivutunnus'      => "2",
             'limit_date_sw'   => $limit_date_sw
         );
-        $this->session->set_userdata($territory_view_state_data);
+        $this->session->set_userdata($territory_view_state);
         
         
         //Common control part
@@ -76,16 +77,42 @@ class Territory_controller extends CI_Controller
     
     public function display_frontpage() 
     {
+        //Jos asetuksia ei ole alustettu, haetaan asetukset
+        if (empty($this->session->userdata('initialized'))) {
+ 
+            //Hakuparametrit kantaan
+            $data['database_fields'] = array(
+                'setting_input_id'	 => 'tunniste',
+                'setting_value'	     => 'arvo'
+            );
+            $sort_by = 'setting_order_id';
+            $sort_order = 'asc';
+            //Hae tiedot
+            if ($this->Settings_model->tableExists('settings')) {
+                $results = $this->Settings_model->search($data['database_fields'], $sort_by, $sort_order);
+
+                //Asetukset session-muuttujiin
+                $this->Settings_model->set_settings($results);
+            } else {
+                $results = $this->Settings_model->default_settings();
+            }
+            
+            //Merkitään asetukset alustetuksi
+            $session_initialized = array(
+                'initialized'     => 'K'
+            );
+            $this->session->set_userdata($session_initialized);
+        }
+        
         $sort_by = 'alue_lastdate';
         $sort_order = 'asc';
-        $chkbox_sel = '1';
-        $date_sel = '2';
-        $code_sel = '0';
+        $chkbox_sel = '1'; //Aluepöydässä
+        $date_sel = '2'; //yli 4 kk käymättä
+        $code_sel = '0'; //Kaikki
         $bt_switch = '0';
         $filter = '';
-            
-        //State variables for territory_view
-        $territory_view_state_data = array(
+        
+        $territory_view_state = array(
             'sort_by'         => $sort_by,
             'sort_order'      => $sort_order,
             'chkbox_sel'      => $chkbox_sel,
@@ -95,8 +122,13 @@ class Territory_controller extends CI_Controller
             'sivutunnus'      => "1",
             'limit_date_sw'   => "0"
         );
-        $this->session->set_userdata($territory_view_state_data);
+        $this->session->set_userdata($territory_view_state);
     
+        //Poistetaan virheteksti näkyvistä
+        if(isset($_SESSION['error'])){
+            unset($_SESSION['error']);
+        }
+        
         //Common control part
         $this->display_control($sort_by, $sort_order, $chkbox_sel, $date_sel, $code_sel, $bt_switch, $filter);
     }
@@ -261,10 +293,10 @@ class Territory_controller extends CI_Controller
     public function display_co_report()
     {
         //Setting parameters to view page
-        $data['report_date'] = $this->session->userdata('circuit_week_start');
+        $data['report_date'] = $this->session->userdata('circuitWeekStart');
         
-        $data['circuit_week_start'] = $this->session->userdata('circuit_week_start');
-        $data['circuit_week_end'] = $this->session->userdata('circuit_week_end');
+        $data['circuit_week_start'] = $this->session->userdata('circuitWeekStart');
+        $data['circuit_week_end'] = $this->session->userdata('circuitWeekEnd');
         
         //Käytä raportin vertailupäivänä kierrosviikon alkupäivää
         $date_sw = '1';
@@ -274,7 +306,7 @@ class Territory_controller extends CI_Controller
         if (!empty($limit_date_sw)) {
             $data['is_cw_coming'] = true;
         } else {
-            $isCwComing = $this->vertaaPvm();
+            $isCwComing = false;
             $data['is_cw_coming'] = $isCwComing;
             
             if (!$isCwComing) {
@@ -309,7 +341,7 @@ class Territory_controller extends CI_Controller
         $isFuture = true;
       
         $today = date("Y-m-d");
-        $cwStart = $this->session->userdata('circuit_week_end');
+        $cwStart = $this->session->userdata('circuitWeekEnd');
         
         $today_time = strtotime($today);
         $expire_time = strtotime($cwStart);
@@ -408,7 +440,7 @@ class Territory_controller extends CI_Controller
                             if (empty($aluerivi->person_name) && empty($aluerivi->person_lastname)) {
                                 $resultrow->name = "Ei henkilöä";
                             } else {
-                                if ($this->session->userdata('name_presentation') == "0") {
+                                if ($this->session->userdata('namePresentation') == "0") {
                                     //0 = firstname lsatname, 1 = lastmame, firstname; (default)
                                     $name_delim = ' ';
                                     $resultrow->name = $aluerivi->person_name . $name_delim . $value;
@@ -486,7 +518,7 @@ class Territory_controller extends CI_Controller
                         break;
                         
                     case "person_lastname":
-                        if ($this->session->userdata('name_presentation') == "0") {
+                        if ($this->session->userdata('namePresentation') == "0") {
                             //0 = firstname lsatname, 1 = lastmame, firstname; (default)
                             $name_delim = ' ';
                             $name = $terr_row->person_name . $name_delim . $value;
@@ -528,7 +560,7 @@ class Territory_controller extends CI_Controller
     public function create_lent_rows($results)
     {
         //arvo 1, jos on kirjattu myös merkkaukset events-tauluun, muuten 0.
-        $event_save_switch = $this->session->userdata('event_save_switch');
+        $event_save_switch = $this->session->userdata('eventSaveSwitch');
         
         $terr_result = array();
         $publisher_mark = array();
@@ -589,7 +621,7 @@ class Territory_controller extends CI_Controller
                             break;
                             
                         case "person_lastname":
-                            if ($this->session->userdata('name_presentation') == "0") {
+                            if ($this->session->userdata('namePresentation') == "0") {
                                 //0 = firstname lsatname, 1 = lastmame, firstname; (default)
                                 $name_delim = ' ';
                                 $name = $terr_row->person_name . $name_delim . $value;
@@ -701,7 +733,7 @@ class Territory_controller extends CI_Controller
                     
                 case "person_lastname":
                     if ($alue_rivi['lainassa'] == "1") {
-                        if ($this->session->userdata('name_presentation') == "0") {
+                        if ($this->session->userdata('namePresentation') == "0") {
                             //0 = firstname lsatname, 1 = lastmame, firstname; (default)
                             $name_delim = ' ';
                             $resultrow->name = $alue_rivi['person_name'] . $name_delim . $value;
@@ -725,7 +757,7 @@ class Territory_controller extends CI_Controller
     public function update_alue()
     {
         //Kirjataanko myös merkkaukset events-tauluun?
-        $event_save_switch = $this->session->userdata('event_save_switch');
+        $event_save_switch = $this->session->userdata('eventSaveSwitch');
         
         $alue_kayty = false;
         $alue_id = $this->Territory_model->get_terr_id($this->input->post('alue_code'));
@@ -819,7 +851,7 @@ class Territory_controller extends CI_Controller
         if (!empty($name)) {
             $nimet = preg_split("/[, ]+/", $name);
 
-            if ($this->session->userdata('name_presentation') == "0") {
+            if ($this->session->userdata('namePresentation') == "0") {
                 //0 = firstname lsatname, 1 = lastmame, firstname; (default)
                 $etunimi = $nimet[0];
                 $sukunimi = $nimet[1];
@@ -871,7 +903,7 @@ class Territory_controller extends CI_Controller
             'person_group'	=> 'ryhmä'
         );
         //Hae lainaajien nimet
-        $person_results = $this->Person_model->search($person_fields, "person_lastname", "ASC");
+        $person_results = $this->Person_model->search($person_fields, "person_lastname", "ASC","A");
         
         //Muokkaa haetut tiedot näytölle sopiviksi
         $lenders = $this->create_lender_rows($person_results);
@@ -894,7 +926,7 @@ class Territory_controller extends CI_Controller
                             break;
                             
                         case "person_lastname":
-                            if ($this->session->userdata('name_presentation') == "0") {
+                            if ($this->session->userdata('namePresentation') == "0") {
                                 //0 = firstname lsatname, 1 = lastmame, firstname; (default)
                                 $name_delim = ' ';
                                 $resultrow['name'] = $person_row->person_name . $name_delim . $value;
@@ -970,7 +1002,12 @@ class Territory_controller extends CI_Controller
                 break;
             
             default:
-                $msg = "Tunnistamaton toiminto";
+                $msg = "Tunnistamaton toiminto.";
+                $num_vars = count( explode( '###', http_build_query($_POST, '', '###') ) );
+                $max_num_vars = ini_get('max_input_vars');
+                if ($num_vars > $max_num_vars) {
+                    $msg .= " Input-parametreja on enemmän kuin " . $max_num_vars;
+                }
                 $this->session->set_flashdata('error', $msg);
                 
                 $this->update($this->input->post('alue_code'), $this->session->userdata('filter'));
@@ -1043,9 +1080,9 @@ class Territory_controller extends CI_Controller
         );
         //Hae alueen tapahtumat tunnuksella
         $event_results = $this->Event_model->search_event_data($event_fields, $resultrow['alue_id'],
-            $this->session->userdata('archive_time'),
-            $this->session->userdata('event_date_order'));
-        $events_alue = $this->Event_model->tabulate_alue_events($event_results, $this->session->userdata('event_date_order'));
+            $this->session->userdata('archiveYears'),
+            $this->session->userdata('eventOrder'));
+        $events_alue = $this->Event_model->tabulate_alue_events($event_results, $this->session->userdata('eventOrder'));
         $events_data = array();
         $events_data[] = $events_alue;
         $data['terr_nbr'] = $terr_nbr;
@@ -1130,6 +1167,11 @@ class Territory_controller extends CI_Controller
                 
             default:
                 $msg = "Tunnistamaton toiminto";
+                $num_vars = count( explode( '###', http_build_query($_POST, '', '###') ) );
+                $max_num_vars = ini_get('max_input_vars');
+                if ($num_vars > $max_num_vars) {
+                    $msg .= " Input-parametreja on enemmän kuin " . $max_num_vars;
+                }
                 $this->session->set_flashdata('error', $msg);
                 
                 $this->territory_history($terr_nbr, $main_display);

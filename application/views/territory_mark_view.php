@@ -34,7 +34,7 @@
     if ($exhort == "RETURN") {
         $hdr_string = "Alueet - palautuskehotukset";
         $explainer = "Alue saa olla lainassa samalla julistajalla korkeintaan vuoden.";
-        $terr_url = base_url("index.php/territory_controller/display/event_last_date/asc/2/4/0");
+        $terr_url = base_url("index.php/territory_controller/display/name/asc/2/4/0");
         
     } else {
         $hdr_string = "Alueet - merkitsemiskehotukset";
@@ -80,7 +80,7 @@
    		                          echo "merkitsehän seuraavat alueet aluepöydässä:";
    		                      }
    		                  }
-    		                  ?>
+    		              ?>
    		                  </td>
    		                </tr>
    		               	<tr>

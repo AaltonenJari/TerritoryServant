@@ -18,6 +18,18 @@ class Maintenance_controller extends CI_Controller
     public function display($sort_by = 'alue_code', $sort_order = 'asc', $code_sel = '0', $filter = '') 
     {
         //State variables for maintenance_view
+        if (($sort_by != $this->session->userdata('sort_by')) ||
+            ($sort_order != $this->session->userdata('sort_order')) ||
+            ($code_sel != $this->session->userdata('code_sel')) ||
+            ($filter != $this->session->userdata('filter'))) {
+                
+                //Jos jokin tilamuuttuja muuttuu, poistetaan virheteksti näkyvistä
+                if(isset($_SESSION['error'])){
+                    unset($_SESSION['error']);
+                }
+            }
+  
+        //Tallenna näytön uusi tila
         $territory_view_state_data = array(
             'sort_by'         => $sort_by,
             'sort_order'      => $sort_order,
@@ -43,7 +55,7 @@ class Maintenance_controller extends CI_Controller
             'alue_taloudet'	=> 'koko',
             'event_count'	=> 'määrä'
         );
-        
+
         //Korjaa ääkköset takaisin
         $filter = urldecode($filter);
         
@@ -223,15 +235,6 @@ class Maintenance_controller extends CI_Controller
         );
         $this->session->set_userdata($territory_view_state_data);
         
-//         echo "Terr update: post [";
-//         print_r($this->input->post()); // to see if the post data is coming just for debugging purpose 
-//         echo "]"; 
-        //echo " Terr group [" . $this->uri->segment(3) . "]";
-        //echo " Filter [" . $this->uri->segment(4) . "]";
-        
-        echo " max_input_vars = ";
-        echo ini_get('max_input_vars'); //Tällä voit tarkistaa, mikä on max_input_vars
-        
         $action = $this->input->post('action');
         switch ($action) {
             case "Päivitä":
@@ -253,7 +256,12 @@ class Maintenance_controller extends CI_Controller
                 break;
                 
             default:
-                $msg = "Tunnistamaton toiminto";
+                $msg = "Tunnistamaton toiminto.";
+                $num_vars = count( explode( '###', http_build_query($_POST, '', '###') ) );
+                $max_num_vars = ini_get('max_input_vars');
+                if ($num_vars > $max_num_vars) {
+                    $msg .= " Input-parametreja on enemmän kuin " . $max_num_vars;
+                }
                 $this->session->set_flashdata('error', $msg);
                 
                 //Palataan päänäytölle siinä tilassa, kuin se oli ennen päivitystä
@@ -300,7 +308,12 @@ class Maintenance_controller extends CI_Controller
                 break;
                 
             default:
-                $msg = "Tunnistamaton toiminto";
+                $msg = "Tunnistamaton toiminto.";
+                $num_vars = count( explode( '###', http_build_query($_POST, '', '###') ) );
+                $max_num_vars = ini_get('max_input_vars');
+                if ($num_vars > $max_num_vars) {
+                    $msg .= " Input-parametreja on enemmän kuin " . $max_num_vars;
+                }
                 $this->session->set_flashdata('error', $msg);
                 
                 $this->insert($this->session->userdata('code_sel'));
