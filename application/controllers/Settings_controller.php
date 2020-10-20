@@ -61,7 +61,7 @@ class Settings_controller extends CI_Controller
         if ($this->Settings_model->tableExists('settings')) {
             $results = $this->Settings_model->search($data['database_fields'], $sort_by, $sort_order);
         } else {
-            $data['table_not_found'] = "Taulu 'settings' ei ole käytössä. Päivitykset eivät jää muistiin pysyvästi.";
+            $data['table_not_found'] = "Taulu 'settings' ei ole käytössä. Päivitykset eivät ehkä jää voimaan pysyvästi.";
             $results = $this->Settings_model->get_settings_offline();
         }
         
@@ -212,34 +212,44 @@ class Settings_controller extends CI_Controller
         
         for ($i = 0; $i < sizeof($field_settings); $i++) {
             if (($field_setting_values[$i] != $field_old_setting_values[$i])) {
-                    $update_data = array(
-                        'setting_value'	=> $field_setting_values[$i]
-                    );
-                    $this->Settings_model->update($update_data, $keys[$i]);
-                    
-                    //Tiedot undo/redo -toimintoa varten
-                    $setting_data_old = array(
-                        'setting_value'	=> $field_old_setting_values[$i]
-                    );
-                    
-                    $setting_data_new = array(
-                        'setting_value'	=> $field_setting_values[$i]
-                    );
-                    
-                    //echo "i: ". $i;
-                    //echo " vanha: ". $field_old_setting_values[$i];
-                    //echo " uusi: ". $field_setting_values[$i];
-                    
-                    $setting_edit_info = array(
-                        'operation'	=> 'edit',
-                        'key'		=> $keys[$i],
-                        'data_old'	=> $setting_data_old,
-                        'data_new'	=> $setting_data_new
-                    );
-                    //Päivityksen tiedot muistiin
-                    $undo_redo_stack->execute($setting_edit_info);
-                    $_SESSION['undo_redo_setting_edit'] = serialize($undo_redo_stack);
+ 
+                //Jos käyttäjä- tai asetustaulu on poissa, älä anna muuttaa kirjautumista päälle
+                if (!$this->Settings_model->tableExists('users') || !$this->Settings_model->tableExists('settings')) {
+                    if ($keys[$i] == "useSignIn") {
+                        if ($field_setting_values[$i] != '0') {
+                            $field_setting_values[$i] = '0';
+                        }
+                    }
                 }
+                 
+                $update_data = array(
+                    'setting_value'	=> $field_setting_values[$i]
+                );
+                $this->Settings_model->update($update_data, $keys[$i]);
+                
+                //Tiedot undo/redo -toimintoa varten
+                $setting_data_old = array(
+                    'setting_value'	=> $field_old_setting_values[$i]
+                );
+                
+                $setting_data_new = array(
+                    'setting_value'	=> $field_setting_values[$i]
+                );
+                
+                //echo "i: ". $i;
+                //echo " vanha: ". $field_old_setting_values[$i];
+                //echo " uusi: ". $field_setting_values[$i];
+                
+                $setting_edit_info = array(
+                    'operation'	=> 'edit',
+                    'key'		=> $keys[$i],
+                    'data_old'	=> $setting_data_old,
+                    'data_new'	=> $setting_data_new
+                );
+                //Päivityksen tiedot muistiin
+                $undo_redo_stack->execute($setting_edit_info);
+                $_SESSION['undo_redo_setting_edit'] = serialize($undo_redo_stack);
+            }
         }
         
         /** SERIALIZE **/

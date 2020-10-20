@@ -79,31 +79,9 @@ class Territory_controller extends CI_Controller
     {
         //Jos asetuksia ei ole alustettu, haetaan asetukset
         if (empty($this->session->userdata('initialized'))) {
- 
-            //Hakuparametrit kantaan
-            $data['database_fields'] = array(
-                'setting_input_id'	 => 'tunniste',
-                'setting_value'	     => 'arvo'
-            );
-            $sort_by = 'setting_order_id';
-            $sort_order = 'asc';
-            //Hae tiedot
-            if ($this->Settings_model->tableExists('settings')) {
-                $results = $this->Settings_model->search($data['database_fields'], $sort_by, $sort_order);
-
-                //Asetukset session-muuttujiin
-                $this->Settings_model->set_settings($results);
-            } else {
-                $results = $this->Settings_model->default_settings();
-            }
-            
-            //Merkitään asetukset alustetuksi
-            $session_initialized = array(
-                'initialized'     => 'K'
-            );
-            $this->session->set_userdata($session_initialized);
+            $this->Settings_model->checkInitializeSettings();
         }
-        
+            
         $sort_by = 'alue_lastdate';
         $sort_order = 'asc';
         $chkbox_sel = '1'; //Aluepöydässä
@@ -1302,6 +1280,16 @@ class Territory_controller extends CI_Controller
     
     public function index()
     {
-        $this->display_frontpage();
+        if ($this->Settings_model->tableExists('settings')) {
+            //Nollaa asetukset vain, jos ne ovat kannassa
+            $this->session->unset_userdata('initialized');
+        }
+        $this->Settings_model->checkInitializeSettings(); //Tsekataan tässä asetukset
+        if (!empty($this->session->userdata('useSignIn'))) {
+            $new_url = base_url("index.php/LoginController");
+            header('Location: ' . $new_url);
+        } else {
+            $this->display_frontpage();
+        }
     }
 }

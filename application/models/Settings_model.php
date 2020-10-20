@@ -57,7 +57,7 @@ class Settings_model extends CI_Model
         
         //Seurakunnan nimi:
         $setting_row = new stdClass;
-        $setting_row->setting_id = '2';
+        $setting_row->setting_id = '1';
         $setting_row->setting_order_id = '1';
         $setting_row->setting_input_type = 'adminreadonly';
         $setting_row->setting_input_id = 'congregationName';
@@ -68,7 +68,7 @@ class Settings_model extends CI_Model
         
         //Seurakunnan numero:
         $setting_row = new stdClass;
-        $setting_row->setting_id = '3';
+        $setting_row->setting_id = '2';
         $setting_row->setting_order_id = '2';
         $setting_row->setting_input_type = 'adminreadonly';
         $setting_row->setting_input_id = 'congregationNumber';
@@ -79,40 +79,18 @@ class Settings_model extends CI_Model
         
         //Kirjautuminen käytössä:
         $setting_row = new stdClass;
-        $setting_row->setting_id = '1';
+        $setting_row->setting_id = '3';
         $setting_row->setting_order_id = '3';
         $setting_row->setting_input_type = 'checkbox';
         $setting_row->setting_input_id = 'useSignIn';
         $setting_row->setting_desc = 'Kirjautuminen käytössä:';
         $setting_row->setting_value = $this->session->userdata('useSignIn');
-        $setting_row->setting_admin = '1';
-        $settings_rows[] = $setting_row;
-        
-        //Aluekoodin editystapa:
-        $setting_row = new stdClass;
-        $setting_row->setting_id = '4';
-        $setting_row->setting_order_id = '4';
-        $setting_row->setting_input_type = 'dropbox';
-        $setting_row->setting_input_id = 'terrCodePresentation';
-        $setting_row->setting_desc = 'Aluekoodin editystapa:';
-        $setting_row->setting_value = $this->session->userdata('terrCodePresentation');
-        $setting_row->setting_admin = '1';
-        $settings_rows[] = $setting_row;
-        
-        //Alue_detail-taulu käytössä:
-        $setting_row = new stdClass;
-        $setting_row->setting_id = '5';
-        $setting_row->setting_order_id = '5';
-        $setting_row->setting_input_type = 'checkbox';
-        $setting_row->setting_input_id = 'useTerritoryDetaiTable';
-        $setting_row->setting_desc = 'Alue_detail-taulu käytössä:';
-        $setting_row->setting_value = $this->session->userdata('useTerritoryDetaiTable');
-        $setting_row->setting_admin = '1';
+        $setting_row->setting_admin = '0';
         $settings_rows[] = $setting_row;
         
         //Nimen esitysmuoto:
         $setting_row = new stdClass;
-        $setting_row->setting_id = '6';
+        $setting_row->setting_id = '4';
         $setting_row->setting_order_id = '11';
         $setting_row->setting_input_type = 'dropbox';
         $setting_row->setting_input_id = 'namePresentation';
@@ -123,7 +101,7 @@ class Settings_model extends CI_Model
         
         //Tapahtumamerkintöjen järjestys:
         $setting_row = new stdClass;
-        $setting_row->setting_id = '7';
+        $setting_row->setting_id = '5';
         $setting_row->setting_order_id = '12';
         $setting_row->setting_input_type = 'dropbox';
         $setting_row->setting_input_id = 'eventOrder';
@@ -134,7 +112,7 @@ class Settings_model extends CI_Model
         
         //Tapahtumamerkinnät ajalta korkeintaan:
         $setting_row = new stdClass;
-        $setting_row->setting_id = '8';
+        $setting_row->setting_id = '6';
         $setting_row->setting_order_id = '13';
         $setting_row->setting_input_type = 'dropbox';
         $setting_row->setting_input_id = 'archiveYears';
@@ -145,7 +123,7 @@ class Settings_model extends CI_Model
         
         //Liikealueiden näyttäminen:
         $setting_row = new stdClass;
-        $setting_row->setting_id = '9';
+        $setting_row->setting_id = '7';
         $setting_row->setting_order_id = '14';
         $setting_row->setting_input_type = 'dropbox';
         $setting_row->setting_input_id = 'btSwitch';
@@ -156,7 +134,7 @@ class Settings_model extends CI_Model
         
         //Tapahtumamerkintöjen tallennustapa:
         $setting_row = new stdClass;
-        $setting_row->setting_id = '10';
+        $setting_row->setting_id = '8';
         $setting_row->setting_order_id = '15';
         $setting_row->setting_input_type = 'dropbox';
         $setting_row->setting_input_id = 'eventSaveSwitch';
@@ -167,7 +145,7 @@ class Settings_model extends CI_Model
         
         //Kierrosviikko alkaa:
         $setting_row = new stdClass;
-        $setting_row->setting_id = '11';
+        $setting_row->setting_id = '9';
         $setting_row->setting_order_id = '16';
         $setting_row->setting_input_type = 'date';
         $setting_row->setting_input_id = 'circuitWeekStart';
@@ -178,13 +156,35 @@ class Settings_model extends CI_Model
         
         //Kierrosviikko päättyy:
         $setting_row = new stdClass;
-        $setting_row->setting_id = '12';
+        $setting_row->setting_id = '10';
         $setting_row->setting_order_id = '17';
         $setting_row->setting_input_type = 'datereadonly';
         $setting_row->setting_input_id = 'circuitWeekEnd';
         $setting_row->setting_desc = 'Kierrosviikko päättyy:';
         $setting_row->setting_value = $this->session->userdata('circuitWeekEnd');
         $setting_row->setting_admin = '0';
+        $settings_rows[] = $setting_row;
+        
+        //Aluekoodin editystapa:
+        $setting_row = new stdClass;
+        $setting_row->setting_id = '11';
+        $setting_row->setting_order_id = '20';
+        $setting_row->setting_input_type = 'dropbox';
+        $setting_row->setting_input_id = 'terrCodePresentation';
+        $setting_row->setting_desc = 'Aluekoodin editystapa:';
+        $setting_row->setting_value = $this->session->userdata('terrCodePresentation');
+        $setting_row->setting_admin = '1';
+        $settings_rows[] = $setting_row;
+        
+        //Alue_detail-taulu käytössä:
+        $setting_row = new stdClass;
+        $setting_row->setting_id = '12';
+        $setting_row->setting_order_id = '21';
+        $setting_row->setting_input_type = 'checkbox';
+        $setting_row->setting_input_id = 'useTerritoryDetaiTable';
+        $setting_row->setting_desc = 'Alue_detail-taulu käytössä:';
+        $setting_row->setting_value = $this->session->userdata('useTerritoryDetaiTable');
+        $setting_row->setting_admin = '1';
         $settings_rows[] = $setting_row;
         
         $ret['rows'] = $settings_rows;
@@ -266,6 +266,51 @@ class Settings_model extends CI_Model
             return FALSE;
         }
     }
+    
+    public function checkInitializeSettings()
+    {
+        //Jos käyttäjätaulu on poissa, älä käytä kirjautumista
+        if (!$this->tableExists('users')) {
+            $update_data = array(
+                'setting_value'	=> 0
+            );
+            $this->update($update_data, "useSignIn");
+            
+            if ($this->Settings_model->tableExists('settings')) {
+                //Nollaa asetukset vain, jos ne ovat kannassa
+                $this->session->unset_userdata('initialized');
+            }
+        }
+        
+        //Jos asetuksia ei ole alustettu, haetaan asetukset
+        if (empty($this->session->userdata('initialized'))) {
+            
+            //Hakuparametrit kantaan
+            $data['database_fields'] = array(
+                'setting_input_id'	 => 'tunniste',
+                'setting_value'	     => 'arvo'
+            );
+            $sort_by = 'setting_order_id';
+            $sort_order = 'asc';
+            //Hae tiedot
+            if ($this->tableExists('settings')) {
+                 
+                $results = $this->search($data['database_fields'], $sort_by, $sort_order);
+                
+                //Asetukset session-muuttujiin
+                $this->set_settings($results);
+            } else {
+                $results = $this->default_settings();
+            }
+            
+            //Merkitään asetukset alustetuksi
+            $session_initialized = array(
+                'initialized'     => 'K'
+            );
+            $this->session->set_userdata($session_initialized);
+        }
+    }
+    
     
     public function default_settings() 
     {
