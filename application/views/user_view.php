@@ -51,6 +51,7 @@
 
 	        <input type="hidden" id="filter_param" value="<?php echo $filter; ?>"/>
 	        <input type="hidden" id="base_delete_url" value="<?php echo base_url("index.php/User_controller/delete"); ?>" />
+	        <input type="hidden" id="base_profile_url" value="<?php echo base_url("index.php/User_controller/update_profile"); ?>" />
 	        <input type="hidden" id="base_update_url" value="<?php echo base_url("index.php/User_controller/update"); ?>" />
 
 	  		<?php $form_action_baseurl = base_url("index.php/User_controller/check_update"); ?>
@@ -132,6 +133,43 @@
                                    <?php
                                    break;
                                    
+                               case "user_admin": ?>
+                                   <td id="<?php echo $field_id_data; ?>">
+                                   <?php
+                                   //Piilokenttä uutta arvoa varten
+                                   $data = [
+                                       'type'  => 'hidden',
+                                       'id'    => $field_input_name_id,
+                                       'name'  => $field_name_data,
+                                       'value' => $user->$field_name,
+                                       'class' => $field_name
+                                   ];
+                                   echo form_input($data);
+                                   
+                                   //Editoitava kenttä
+                                   $field_input_editing_id = $field_input_name_id . "_dropdown";
+                                   $js = [
+                                       'id'       => $field_input_editing_id,
+                                       'class'    => "dropdown_field",
+                                       'onChange' => "jsDropdownChance(this, " . $field_input_name_id . ")"
+                                   ];
+                                   //Valitsimet
+                                   echo form_dropdown($field_input_editing_id, $userRoleOptions, $user->$field_name, $js);
+                                   
+                                   //Piilokenttä vanhaa arvoa varten
+                                   $data_hidden = [
+                                       'type'  => 'hidden',
+                                       'id'    => $field_input_name_old_id,
+                                       'name'  => $field_name_old_data,
+                                       'value' => $user->$field_name,
+                                       'class' => $field_name_old
+                                   ];
+                                   echo form_input($data_hidden);
+                                   ?>
+                                   </td>
+                                   <?php
+                                   break;
+
                                default: ?>
                                    <td id="<?php echo $field_id_data; ?>">
                                    <?php
@@ -162,8 +200,11 @@
                            } // switch
                       } //foreach display_fields ?>
                     <td>
+                      <?php $update_url = base_url("index.php/User_controller/update_profile") . "/admin/" . $user->user_id . "/" . $filter; ?>
+    			      <a id="<?php echo "profile_" . $user->user_id; ?>" href="<?php echo $update_url; ?>" onClick='jsFunction4("<?php echo $user->user_id; ?>")'>Profiili</a>
+                      <span> / </span>
                       <?php $delete_url = base_url("index.php/User_controller/delete") . "/" . $user->user_id . "/" . $filter; ?>
-    			      <a href="<?php echo $delete_url; ?>" onClick='jsFunction3("<?php echo $user->user_id; ?>")'>Poista</a>
+    			      <a id="<?php echo "del_" . $user->user_id; ?>" href="<?php echo $delete_url; ?>" onClick='jsFunction3("<?php echo $user->user_id; ?>")'>Poista</a>
                     </td>
                   </tr>
                <?php } //foreach users ?>
@@ -335,9 +376,6 @@ $('#filterString').keyup(function() {
   document.getElementById("käyttäjänimi").href = document.getElementById("käyttäjänimiold").value +
         "\\" + document.getElementById("filter_param").value;
 
-  document.getElementById("salasana").href = document.getElementById("salasanaold").value +
-        "\\" + document.getElementById("filter_param").value;
-
   document.getElementById("etunimi").href = document.getElementById("etunimiold").value +
         "\\" + document.getElementById("filter_param").value;
 
@@ -347,7 +385,7 @@ $('#filterString').keyup(function() {
   document.getElementById("sähköposti").href = document.getElementById("sähköpostiold").value +
         "\\" + document.getElementById("filter_param").value;
 
-  document.getElementById("admin").href = document.getElementById("adminold").value +
+  document.getElementById("Käyttäjärooli").href = document.getElementById("Käyttäjärooliold").value +
         "\\" + document.getElementById("filter_param").value;
 
   document.getElementById('user_update_form').action = document.getElementById("formBaseUrl").value +
@@ -410,10 +448,23 @@ function jsFunction2(fieldObject, userId) {
 
 function jsFunction3(userId) {
     var newUrl = document.getElementById("base_delete_url").value;
-	var newUrl = newUrl + "/" + userId + "/" + document.getElementById("filter_param").value;
-	document.getElementById(userId).href = newUrl;
+    newUrl = newUrl + "/" + userId + "/" + document.getElementById("filter_param").value;
+    var idIndex = "del_" + userId;
+	document.getElementById(idIndex).href = newUrl;
 }
 
+function jsFunction4(userId) {
+    var newUrl = document.getElementById("base_profile_url").value;
+	newUrl = newUrl + "/admin/" + userId + "/" + document.getElementById("filter_param").value;
+    var idIndex = "profile_" + userId;
+	document.getElementById(idIndex).href = newUrl;
+}
+
+
+function jsDropdownChance(selectObject,fieldObject) {
+	var selectedValue = selectObject.value;
+	document.getElementById(fieldObject.id).value = selectedValue;
+}
 
 function jsFunction_update(me) {
 	document.getElementById("submit_action").value = "Update";

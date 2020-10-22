@@ -186,11 +186,11 @@
                                        
                                        //Piilokenttä vanhaa arvoa varten
                                        $data_hidden = [
-                                       'type'  => 'hidden',
-                                       'id'    => $field_input_name_old_id,
-                                       'name'  => $field_name_old_data,
-                                       'value' => $setting->$field_name,
-                                       'class' => $field_name_old
+                                           'type'  => 'hidden',
+                                           'id'    => $field_input_name_old_id,
+                                           'name'  => $field_name_old_data,
+                                           'value' => $setting->$field_name,
+                                           'class' => $field_name_old
                                        ];
                                        echo form_input($data_hidden);
                                        break;
@@ -208,7 +208,6 @@
                                        if ($setting->setting_input_type == "datereadonly") {
                                            $data['readonly'] = 'readonly';
                                            $data['class'] = 'enableadminonly';
-                                           //$data['disabled'] = 'disabled';
                                        } else {
                                            $data['class'] = $field_name;
                                        }
@@ -463,7 +462,6 @@ function jsCheckBoxChance(me,fieldObject) {
 function jsDropdownChance(selectObject,fieldObject) {
 	var selectedValue = selectObject.value;
 	document.getElementById(fieldObject.id).value = selectedValue;
-
 }
 
 function jsFunction4() {

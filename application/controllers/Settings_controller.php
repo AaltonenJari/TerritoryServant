@@ -75,7 +75,7 @@ class Settings_controller extends CI_Controller
         $data['sort_by'] = $sort_by;
         $data['sort_order'] = $sort_order;
         
-        //Hae optiot
+        //Aseta optiot
         //Aluekoodin editystapa -valitsin
         $terrCodePresentationOptions = array(
             'X999'  => 'X999',

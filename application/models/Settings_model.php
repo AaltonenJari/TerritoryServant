@@ -37,7 +37,6 @@ class Settings_model extends CI_Model
                 
             case "setting_desc":
             case "setting_value":
-                //$query = $this->db->order_by("setting_admin", "DESC");
                 $query = $this->db->order_by("setting_order_id", $sort_order);
                 break;
                 

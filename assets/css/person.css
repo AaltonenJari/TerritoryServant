@@ -109,6 +109,10 @@ h2 {
   padding-left: 6px;
 }
 
+.user_username, .user_firstname, .user_lastname, .user_email, .input_user_admin1_dropdown  {
+  padding-left: 6px;
+}
+
 
 #table2 tr th:nth-child(1), #table2 tr th:nth-child(7) {
   text-align: center;
@@ -117,6 +121,7 @@ h2 {
 #table2 tr td:nth-child(1), #table2 tr td:nth-child(7) {
   text-align: center;
 }
+
 
 #table2 tr:hover {
   background: #e6f7ff !important;

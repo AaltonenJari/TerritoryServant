@@ -19,6 +19,7 @@ class LoginController extends CI_Controller
             //Kirjautuminen ei ole päällä, käytä oletusta
             $users_data = array(
                 'username' => "guest",
+                'user_id' => "0",
                 'admin' => "0"
             );
             $this->session->set_userdata($users_data);
@@ -100,6 +101,7 @@ class LoginController extends CI_Controller
   {
        //Haetaan kirjautuneen käyttäjän tiedot
        $columns = array(
+           'user_id',
            'user_firstname',
            'user_lastname',
            'user_email',
@@ -110,6 +112,7 @@ class LoginController extends CI_Controller
        
        //Tiedot session-muuttujiin
        $session_data = array(
+           'user_id' => $resultrow['user_id'],
            'user_firstname' => $resultrow['user_firstname'],
            'user_lastname' => $resultrow['user_lastname'],
            'user_email' => $resultrow['user_email'],

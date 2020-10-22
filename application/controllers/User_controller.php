@@ -38,22 +38,20 @@ class User_controller extends CI_Controller
         $data['display_fields'] = array(
             'user_id'			=> 'tunnus',
             'user_username'		=> 'käyttäjänimi',
-            'user_password'		=> 'salasana',
             'user_firstname'	=> 'etunimi',
             'user_lastname'		=> 'sukunimi',
             'user_email'	    => 'sähköposti',
-            'user_admin'		=> 'admin'
+            'user_admin'		=> 'Käyttäjärooli'
         );
         
         //Hakuparametrit kantaan
         $data['database_fields'] = array(
             'user_id'			=> 'tunnus',
             'user_username'		=> 'käyttäjänimi',
-            'user_password'		=> 'salasana',
             'user_firstname'	=> 'etunimi',
             'user_lastname'		=> 'sukunimi',
             'user_email'	    => 'sähköposti',
-            'user_admin'		=> 'admin'
+            'user_admin'		=> 'Käyttäjärooli'
         );
 
         //Korjaa ääkköset takaisin
@@ -70,6 +68,14 @@ class User_controller extends CI_Controller
         $data['sort_by'] = $sort_by;
         $data['sort_order'] = $sort_order;
         $data['filter'] = $filter;
+        
+        //Aseta optiot
+        //Käyttäjärooli -valitsin
+        $userRoleOptions = array(
+            '0'     => 'Peruskäyttäjä',
+            '1'     => 'Ylläpitäjä'
+        );
+        $data['userRoleOptions'] = $userRoleOptions;
         
         //Alusta tietorakenne undo/redo - toimintoa varten
         //Jos parametreja ei ole annettu, alusta tietorakenne
@@ -128,16 +134,142 @@ class User_controller extends CI_Controller
         }
         return $r;
     }
+    
+    public function update_profile($mode, $user_id, $filter = '')
+    {
+        //State variables of user_view
+        $user_view_state_data = array(
+            'filter'          => $filter
+        );
+        $this->session->set_userdata($user_view_state_data);
         
+        //Haetaan henkilön tiedot kannasta
+        $data['display_fields'] = array(
+            'user_id'			=> 'Tunnus',
+            'user_username'		=> 'Käyttäjänimi',
+            'user_firstname'	=> 'Etunimi',
+            'user_lastname'		=> 'Sukunimi',
+            'user_email'	    => 'Sähköposti',
+            'user_admin'	    => 'Käyttäjärooli'
+        );
+        
+        $columns = array(
+            'user_id',
+            'user_username',
+            'user_firstname',
+            'user_lastname',
+            'user_email',
+            'user_admin'
+        );
+        $resultrow = $this->User_model->get_row_by_key($columns, $user_id);
+        $data['user'] = $resultrow;
+        
+        //Aseta optiot
+        //Käyttäjärooli -valitsin
+        $userRoleOptions = array(
+            '0'     => 'Peruskäyttäjä',
+            '1'     => 'Ylläpitäjä'
+        );
+        $data['userRoleOptions'] = $userRoleOptions;
+        
+        $data['editing_mode'] = $mode;
+        
+        $this->load->view('update_profile', $data);
+    }
+    
+    public function check_profile() 
+    {
+        $mode = $this->input->post('editing_mode');
+        
+        $userId = $this->input->post('user_id');
+        $action = $this->input->post('action');
+        switch ($action) {
+            case "Päivitä":
+                // set validation rules
+                $rules = array(
+                array('field' => 'djnimi',
+                'label' => 'Kenellä',
+                'rules' => 'callback_verify_update')
+                ) ;
+                // check input data
+                $this->form_validation->set_rules($rules);
+                
+                if ($this->form_validation->run() == false) {
+                    $this->update_profile($mode, $userId);
+                } else {
+                    $this->update($mode);
+                }
+                break;
+                
+            case "Paluu":
+                if(isset($_SESSION['error'])){
+                    unset($_SESSION['error']);
+                }
+                if ($mode == "admin") {
+                    //Palataan päänäytölle siinä tilassa, kuin se oli ennen päivitystä
+                    $this->display($this->session->userdata('sort_by'),
+                        $this->session->userdata('sort_order'),
+                        $this->session->userdata('filter'));
+                } else {
+                    //Palataan päänäytölle
+                    $main_url = 'Location: ' . base_url("index.php/Territory_controller/display");
+                    header($main_url);
+                }
+                break;
+                
+            default:
+                $msg = "Tunnistamaton toiminto";
+                $num_vars = count( explode( '###', http_build_query($_POST, '', '###') ) );
+                $max_num_vars = ini_get('max_input_vars');
+                if ($num_vars > $max_num_vars) {
+                    $msg .= " Input-parametreja on enemmän kuin " . $max_num_vars;
+                }
+                $this->session->set_flashdata('error', $msg);
+                
+                $this->update_profile($mode, $userId);
+                break;
+        } // switch
+        
+    }
+    
+    public function verify_update()
+    {
+        if (empty($this->input->post('user_username'))) {
+            $this->session->set_flashdata('error', 'Käyttäjätunnus ei saa olla tyhjä.');
+            return false;
+        }
+        if (empty($this->input->post('user_firstname')) && empty($this->input->post('user_lastname'))) {
+            $this->session->set_flashdata('error', 'Henkilön etu- ja sukunimi ovat kumpikin tyhjiä.');
+            return false;
+        }
+        //Tarkista, onko käyttäjätunnus jo kannassa
+        $found = $this->User_model->username_exists($this->input->post('user_username'));
+        if ($found > 0)  {
+            //Tarkista vielä, yritetäänkö muuttaa toiseksi, olemassaolevaksi käyttäjätunnukseksi
+			$columns = array(
+                'user_username'
+            );
+			$resultrow = $this->User_model->get_row_by_key($columns, $this->input->post('user_id'));
+			if ($this->input->post('user_username') != $resultrow['user_username']) {
+			    $msg = "Ei voi päivittää. Käyttäjätunnus " . $this->input->post('user_username') . " on käytössä.";
+			    $this->session->set_flashdata('error', $msg);
+			    return false;
+			}
+        }
+        
+        //Poistetaan aikaisemmin näkynyt virheteksti
+        if(isset($_SESSION['error'])){
+            unset($_SESSION['error']);
+        }
+        return true;
+    }
+    
     public function update_rows()
     {
         $field_user_ids = $this->input->post('user_id_old');
         
         $field_user_usernames = $this->input->post('user_username');
         $field_old_user_usernames = $this->input->post('user_username_old');
-
-        $field_user_passwords = $this->input->post('user_password');
-        $field_old_user_passwords = $this->input->post('user_password_old');
 
         $field_user_firstnames = $this->input->post('user_firstname');
         $field_old_user_firstnames = $this->input->post('user_firstname_old');
@@ -158,7 +290,6 @@ class User_controller extends CI_Controller
         
         for ($i = 0; $i < sizeof($field_user_ids); $i++) {
             if (($field_user_usernames[$i] != $field_old_user_usernames[$i]) ||
-                ($field_user_passwords[$i] != $field_old_user_passwords[$i]) ||
                 ($field_user_firstnames[$i] != $field_old_user_firstnames[$i]) ||
                 ($field_user_lastnames[$i] != $field_old_user_lastnames[$i]) ||
                 ($field_user_emails[$i] != $field_old_user_emails[$i]) ||
@@ -166,7 +297,6 @@ class User_controller extends CI_Controller
                     
                     $update_data = array(
                         'user_username'		=> $field_user_usernames[$i],
-                        'user_password'		=> $field_user_passwords[$i],
                         'user_firstname'	=> $field_user_firstnames[$i],
                         'user_lastname'		=> $field_user_lastnames[$i],
                         'user_email' 		=> $field_user_emails[$i],
@@ -177,7 +307,6 @@ class User_controller extends CI_Controller
                     //Tiedot undo/redo -toimintoa varten
                     $update_data_old = array(
                         'user_username'		=> $field_old_user_usernames[$i],
-                        'user_password'		=> $field_old_user_passwords[$i],
                         'user_firstname'	=> $field_old_user_firstnames[$i],
                         'user_lastname'		=> $field_old_user_lastnames[$i],
                         'user_email' 		=> $field_old_user_emails[$i],
@@ -207,7 +336,7 @@ class User_controller extends CI_Controller
         return ;
     }
     
-    public function update($user_id, $field_name, $field_value, $filter = '')
+    public function update_field($user_id, $field_name, $field_value, $filter = '')
     {
         //State variables of user_view
         $user_view_state_data = array(
@@ -218,7 +347,6 @@ class User_controller extends CI_Controller
         //Haetaan henkilön tiedot kannasta
         $columns = array(
             'user_username',
-            'user_password',
             'user_firstname',
             'user_lastname',
             'user_email',
@@ -235,14 +363,6 @@ class User_controller extends CI_Controller
                         $update_data['user_username'] = $field_value;
                     } else {
                         $update_data['user_username'] = $value;
-                    }
-                    break;
-
-                 case "user_password":
-                    if ($field_name == "user_password") {
-                        $update_data['user_password'] = $field_value;
-                    } else {
-                        $update_data['user_password'] = $value;
                     }
                     break;
 
@@ -300,7 +420,6 @@ class User_controller extends CI_Controller
         //Tiedot undo/redo -toimintoa varten
         $update_data_old = array(
             'user_username'		=> $resultrow['user_username'],
-            'user_password'		=> $resultrow['user_password'],
             'user_firstname'	=> $resultrow['user_firstname'],
             'user_lastname'		=> $resultrow['user_lastname'],
             'user_email' 		=> $resultrow['user_email'],
@@ -326,6 +445,73 @@ class User_controller extends CI_Controller
             $this->session->userdata('filter'));
     
         return ;
+    }
+    
+    public function update($mode) 
+    {
+        if ($mode == "admin") {
+            /** UNSERIALIZE **/
+            $undo_redo_stack = unserialize($_SESSION['undo_redo_user_edit']);
+        }
+        $user_id = $this->input->post('user_id');
+        
+        if ($mode == "admin") {
+            //Haetaan henkilön vanhat tiedot kannasta
+            $columns = array(
+                'user_username',
+                'user_password',
+                'user_firstname',
+                'user_lastname',
+                'user_email',
+                'user_admin'
+            );
+            $resultrow = $this->User_model->get_row_by_key($columns, $user_id);
+            
+            //Tiedot undo/redo -toimintoa varten
+            $data_old = array();
+            $data_old['user_username'] = $resultrow['user_username'];
+            $data_old['user_firstname'] = $resultrow['user_firstname'];
+            $data_old['user_lastname'] = $resultrow['user_lastname'];
+            $data_old['user_email'] = $resultrow['user_email'];
+            $data_old['user_admin'] = $resultrow['user_admin'];
+            if (!empty($this->input->post('user_password'))) {
+                $data_old['user_password'] = $resultrow['user_password'];
+            }
+        }
+        
+        //Päivitetään uudet tiedot
+        $update_data = array();
+        $update_data['user_username'] = $this->input->post('user_username');
+        $update_data['user_firstname'] = $this->input->post('user_firstname');
+        $update_data['user_lastname'] = $this->input->post('user_lastname');
+        $update_data['user_email'] = $this->input->post('user_email');
+        $update_data['user_admin'] = $this->input->post('user_admin');
+        if (!empty($this->input->post('user_password'))) {
+            $update_data['user_password'] = $this->input->post('user_password');
+        }
+        $this->User_model->update($update_data, $user_id);
+        
+        if ($mode == "admin") {
+            $edit_info = array(
+                'operation'	=> 'edit',
+                'key'		=> $user_id,
+                'data_old'	=> $data_old,
+                'data_new'	=> $update_data
+            );
+            
+            //Lisäyksen tiedot muistiin
+            $undo_redo_stack->execute($edit_info);
+            
+            /** SERIALIZE **/
+            $_SESSION['undo_redo_user_edit'] = serialize($undo_redo_stack);
+            
+            $this->display($this->session->userdata('sort_by'),
+                $this->session->userdata('sort_order'),
+                $this->session->userdata('filter'));
+        } else {
+            $this->update_profile($mode, $user_id);
+        }
+        
     }
     
     public function insert($mode = 'new')
@@ -414,7 +600,7 @@ class User_controller extends CI_Controller
                 $rules = array(
                 array('field' => 'djnimi',
                   'label' => 'Kenellä',
-                  'rules' => 'callback_verify_update')
+                  'rules' => 'callback_verify_insert')
                 ) ;
                 // check input data
                 $this->form_validation->set_rules($rules);
@@ -451,7 +637,8 @@ class User_controller extends CI_Controller
         
         return;
     }
-    public function verify_update() 
+    
+    public function verify_insert() 
     {
         if (empty($this->input->post('user_username'))) {
             $this->session->set_flashdata('error', 'Käyttäjätunnus ei saa olla tyhjä.');
@@ -462,7 +649,14 @@ class User_controller extends CI_Controller
             return false;
         }
         if (empty($this->input->post('user_firstname')) && empty($this->input->post('user_lastname'))) {
-            $this->session->set_flashdata('error', 'Henkilön etu- ja sukunimi ovat kumpikin tyhjiä.');
+            $this->session->set_flashdata('error', 'Käyttäjän etu- ja sukunimi ovat kumpikin tyhjiä.');
+            return false;
+        }
+        //Tarkista, onko käyttäjätunnus jo kannassa
+        $found = $this->User_model->username_exists($this->input->post('user_username'));
+        if ($found > 0)  {
+            $msg = "Ei voi lisätä. Käyttäjätunnus " . $this->input->post('user_username') . " on käytössä.";
+            $this->session->set_flashdata('error', $msg);
             return false;
         }
         //Tarkista, onko henkilön tiedot jo kannassa
@@ -525,14 +719,12 @@ class User_controller extends CI_Controller
         //Lisäyksen tiedot muistiin
         $undo_redo_stack->execute($edit_info);
         
-         
         /** SERIALIZE **/
         $_SESSION['undo_redo_user_edit'] = serialize($undo_redo_stack);
         
         $this->display($this->session->userdata('sort_by'),
             $this->session->userdata('sort_order'),
             $this->session->userdata('filter'));
-
     }
         
     public function delete($key_id, $filter = '')
@@ -546,7 +738,7 @@ class User_controller extends CI_Controller
         /** UNSERIALIZE **/
         $undo_redo_stack = unserialize($_SESSION['undo_redo_user_edit']);
         
-        //Haetaan poistettavan alueen tiedot
+        //Haetaan poistettavan rivin tiedot
         $columns = array(
             'user_username',
             'user_password',
@@ -599,14 +791,15 @@ class User_controller extends CI_Controller
             switch ($edit_info_data['operation']) {
                 case "edit":
                     //Peru muutos
-                    $update_data = array(
-					  'user_username'	=> $edit_info_data['data_old']['user_username'],
-					  'user_password' 	=> $edit_info_data['data_old']['user_password'],
-                      'user_firstname' 	=> $edit_info_data['data_old']['user_firstname'],
-                      'user_lastname' 	=> $edit_info_data['data_old']['user_lastname'],
-                      'user_email' 		=> $edit_info_data['data_old']['user_email'],
-                      'user_admin' 		=> $edit_info_data['data_old']['user_admin']
-                    );
+                    $update_data = array();
+                    $update_data['user_username'] = $edit_info_data['data_old']['user_username'];
+                    $update_data['user_firstname'] = $edit_info_data['data_old']['user_firstname'];
+                    $update_data['user_lastname'] = $edit_info_data['data_old']['user_lastname'];
+                    $update_data['user_email'] = $edit_info_data['data_old']['user_email'];
+                    $update_data['user_admin'] = $edit_info_data['data_old']['user_admin'];
+                    if (isset($edit_info_data['data_new']['user_password'])) {
+                        $update_data['user_password'] = $edit_info_data['data_old']['user_password'];
+                    }
                     $this->User_model->update($update_data, $edit_info_data['key']);
                     break;
   
@@ -657,14 +850,15 @@ class User_controller extends CI_Controller
             switch ($edit_info_data['operation']) {
                 case "edit":
                     //Palauta muutos
-                    $update_data = array(
-			 		   'user_username'	=> $edit_info_data['data_new']['user_username'],
-					   'user_password' 	=> $edit_info_data['data_new']['user_password'],
-                       'user_firstname' => $edit_info_data['data_new']['user_firstname'],
-                       'user_lastname' 	=> $edit_info_data['data_new']['user_lastname'],
-                       'user_email' 	=> $edit_info_data['data_new']['user_email'],
-                       'user_admin'		=> $edit_info_data['data_new']['user_admin']
-                    );
+                    $update_data = array();
+                    $update_data['user_username'] = $edit_info_data['data_new']['user_username'];
+                    $update_data['user_firstname'] = $edit_info_data['data_new']['user_firstname'];
+                    $update_data['user_lastname'] = $edit_info_data['data_new']['user_lastname'];
+                    $update_data['user_email'] = $edit_info_data['data_new']['user_email'];
+                    $update_data['user_admin'] = $edit_info_data['data_new']['user_admin'];
+                    if (isset($edit_info_data['data_new']['user_password'])) {
+                        $update_data['user_password'] = $edit_info_data['data_new']['user_password'];
+                    }
                     $this->User_model->update($update_data, $edit_info_data['key']);
                     break;
                     

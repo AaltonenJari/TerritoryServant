@@ -82,11 +82,22 @@ class User_model extends CI_Model
         return $name_id;
     }
     
-    public function row_exists($key_id) 
+    public function row_exists($key_id)
     {
         $query = $this->db->select('COUNT(*) as count', FALSE)
         ->from('users');
         $this->db->where('user_id', $key_id);
+        
+        $res2 = $query->get()->result();
+        
+        return ($res2[0]->count);
+    }
+    
+    public function username_exists($username) 
+    {
+        $query = $this->db->select('COUNT(*) as count', FALSE)
+        ->from('users');
+        $this->db->where('user_username', $username);
         
         $res2 = $query->get()->result();
         

@@ -9,6 +9,7 @@
     
     <?php 
     $user = $this->session->userdata('username');
+    $userid = $this->session->userdata('user_id');
     $admin = $this->session->userdata('admin'); 
     ?>
     <div class="naw_wrapper">
@@ -98,17 +99,26 @@
             </a>
           </div>
         </li>
-        <?php if (!empty($this->session->userdata('admin'))) { //Käyttäjähallinta vain pääkäyttäjille ?>
+        <?php if (!empty($this->session->userdata('useSignIn')) || $user != "guest") { ?>
         <li>
           <div class="dropdown">
             <?php if ($sivu_tunnus == "6") { $dropbtn_classes = $dropbtn_classes_base . " active"; } else { $dropbtn_classes = $dropbtn_classes_base; } ?>
-            <a href="<?php echo base_url("index.php/User_controller/display"); ?>" >
+            <a href="<?php echo base_url("index.php/User_controller/update_profile/own/" . $userid); ?>" >
               <button class="<?php echo $dropbtn_classes; ?>">
                 <div class="tooltip">Käyttäjät
-                  <span class="tooltiptext">Käyttäjähallinta</span>
+                  <span class="tooltiptext">Oman käyttäjäprofiilin päivitys</span>
                 </div>
               </button>
             </a>
+            <?php if (!empty($this->session->userdata('admin'))) { //Käyttäjähallinta vain pääkäyttäjille ?>
+            <div class="dropdown-content">
+              <div class="nav-sub">
+                <ul>
+                  <li><a href="<?php echo base_url("index.php/User_controller/display"); ?>">Käyttäjähallinta</a></li>
+                </ul>
+              </div>
+            </div>
+            <?php }?>
           </div>
         </li> 
         <?php }?>
