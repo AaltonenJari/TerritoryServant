@@ -14,6 +14,7 @@ class Territory_controller extends CI_Controller
         $this->load->model('Maintenance_model');
         $this->load->model('Person_model');
         $this->load->model('Settings_model');
+        $this->load->model('Log_model');
         $this->load->model('UndoRedoStack');
     }
     
@@ -754,40 +755,56 @@ class Territory_controller extends CI_Controller
                 'event_user' => $person_id_old,
                 'event_alue' => $alue_id
             );
-            
-            $this->Event_model->insert($event_data_new);
+            $this->modify_event($event_data_new,1);
             //Merkitään alue käydyksi, palautuneeksi
             $alue_kayty = true;
         } else { //lainaus
             if ($this->input->post('lainassa_old') == "1") { 
-                //Jos lainaaja vaihtuu, tai kirjataanko myös merkkaukset,
-                if (($person_id_old != $person_id_new) || $event_save_switch > 0) {
-                    //Lisää alueen palautumistapahtuma
+                //Jos lainaaja vaihtuu,
+                if ($person_id_old != $person_id_new) {
+                    //lisää palautumistapahtuma
                     $event_data_old = array(
                         'event_type' => "2",
                         'event_date' => $new_lastdate,
                         'event_user' => $person_id_old,
                         'event_alue' => $alue_id
                     );
-                    
-                    $this->Event_model->insert($event_data_old);
+                    $this->modify_event($event_data_old,1);
+                    //Merkitään alue käydyksi
+                    $alue_kayty = true;
+                } else if ($event_save_switch > 0) {
+                    //kirjataan myös merkkaukset,
+                    $event_data_old = array(
+                        'event_type' => "4",
+                        'event_date' => $new_lastdate,
+                        'event_user' => $person_id_old,
+                        'event_alue' => $alue_id
+                    );
+                    $this->modify_event($event_data_old,1);
+                    //Merkitään alue käydyksi
+                    $alue_kayty = true;
                 }
-                
-                //Merkitään alue käydyksi
-                $alue_kayty = true;
             }
-            //Jos lainaaja vaihtuu, tai kirjataanko myös merkkaukset,
-            if (($person_id_old != $person_id_new) || $event_save_switch > 0) {
+            //Jos lainaaja vaihtuu
+            if ($person_id_old != $person_id_new) {
                 $event_data_new = array(
                     'event_type' => "1",
                     'event_date' => $new_lastdate,
                     'event_user' => $person_id_new,
                     'event_alue' => $alue_id
                 );
-                
-                $this->Event_model->insert($event_data_new);
+                $this->modify_event($event_data_new,1);
+            } else if ($event_save_switch > 0) {
+                //kirjataan myös merkkaukset,
+                $event_data_new = array(
+                    'event_type' => "3",
+                    'event_date' => $new_lastdate,
+                    'event_user' => $person_id_new,
+                    'event_alue' => $alue_id
+                );
+                $this->modify_event($event_data_new,1);
             }
-        }
+        }  //Lainaus
                
         if ($alue_kayty) {
             $data = array(
@@ -818,6 +835,69 @@ class Territory_controller extends CI_Controller
                 $this->session->userdata('code_sel'),
                 $this->session->userdata('filter'));
         }
+        
+    }
+    
+    public function modify_event($event_data, $operation) 
+    {
+        //Hae alueen viimeisin tapahtuma
+        $columns_event = array(
+            'event_id',
+            'event_type',
+            'event_date',
+            'event_user',
+            'event_alue'
+        );
+        $alue_id = $event_data['event_alue'];
+        
+        //toiminnon mukaan
+        switch ($operation) {
+            case "1": //Lisäys
+            case "3": //Lisäys, undo
+                $this->Event_model->insert($event_data);
+
+                //Hae lisäty tapahtumarivi
+                $results = $this->Event_model->get_latest_event_data($columns_event, $alue_id);
+                $resultrow = $results['rows'][0];
+   
+                //Lisää lokitapahtuma
+                $log_data = array(
+                    'log_event_id' => $resultrow->event_id,
+                    'log_event_type' => $resultrow->event_type,
+                    'log_event_date' => $resultrow->event_date,
+                    'log_event_person' => $resultrow->event_user,
+                    'log_event_terr' => $alue_id,
+                    'log_user_id' => $this->session->userdata('user_id'),
+                    'log_operation_code' => $operation
+                );
+                $this->Log_model->insert($log_data);
+                break;
+                
+            case "2": //Poisto
+            case "4": //Poisto, redo
+                //Hae tapahtumarivi ennen poistoa
+                $results = $this->Event_model->get_latest_event_data($columns_event, $alue_id);
+                $resultrow = $results['rows'][0];
+                
+                //Lisää lokitapahtuma ennen poistoa
+                $log_data = array(
+                    'log_event_id' => $resultrow->event_id,
+                    'log_event_type' => $resultrow->event_type,
+                    'log_event_date' => $resultrow->event_date,
+                    'log_event_person' => $resultrow->event_user,
+                    'log_event_terr' => $alue_id,
+                    'log_user_id' => $this->session->userdata('user_id'),
+                    'log_operation_code' => $operation
+                );
+                $this->Log_model->insert($log_data);
+                
+                $this->Event_model->delete($event_data['event_id']);
+                break;
+                
+            default:
+                break;
+        } // switch
+
         
     }
     
@@ -1085,7 +1165,7 @@ class Territory_controller extends CI_Controller
         switch ($action) {
             case "Poista":
             case "Remove":
-                $event_data = $this->remove_event($terr_nbr);
+                $event_data = $this->remove_event($terr_nbr,2);
                  //Tapahtuman tiedot muistiin
                 $undo_redo_stack->execute($event_data);
                 $_SESSION['undo_redo_stack'] = serialize($undo_redo_stack);
@@ -1108,7 +1188,7 @@ class Territory_controller extends CI_Controller
                 if ($undo_redo_stack->can_redo()) {
                     $event_data = $undo_redo_stack->redo();
                     $_SESSION['undo_redo_stack'] = serialize($undo_redo_stack);
-                    $event_data_deleted = $this->remove_event($terr_nbr);
+                    $event_data_deleted = $this->remove_event($terr_nbr,4);
                 } else {
                     $this->session->set_flashdata("error", "Can't redo.");
                 }
@@ -1159,7 +1239,7 @@ class Territory_controller extends CI_Controller
         return ;
     }
     
-    public function remove_event($terr_nbr)
+    public function remove_event($terr_nbr, $operation)
     {
         //Hae alue_id
         $columns = array(
@@ -1191,7 +1271,11 @@ class Territory_controller extends CI_Controller
         );
         
         //Poista tapahtuma
-        $this->Event_model->delete($resultrow->event_id);
+        $event_data_new = array(
+            'event_id' => $resultrow->event_id,
+            'event_alue' => $resultrow->event_alue
+        );
+        $this->modify_event($event_data_new,$operation);
         
         //Poiston jälkeen haetaan viimeisin tapahtuma
         $results2 = $this->Event_model->get_latest_event_data($columns_event, $alue_id);
@@ -1247,7 +1331,7 @@ class Territory_controller extends CI_Controller
         );
         
         //Lisää tapahtuma
-        $this->Event_model->insert($event_data);
+        $this->modify_event($event_data,3);
         
         $alue_lastdate = $event_history_data['alue_lastdate'];
         

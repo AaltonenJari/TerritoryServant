@@ -62,6 +62,9 @@
               <div class="nav-sub">
                 <ul>
                   <li><a href="<?php echo base_url("index.php/event_controller/display_bookkeeping"); ?>">Koko kirjanpito</a></li>
+                  <?php if (!empty($this->session->userdata('logging'))) { //Näytä loki, jos lokitus on päällä ?>
+                    <li><a href="<?php echo base_url("index.php/log_controller/display"); ?>">Tapahtumaloki</a></li>
+                  <?php } ?>
                 </ul>
               </div>
             </div>
@@ -118,7 +121,7 @@
                 </ul>
               </div>
             </div>
-            <?php }?>
+            <?php } ?>
           </div>
         </li> 
         <?php }?>

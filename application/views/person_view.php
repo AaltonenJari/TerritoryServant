@@ -38,7 +38,7 @@
       <table id="selectortable">
         <tr>
           <th width="15%">Etsi / Rajaa</th>
-          <th width="35%">Rajaus</th>
+          <th width="35%">Ryhmä</th>
           <th width="35%"></th>
           <th width="15%">Perustilaan</th>
         </tr>
@@ -235,8 +235,8 @@
                                    <td id="<?php echo $field_id_data; ?>"> 
                                    <?php
                                    if (empty($person->$field_name)) {
-                                        $terr_url = base_url("index.php/Person_controller/delete") . "/" . $person->person_id . "/" . $filter; ?>
-    	             					<a href="<?php echo $terr_url; ?>" onClick='jsFunction3("<?php echo $person->person_id; ?>")'>Poista</a>
+                                       $delete_url = base_url("index.php/Person_controller/delete") . "/" . $person->person_id . "/" . $filter; ?>
+   	             					   <a id="<?php echo "del_" . $person->person_id; ?>" href="<?php echo $delete_url; ?>" onClick='jsFunction3("<?php echo $person->person_id; ?>")'>Poista</a>
                                    <?php } ?>
                                    </td>
                                    <?php
@@ -521,10 +521,11 @@ function jsFunction2(fieldObject, personId) {
 	//location.replace(newUrl);
 }
 
-function jsFunction3(alue_code) {
+function jsFunction3(personId) {
     var newUrl = document.getElementById("base_delete_url").value;
-	var newUrl = newUrl + "/" + alue_code + "/" + document.getElementById("filter_param").value;
-	document.getElementById(alue_code).href = newUrl;
+	newUrl = newUrl + "/" + personId + "/" + document.getElementById("filter_param").value;
+    var idIndex = "del_" + personId;
+	document.getElementById(idIndex).href = newUrl;
 }
 
 function jsFunction4() {
@@ -533,7 +534,6 @@ function jsFunction4() {
     var newUrl = document.getElementById("displayBaseUrl").value;
     newUrl = newUrl + "\\" + document.getElementById("selGroupLimitOld").value;
     newUrl = newUrl + "\\" + document.getElementById("filter_param").value;
-	//alert(newUrl);
 	location.replace(newUrl);
 }
 
@@ -542,25 +542,11 @@ function jsGroupChance(selectObject,fieldObject, personId) {
 	var selectedGroupId = selectedString.match(/\d+/g);
 	selectedGroupId = Number(selectedGroupId);
 	document.getElementById(fieldObject.id).value = selectedGroupId;
-	var fieldName = document.getElementById(fieldObject.id).className;
-
-	var newUrl = document.getElementById("base_update_url").value;
-	var newUrl = newUrl + "/" + personId + "/" + fieldName + "/" + selectedGroupId;
-	var newUrl = newUrl + "/" + document.getElementById("filter_param").value;
-	//alert(newUrl);
-	//location.replace(newUrl);
 }
 
 function jsOverseerChance(selectObject,fieldObject, personId) {
 	var selectedString = selectObject.value;
 	document.getElementById(fieldObject.id).value = selectedString;
-	var fieldName = document.getElementById(fieldObject.id).className;
-
-	var newUrl = document.getElementById("base_update_url").value;
-	var newUrl = newUrl + "/" + personId + "/" + fieldName + "/" + selectedString;
-	var newUrl = newUrl + "/" + document.getElementById("filter_param").value;
-	//alert(newUrl);
-	//location.replace(newUrl);
 }
 
 function jsFunction_update(me) {

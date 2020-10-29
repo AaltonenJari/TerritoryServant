@@ -221,7 +221,16 @@ class Settings_controller extends CI_Controller
                         }
                     }
                 }
-                 
+                
+                //Jos loki-taulu on poissa, älä anna muuttaa lokitusta päälle
+                if (!$this->Settings_model->tableExists('event_log') || !$this->Settings_model->tableExists('settings')) {
+                    if ($keys[$i] == "logging") {
+                        if ($field_setting_values[$i] != '0') {
+                            $field_setting_values[$i] = '0';
+                        }
+                    }
+                }
+                
                 $update_data = array(
                     'setting_value'	=> $field_setting_values[$i]
                 );

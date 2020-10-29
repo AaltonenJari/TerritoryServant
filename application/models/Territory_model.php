@@ -159,7 +159,6 @@ class Territory_model extends CI_Model {
                 break;
         } // switch
         
-        
         $ret['rows'] = $query->get()->result();
         
         //count query

@@ -150,8 +150,8 @@
                                    <td id="<?php echo $field_id_data; ?>"> 
                                    <?php
                                    if (empty($alue->$field_name)) {
- 										$terr_url = base_url("index.php/Maintenance_controller/delete") . "/" . $alue->alue_code . "/" . $filter; ?>
-   		  	                            <a href="<?php echo $terr_url; ?>" onClick='jsFunction3("<?php echo $alue->alue_code; ?>")'>Poista</a>
+ 									  $delete_url = base_url("index.php/Maintenance_controller/delete") . "/" . $alue->alue_code . "/" . $filter; ?>
+   		  	                          <a id="<?php echo "del_" . $alue->alue_code; ?>" href="<?php echo $delete_url; ?>" onClick='jsFunction3("<?php echo $alue->alue_code; ?>")'>Poista</a>
                                    <?php } ?>
                                    </td>
                                    <?php
@@ -414,17 +414,18 @@ function filter_table(searchText) {
 
 function jsFunction3(alue_code) {
     var newUrl = document.getElementById("base_delete_url").value;
-	var newUrl = newUrl + "/" + alue_code + "/" + document.getElementById("filter_param").value;
-	document.getElementById(alue_code).href = newUrl;
+	newUrl = newUrl + "/" + alue_code + "/" + document.getElementById("filter_param").value;
+    var idIndex = "del_" + alue_code;
+	document.getElementById(idIndex).href = newUrl;
 }
 
 function jsFunction4() {
 	var myselect = document.getElementById("terrCodeChkBoxChooser");
 	document.getElementById("selCodeOld").value = myselect.options[myselect.selectedIndex].value;
-    var newUrl = document.getElementById("displayBaseUrl").value;
+
+	var newUrl = document.getElementById("displayBaseUrl").value;
     newUrl = newUrl + "\\" + document.getElementById("selCodeOld").value;
     newUrl = newUrl + "\\" + document.getElementById("filter_param").value;
-	//alert(newUrl);
 	location.replace(newUrl);
 }
 

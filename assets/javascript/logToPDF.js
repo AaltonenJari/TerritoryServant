@@ -12,13 +12,15 @@ function createPDF()
 
 	style = style + "table, td, th { border: 1px solid black;} ";
 	
-	style = style + "th {padding: 10px; text-align: left; text-transform: uppercase; " +
-            " }";
+	style = style + "th {padding:3px 10px 3px 10px; text-align: left; text-transform: uppercase; }";
+	style = style + "td {padding:3px 10px 3px 10px;	} ";
+
 	
-	style = style + "tr td:nth-child(1), tr th:nth-child(1), tr td:nth-child(4), tr th:nth-child(4) { text-align: center; } ";
-	style = style + "tr td:nth-child(5), tr th:nth-child(5) {text-align: right;	} ";
+	style = style + "tr th:nth-child(2), tr th:nth-child(3), tr th:nth-child(5) { text-align: center; } ";
+	style = style + "tr th:nth-child(4), tr th:nth-child(8) { text-align: right; } ";
 	
-	style = style + "tr td:nth-child(2), tr td:nth-child(3), tr td:nth-child(5), tr td:nth-child(6) {padding: 10px;	} ";
+	style = style + "tr td:nth-child(2), tr td:nth-child(3), tr td:nth-child(5) { text-align: center; } ";
+	style = style + "tr td:nth-child(4), tr td:nth-child(8) { text-align: right; } ";
 	
 	style = style + "a { text-decoration: none !important; color: black; }";
 	

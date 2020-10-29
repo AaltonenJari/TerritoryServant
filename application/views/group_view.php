@@ -136,8 +136,8 @@
                                    if (empty($group->$field_name)) {
                                        if (empty($group->group_events)) {
                                            //Poisto vain, jos person_count tai group_events on tyhjä
-                                           $terr_url = base_url("index.php/Group_controller/delete") . "/" . $group->group_id . "/" . $filter; ?>
-    	             				       <a href="<?php echo $terr_url; ?>" onClick='jsFunction3("<?php echo $group->group_id; ?>")'>Poista</a>
+                                           $delete_url = base_url("index.php/Group_controller/delete") . "/" . $group->group_id . "/" . $filter; ?>
+    	             				       <a id="<?php echo "del_" . $group->group_id; ?>" href="<?php echo $delete_url; ?>" onClick='jsFunction3("<?php echo $group->group_id; ?>")'>Poista</a>
                                        <?php } else { 
                                            $attributes = [
                                                'class' => $field_name,
@@ -414,10 +414,11 @@ function jsFunction2(fieldObject, groupId) {
 	//location.replace(newUrl);
 }
 
-function jsFunction3(alue_code) {
+function jsFunction3(groupId) {
     var newUrl = document.getElementById("base_delete_url").value;
-	var newUrl = newUrl + "/" + alue_code + "/" + document.getElementById("filter_param").value;
-	document.getElementById(alue_code).href = newUrl;
+	newUrl = newUrl + "/" + groupId + "/" + document.getElementById("filter_param").value;
+    var idIndex = "del_" + groupId;
+	document.getElementById(idIndex).href = newUrl;
 }
 
 function jsFunction_update(me) {

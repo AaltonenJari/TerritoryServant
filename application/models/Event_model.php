@@ -105,7 +105,8 @@ class Event_model extends CI_Model
         }
     }
     
-    public function delete($event_id) {
+    public function delete($event_id) 
+    {
         if ($this->db->delete("alue_events", "event_id = ".$event_id)) {
             return true;
         }

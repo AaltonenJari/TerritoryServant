@@ -167,7 +167,7 @@ class Settings_model extends CI_Model
         //Aluekoodin editystapa:
         $setting_row = new stdClass;
         $setting_row->setting_id = '11';
-        $setting_row->setting_order_id = '20';
+        $setting_row->setting_order_id = '22';
         $setting_row->setting_input_type = 'dropbox';
         $setting_row->setting_input_id = 'terrCodePresentation';
         $setting_row->setting_desc = 'Aluekoodin editystapa:';
@@ -178,13 +178,25 @@ class Settings_model extends CI_Model
         //Alue_detail-taulu käytössä:
         $setting_row = new stdClass;
         $setting_row->setting_id = '12';
-        $setting_row->setting_order_id = '21';
+        $setting_row->setting_order_id = '23';
         $setting_row->setting_input_type = 'checkbox';
         $setting_row->setting_input_id = 'useTerritoryDetaiTable';
         $setting_row->setting_desc = 'Alue_detail-taulu käytössä:';
         $setting_row->setting_value = $this->session->userdata('useTerritoryDetaiTable');
         $setting_row->setting_admin = '1';
         $settings_rows[] = $setting_row;
+        
+        //Lokitus käytössä:
+        $setting_row = new stdClass;
+        $setting_row->setting_id = '13';
+        $setting_row->setting_order_id = '21';
+        $setting_row->setting_input_type = 'checkbox';
+        $setting_row->setting_input_id = 'logging';
+        $setting_row->setting_desc = 'Lokiin kirjoitus käytössä:';
+        $setting_row->setting_value = $this->session->userdata('logging');
+        $setting_row->setting_admin = '1';
+        $settings_rows[] = $setting_row;
+        
         
         $ret['rows'] = $settings_rows;
          
@@ -216,7 +228,6 @@ class Settings_model extends CI_Model
         $this->session->set_userdata($settings_data);
         return ;
     }
-    
     
     public function update($data, $key) 
     {
@@ -309,8 +320,7 @@ class Settings_model extends CI_Model
             $this->session->set_userdata($session_initialized);
         }
     }
-    
-    
+
     public function default_settings() 
     {
         //default settings
@@ -318,15 +328,20 @@ class Settings_model extends CI_Model
             'congregationName' => 'Kankaanpää',
             'congregationNumber' => '38703',
             'useSignIn' => '0', //Kirjautuminen ei käytössä
-            'terrCodePresentation' => 'X999', 
-            'useTerritoryDetaiTable' => '0', //Alue_detail-taulu ei käytössä
+ 
             'namePresentation'  => '1',  //0 = firstname lsatname, 1 = lastmame, firstname; (default)
             'eventOrder' => 'DESC',
             'archiveYears' => '12',
             'btSwitch' => '0',  //Liikealueet: 0 = ei näytetä (default), 1 = näytetään
             'eventSaveSwitch' => '0', //Vain lainaukset ja palautukset
             'circuitWeekStart' => '8.12.2020',
-            'circuitWeekEnd' => '13.12.2020'
+            'circuitWeekEnd' => '13.12.2020',
+            'terrCodePresentation' => 'X999',
+            'useTerritoryDetaiTable' => '0', //Alue_detail-taulu ei käytössä
+
+            'logging' => '0', //Lokiin kirjoitus ei käytössä
+            'terrCodePresentation' => 'X999',
+            'useTerritoryDetaiTable' => '0' //Alue_detail-taulu ei käytössä
         );
         $this->session->set_userdata($settings_data);
     }
