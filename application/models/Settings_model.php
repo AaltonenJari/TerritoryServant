@@ -310,11 +310,12 @@ class Settings_model extends CI_Model
                 //Asetukset session-muuttujiin
                 $this->set_settings($results);
             } else {
-                $results = $this->default_settings();
+                $this->default_settings();
             }
             
             //Merkitään asetukset alustetuksi
             $session_initialized = array(
+                'eventSaveSwitchOld' => $this->session->userdata('eventSaveSwitch'),
                 'initialized'     => 'K'
             );
             $this->session->set_userdata($session_initialized);

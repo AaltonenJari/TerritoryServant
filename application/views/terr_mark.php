@@ -20,6 +20,11 @@
     <?php echo form_open('territory_controller/check_territory'); ?>
     
     <h1>Merkitse alue</h1>
+    <?php 
+    //Muuttujat pvm-vertailua varten
+    $alue_lastdate_datetype = new DateTime($alue_lastdate);
+    $event_last_date_datetype = new DateTime($event_last_date);
+    ?>
     <table id="cardtable">
       <tr>
         <td>
@@ -68,20 +73,42 @@
         <td>
           <?php 
             if ($lainassa == 1) {
-                echo form_label('Lainattu: '); 
+                if ($mark_type == 3) {
+                    echo form_label('Merkattu: ');
+                } else {
+                    if ($alue_lastdate_datetype > $event_last_date_datetype) {
+                        echo form_label('Käyty: ');
+                    } else {
+                        echo form_label('Lainattu: ');
+                    }
+                }
+
             } else {
-                echo form_label('Palautettu: '); 
+                if ($return_type == 4) {
+                    echo form_label('Merkattu: ');
+                } else {
+                    echo form_label('Palautettu: ');
+                }
             }
           ?>
         </td>
         <td>
           <?php 
-            echo form_label($alue_lastdate);
+            if ($lainassa == 1) {
+                if ($alue_lastdate_datetype > $event_last_date_datetype) {
+                    $terr_lastdate = $alue_lastdate;
+                } else {
+                    $terr_lastdate = $event_last_date;
+                }
+            } else {
+                $terr_lastdate = $mark_date;
+            }
+            echo form_label($terr_lastdate);
             $data = [
                 'type'  => 'hidden',
                 'name'  => 'lastdate_old',
                 'id'    => 'hidden_lastdate_old',
-                'value' =>  $alue_lastdate,
+                'value' =>  $terr_lastdate,
                 'class' => 'hidden_lastdate_old'
             ];
             echo form_input($data);

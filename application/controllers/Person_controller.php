@@ -92,7 +92,9 @@ class Person_controller extends CI_Controller
         $group_limit_codes['Ei-aktiiviset'] = 'X'; //ei-aktiiviset 
         
         foreach ($group_results['rows'] as $group_row) {
-            $group_limit_codes[$group_row->group_id] = $group_row->group_id;
+            $name_delim = ' = ';
+            $key = $group_row->group_id . $name_delim . $group_row->group_name;
+            $group_limit_codes[$key] = $group_row->group_id;
         }
         $data['group_limit_codes'] = $group_limit_codes;
         

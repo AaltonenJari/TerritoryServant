@@ -115,8 +115,9 @@ class Settings_controller extends CI_Controller
             '17'    => '17 vuotta',
             '18'    => '18 vuotta',
             '19'    => '19 vuotta',
-            '20'    => '20 vuotta'
-         );
+            '20'    => '20 vuotta',
+            '99'    => 'kaikki'
+        );
         $data['archiveYearsOptions'] = $archiveYearsOptions;
         
         //Liikealueiden näyttäminen: -valitsin
@@ -290,9 +291,25 @@ class Settings_controller extends CI_Controller
                 
             case "Paluu":
             case "Return":
-                //Palataan päänäytölle
-                $main_url = 'Location: ' . base_url("index.php/Territory_controller/display");
-                header($main_url);
+                $eventSaveSwitchOld = $this->session->userdata('eventSaveSwitchOld');
+                $eventSaveSwitch = $this->session->userdata('eventSaveSwitch');
+                
+                if ($eventSaveSwitch == 1) {
+                    
+                    //Merkitään asetukset alustetuksi
+                    $session_data = array(
+                        'eventSaveSwitchOld' => $this->session->userdata('eventSaveSwitch')
+                    );
+                    $this->session->set_userdata($session_data);
+
+                    //Lisätään merkkaustapahtumat tarvittaessa
+                    $main_url = 'Location: ' . base_url("index.php/Territory_controller/add_mark_events");
+                    header($main_url);
+                 } else {
+                    //Palataan päänäytölle
+                    $main_url = 'Location: ' . base_url("index.php/Territory_controller/display");
+                    header($main_url);
+                }
                 break;
             
             default:

@@ -90,7 +90,7 @@ class Event_controller extends CI_Controller
             for ($offset = 0; $offset < $count; $offset = $offset + $limit) {
                 $page_data = $this->get_event_page($code, $offset, $limit,
                                $this->session->userdata('archiveYears'),
-                               "ASC");
+                               $this->session->userdata('eventOrder'));
                 $event_data[] = $page_data;
             }
         }

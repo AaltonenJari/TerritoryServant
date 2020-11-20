@@ -44,7 +44,7 @@ class Event_model extends CI_Model
     
     function search_event_data($fields, $alue_id, $archive_time, $event_date_order) 
     {
-        $limit = 25;
+        $limit = 48; //Pitää mahtua yhdelle sivulle
         
         $fetch_columns = array();
         foreach ($fields as $field_name => $field_display) {
@@ -56,14 +56,23 @@ class Event_model extends CI_Model
         ->from('alue_events')
         ->where('event_alue', $alue_id)
         ->limit($limit);
-        
-        // e.g. back_years = "-12 years"
-        $back_years = -1 * $archive_time;
-        $back_years .= " years";
-        $date_back_years = strtotime($back_years);
-        
-        $limit_date = date ('Y-m-d' , $date_back_years);
-        $this->db->where('event_date >=', $limit_date);
+
+        //Haetaanko myös merkkaukset events-taulusta?
+        $event_save_switch = $this->session->userdata('eventSaveSwitch');
+        if ($event_save_switch == 0) {
+            //Älä hae merkkaustapahtumia
+            $this->db->where('event_type <= 2');
+        }
+            
+        if ($archive_time < 90) {
+            // e.g. back_years = "-12 years"
+            $back_years = -1 * $archive_time;
+            $back_years .= " years";
+            $date_back_years = strtotime($back_years);
+            
+            $limit_date = date ('Y-m-d' , $date_back_years);
+            $this->db->where('event_date >=', $limit_date);
+        }
         
         $this->db->join('person', 'event_user = person.person_id');
         $this->db->join('alue', 'event_alue = alue.alue_id');
@@ -126,133 +135,147 @@ class Event_model extends CI_Model
     
     function tabulate_alue_events($event_results, $event_date_order)
     {
-        $e = array();
+        $ev = array();
         $event_result_row = new stdClass;
-        
         $prev_event_type = "0";
         
         foreach ($event_results['rows'] as $event_row)
         {
-            foreach ($event_row as $key=>$value)
-            {
-                switch ($key) {
-                    case "alue_code":
-                        if ($event_row->event_type == $prev_event_type) {
-                            //Käsitellään tilanne, jossa tapahtuma puuttuu
-                            if ($event_row->event_type == "1") {
-                                if ($event_date_order == "ASC") {
-                                    $e[] = $event_result_row;
-                                    $event_result_row = new stdClass;
-                                }
-                            }
-                            if ($event_row->event_type == "2") {
-                                if ($event_date_order == "DESC") {
-                                    $e[] = $event_result_row;
-                                    $event_result_row = new stdClass;
-                                }
-                            }
-                        }
-                        $event_result_row->code = $value;
-                        break;
-                        
-                    case "event_type":
-                        break;
-                        
-                    case "event_date":
-                        $event_date = new DateTime($value);
-                        if ($event_row->event_type == "2") {
-                            $event_result_row->returned = $event_date->format('j.n.Y');
-                        } else if ($event_row->event_type == "1") {
-                            $event_result_row->taken = $event_date->format('j.n.Y');
-                        }
-                        break;
-                        
-                    case "person_name":
-                        break;
-                        
-                    case "person_lastname":
-                        if ($this->session->userdata('namePresentation') == "0") {
-                            //0 = firstname lsatname, 1 = lastmame, firstname; (default)
-                            $name_delim = ' ';
-                            $event_result_row->name = $event_row->person_name . $name_delim . $value;
-                        } else {
-                            $name_delim = ', ';
-                            $event_result_row->name =  $value . $name_delim . $event_row->person_name;
-                        }
-                        
-                        if ($event_date_order == "DESC") {
-                            if ($event_row->event_type == "1") {
-                                $e[] = $event_result_row;
-                                $event_result_row = new stdClass;
-                            }
-                        }
-                        if ($event_date_order == "ASC") {
-                            if ($event_row->event_type == "2") {
-                                $e[] = $event_result_row;
-                                $event_result_row = new stdClass;
-                            }
-                        }
-                        $prev_event_type = $event_row->event_type;
-                        break;
-                        
-                    default:
-                        break;
-                } // switch
-            } // foreach aluerivi
-        }
-        
+            $this->tabulate_event_row($event_row, $event_date_order, $event_result_row, $prev_event_type, $ev);
+            
+        } // foreach $event_results['rows']
+       
         //Tarkistetaan viimeinen rivi. Jos se pn 'pariton', lisätään se mukaan
         if (count($event_results['rows']) > 0) {
             $last_row = end ($event_results['rows']);
-            foreach ($last_row as $key=>$value) {
-                switch ($key) {
-                    case "alue_code":
-                        $event_result_row->code = $value;
-                        break;
-                        
-                    case "event_date":
-                        $event_date = new DateTime($value);
-                        if ($event_row->event_type == "2") {
-                            $event_result_row->returned = $event_date->format('j.n.Y');
-                        } else if ($event_row->event_type == "1") {
-                            $event_result_row->taken = $event_date->format('j.n.Y');
-                        }
-                        break;
-                        
-                    case "person_name":
-                        break;
-                        
-                    case "person_lastname":
-                        if (empty($event_row->person_name) && empty($event_row->person_lastname)) {
-                            $event_result_row->name = "Ei henkilöä";
-                        } else {
-                            if ($this->session->userdata('namePresentation') == "0") {
-                                $name_delim = ' ';
-                                $event_result_row->name = $event_row->person_name . $name_delim . $value;
-                            } else {
-                                $name_delim = ', ';
-                                $event_result_row->name =  $value . $name_delim . $event_row->person_name;
-                            }
-                        }
-                        
-                        if ($event_date_order == "DESC") {
-                            if ($event_row->event_type == "2") {
-                                $e[] = $event_result_row;
-                            }
-                        }
-                        if ($event_date_order == "ASC") {
-                            if ($event_row->event_type == "1") {
-                                $e[] = $event_result_row;
-                            }
-                        }
-                        break;
-                    default:
-                        break;
-                } // switch
-            } // foreach last_row
-        }
+            $this->tabulate_event_row($last_row, $event_date_order, $event_result_row, $prev_event_type, $ev, true);
+        } // if last row
         
-        return $e;
+        return $ev;
+    }
+    
+    function tabulate_event_row($event_row, $event_date_order, &$event_result_row, &$prev_event_type, &$ev, $last = false) 
+    {
+        foreach ($event_row as $key=>$value)
+        {
+            switch ($key) {
+                case "alue_code":
+                    if (!$last) {
+                        if ($event_row->event_type == $prev_event_type) {
+                            //Käsitellään tilanne, jossa tapahtuma puuttuu
+                            switch ($event_row->event_type) {
+                                case 1:
+                                case 3:
+                                    if ($event_date_order == "ASC") {
+                                        $ev[] = $event_result_row;
+                                        $event_result_row = new stdClass;
+                                    }
+                                    break;
+                                    
+                                case 2:
+                                case 4:
+                                    if ($event_date_order == "DESC") {
+                                        $ev[] = $event_result_row;
+                                        $event_result_row = new stdClass;
+                                    }
+                                    break;
+                                    
+                                default:
+                                    break;
+                            } //switch
+                        }
+                    }
+                    $event_result_row->code = $value;
+                    break;
+                    
+                case "event_type":
+                    if ($event_date_order == "ASC") { //Jos näytetään vanhin tapahtuma ensin,
+                        if (empty($prev_event_type)) {
+                            switch ($event_row->event_type) {
+                                case 2:
+                                case 4:
+                                    //Jos eka rivi on palautustapahtuma, ei näytetä sitä
+                                    $prev_event_type = $event_row->event_type;
+                                    return;
+                                    
+                                default:
+                                    break;
+                            } //switch
+                         }
+                    }
+                    break;
+                    
+                case "event_date":
+                    $event_date = new DateTime($value);
+                    switch ($event_row->event_type) {
+                        case 1:
+                        case 3:
+                            $event_result_row->taken = $event_date->format('j.n.Y');
+                            break;
+                            
+                        case 2:
+                        case 4:
+                            $event_result_row->returned = $event_date->format('j.n.Y');
+                            break;
+                            
+                        default:
+                            break;
+                    } //switch
+                    break;
+                    
+                case "person_name":
+                    break;
+                    
+                case "person_lastname":
+                    if (empty($event_row->person_name) && empty($event_row->person_lastname)) {
+                        $event_result_row->name = "Ei henkilöä";
+                    } else {
+                        if ($this->session->userdata('namePresentation') == "0") {
+                            //0 = firstname lsatname
+                            $name_delim = ' ';
+                            $event_result_row->name = $event_row->person_name . $name_delim . $value;
+                        } else {
+                            //1 = lastmame, firstname; (default)
+                            $name_delim = ', ';
+                            $event_result_row->name =  $value . $name_delim . $event_row->person_name;
+                        }
+                    }
+ 
+                    //print_r($event_result_row);
+                    
+                    if ($event_date_order == "DESC") {
+                        if ($last) {
+                            //Hukataan viimeinen rivi
+                            //if ($event_row->event_type == "2") {
+                            // $ev[] = $event_result_row;
+                            //}
+                        } else {
+                            if (($event_row->event_type == "1") || ($event_row->event_type == "3")) {
+                                $ev[] = $event_result_row;
+                                $event_result_row = new stdClass;
+                            }
+                        }
+                    }
+                    if ($event_date_order == "ASC") {
+                        if ($last) {
+                            if (($event_row->event_type == "1") || ($event_row->event_type == "3")) {
+                                $ev[] = $event_result_row;
+                            }
+                        } else {
+                            if (($event_row->event_type == "2") || ($event_row->event_type == "4")) {
+                                $ev[] = $event_result_row;
+                                $event_result_row = new stdClass;
+                            }
+                        }
+                    }
+                    $prev_event_type = $event_row->event_type;
+                    break;
+                    
+                default:
+                    break;
+            } // switch
+        } // foreach aluerivi
+        return ;
     }
     
     function tabulate($events_data)
@@ -324,14 +347,20 @@ class Event_model extends CI_Model
         return (object) $tab_result_rows;
     }
     
-    public function get_latest_event_data($fetch_columns, $alue_id) 
+    public function get_latest_event_data($fetch_columns, $alue_id, $event_save_switch) 
     {
         // Results query
         $query = $this->db->select($fetch_columns)
         ->from('alue_events')
         ->where('event_alue', $alue_id);
         
-        $this->db->join('(SELECT event_alue as max_event_alue, MAX(event_id) AS max_event_id FROM alue_events GROUP BY event_alue) ee', 'event_id = ee.max_event_id AND event_alue = ee.max_event_alue');
+        if ($event_save_switch > 0) {
+            //Hae myös merkkaustapahtumat
+            $this->db->join('(SELECT event_alue as max_event_alue, MAX(event_id) AS max_event_id FROM alue_events GROUP BY event_alue) ee', 'event_id = ee.max_event_id AND event_alue = ee.max_event_alue');
+        } else {
+            //Hae vain lainaukset ja palautukset
+            $this->db->join('(SELECT event_alue as max_event_alue, MAX(event_id) AS max_event_id FROM alue_events WHERE event_type IN ("1", "2") GROUP BY event_alue) ee', 'event_id = ee.max_event_id AND event_alue = ee.max_event_alue');
+        }
         
         $ret['rows'] = $query->get()->result();
         
@@ -341,14 +370,21 @@ class Event_model extends CI_Model
         return $ret;
     }
     
-    public function get_latest_return_event_data($fetch_columns, $alue_id)
+    public function get_latest_return_event_data($fetch_columns, $alue_id, $event_save_switch)
     {
         // Results query
         $query = $this->db->select($fetch_columns)
         ->from('alue_events')
         ->where('event_alue', $alue_id);
         
-        $this->db->join('(SELECT event_alue as max_event_alue, MAX(event_id) AS max_event_id FROM alue_events WHERE event_type = "2" GROUP BY event_alue) ee', 'event_id = ee.max_event_id AND event_alue = ee.max_event_alue');
+        if ($event_save_switch > 0) {
+            //Hae myös merkkaustapahtumat
+            $this->db->join('(SELECT event_alue as max_event_alue, MAX(event_id) AS max_event_id FROM alue_events WHERE event_type IN ("2","4") GROUP BY event_alue) ee', 'event_id = ee.max_event_id AND event_alue = ee.max_event_alue');
+        } else {
+            //Hae vain lainaukset ja palautukset
+            $this->db->join('(SELECT event_alue as max_event_alue, MAX(event_id) AS max_event_id FROM alue_events WHERE event_type = "2" GROUP BY event_alue) ee', 'event_id = ee.max_event_id AND event_alue = ee.max_event_alue');
+        }
+        
         
         $ret['rows'] = $query->get()->result();
         

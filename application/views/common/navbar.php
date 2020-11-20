@@ -100,6 +100,20 @@
                 </div>
               </button>
             </a>
+            <?php 
+              $eventSaveSwitchOld = $this->session->userdata('eventSaveSwitchOld');
+              $eventSaveSwitch = $this->session->userdata('eventSaveSwitch');
+              if ($eventSaveSwitchOld == 1 && $eventSaveSwitch == 0) {
+                  //Muutos 1 => 0: Näytetään mahdollisuus poistaa merkkaustapahtumat
+              ?>
+              <div class="dropdown-content">
+                <div class="nav-sub">
+                  <ul>
+                    <li><a href="<?php echo base_url("index.php/territory_controller/remove_mark_events"); ?>">Poista merkkaukset</a></li>
+                  </ul>
+                </div>
+              </div>
+            <?php } ?>
           </div>
         </li>
         <?php if (!empty($this->session->userdata('useSignIn')) || $user != "guest") { ?>

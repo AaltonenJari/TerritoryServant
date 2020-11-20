@@ -30,7 +30,7 @@ class Territory_model extends CI_Model {
             ->from('alue');
         
         $this->db->join('(SELECT ee2.event_alue, event_user, ee2.event_date as mark_date FROM alue_events ee2 JOIN (SELECT event_alue, MAX(event_id) AS max_event_id FROM alue_events WHERE event_type = "2" GROUP BY event_alue) groupedee2 ON ee2.event_alue = groupedee2.event_alue AND ee2.event_id = groupedee2.max_event_id) e2', 'alue.alue_id = e2.event_alue','left'); 
-        $this->db->join('(SELECT ee.event_alue, event_user, ee.event_date as event_last_date FROM alue_events ee JOIN (SELECT event_alue, MAX(event_id) AS max_event_id FROM alue_events GROUP BY event_alue) groupedee ON ee.event_alue = groupedee.event_alue AND ee.event_id = groupedee.max_event_id) e', 'alue.alue_id = e.event_alue','left');
+        $this->db->join('(SELECT ee.event_alue, event_user, ee.event_date as event_last_date FROM alue_events ee JOIN (SELECT event_alue, MAX(event_id) AS max_event_id FROM alue_events WHERE event_type = "1" GROUP BY event_alue) groupedee ON ee.event_alue = groupedee.event_alue AND ee.event_id = groupedee.max_event_id) e', 'alue.alue_id = e.event_alue','left');
         $this->db->join('person', 'e.event_user = person.person_id','left');
         
         // lainassa = false
@@ -259,13 +259,21 @@ class Territory_model extends CI_Model {
 	}
 	
 	
-	function get_alue_row($columns, $alue_numero) 
+	function get_alue_row($columns, $alue_numero, $event_save_switch) 
 	{
 	    // Results query
 	    $query = $this->db->select($columns)
 	    ->from('alue');
 	    
-	    $this->db->join('(SELECT ee.event_alue, event_id, event_user, ee.event_date as mark_date FROM alue_events ee JOIN (SELECT event_alue, MAX(event_id) AS max_event_id FROM alue_events GROUP BY event_alue) groupedee ON ee.event_alue = groupedee.event_alue AND ee.event_id = groupedee.max_event_id) e', 'alue.alue_id = e.event_alue','left');
+	    if ($event_save_switch > 0) {
+	        //Hae myös merkkaustapahtumat
+	        $this->db->join('(SELECT ee2.event_alue, event_user, ee2.event_date as mark_date, ee2.event_type as return_type FROM alue_events ee2 JOIN (SELECT event_alue, event_type, MAX(event_id) AS max_event_id FROM alue_events WHERE event_type IN ("2","4") GROUP BY event_alue) groupedee2 ON ee2.event_alue = groupedee2.event_alue AND ee2.event_id = groupedee2.max_event_id) e2', 'alue.alue_id = e2.event_alue','left');
+	        $this->db->join('(SELECT ee.event_alue, event_user, ee.event_date as event_last_date, ee.event_type as mark_type FROM alue_events ee JOIN (SELECT event_alue, event_type, MAX(event_id) AS max_event_id FROM alue_events WHERE event_type IN ("1","3") GROUP BY event_alue) groupedee ON ee.event_alue = groupedee.event_alue AND ee.event_id = groupedee.max_event_id) e', 'alue.alue_id = e.event_alue','left');
+	    } else {
+	        //Hae vain lainaukset ja palautukset
+	        $this->db->join('(SELECT ee2.event_alue, event_user, ee2.event_date as mark_date, ee2.event_type as return_type FROM alue_events ee2 JOIN (SELECT event_alue, event_type, MAX(event_id) AS max_event_id FROM alue_events WHERE event_type = "2" GROUP BY event_alue) groupedee2 ON ee2.event_alue = groupedee2.event_alue AND ee2.event_id = groupedee2.max_event_id) e2', 'alue.alue_id = e2.event_alue','left');
+	        $this->db->join('(SELECT ee.event_alue, event_user, ee.event_date as event_last_date, ee.event_type as mark_type FROM alue_events ee JOIN (SELECT event_alue, event_type, MAX(event_id) AS max_event_id FROM alue_events WHERE event_type = "1" GROUP BY event_alue) groupedee ON ee.event_alue = groupedee.event_alue AND ee.event_id = groupedee.max_event_id) e', 'alue.alue_id = e.event_alue','left');
+	    }
 	    $this->db->join('person', 'e.event_user = person.person_id','left');
 	    
 	    $this->db->where('alue_code', $alue_numero);
@@ -273,74 +281,6 @@ class Territory_model extends CI_Model {
 	    $result_array = $this->db->get()->result_array();
 	    
 	    return $result_array[0];
-	}
-	
-	function get_lending_start_date($terr_nbr) 
-	{
-	    $lending_date = null;
-	    $max_event_id = 0;
-	    
-	    // 1. haetaan viimeisen lainaajan käyttäjätunnus alueen tapahtumista
-	    $columns = array(
-	        'event_id',
-	        'event_user',
-	        'event_date',
-	        'event_type'
-	    );
-	    
-	    $query = $this->db->select($columns)
-	    ->from('alue_events')
-	    ->where('event_alue', $terr_nbr);
-	    $this->db->join('(SELECT event_alue as max_event_alue, MAX(event_id) AS max_event_id FROM alue_events GROUP BY event_alue) ee', 'event_id = ee.max_event_id AND event_alue = ee.max_event_alue');
-
-	    $result_array = $this->db->get()->result_array();
-	    if (count($result_array) == 0) {
-	        //Jos ei löydy, palataan
-	        return null;
-	    }
-	    
-	    $lending_event_type = $result_array[0]['event_type'];
-	    $lender_id = $result_array[0]['event_user'];
-	    $max_event_id = $result_array[0]['event_id'];
-	    $event_date = $result_array[0]['event_date'];
-	    
-	    //Jos kortti ei ole lainassa
-	    if ($lending_event_type == '2') {
-	        // asetetaan lainauspvm = null, palataan
-	        $lending_date = null;
-	    } else {
-	        //2. haetaan tapahtumatunnus nykyistä lainaajaa edeltävän lainaajan viimeiseltä tapahtumariviltä
-	        $query = $this->db->select('MAX(event_id) AS max_event_id')
-	        ->from('alue_events');
-	        $this->db->where('event_user !=', $lender_id);
-	        $this->db->where('event_alue', $terr_nbr);
-	        $this->db->group_by("event_user");
-	        $this->db->order_by("max_event_id", "DESC");
-	        $this->db->limit(1); 
-	        
-	        $result_array = $this->db->get()->result_array();
-	        //Jos edellisiä lainaajia löytyi, käytetään löytynyttä tapahtumatunnusta
-	        if (count($result_array) > 0) {
-	            $max_event_id = $result_array[0]['max_event_id'];
-
-	            //3. poimitaan päiväys nykyisen käyttäjän ensimmäiseltä tapahtumariviltä
-	            $str_join_query = "(SELECT event_alue as min_event_alue, MIN(event_id) AS min_event_id FROM alue_events where event_id > " . $max_event_id . " GROUP BY event_alue) ee";
-	            
-	            $query = $this->db->select('event_date')
-	            ->from('alue_events');
-	            $this->db->join($str_join_query, 'event_id = ee.min_event_id AND event_alue = ee.min_event_alue');
-	            $this->db->where('event_alue', $terr_nbr);
-	            $this->db->where('event_id >', $max_event_id);
-	            
-	            $result_array = $this->db->get()->result_array();
-	            $lending_date = $result_array[0]['event_date'];
-	        } else {
-	            //Käytetään nykyisen lainaajan lainauspäivää
-	            $lending_date = $event_date;
-	        }
-	    }
-
-	    return $lending_date;
 	}
 	
 	function get_terr_id($terr_code)

@@ -35,41 +35,54 @@
     <h1>Alueet - Historia</h1>
 
     <div id="selector_area">
-
-      <span>Valitse sivu:</span>
-      <?php $display_baseurl = base_url("index.php/event_controller/display"); ?>
-      <input type="hidden" id="displayBaseUrl" value="<?php echo $display_baseurl; ?>" />
-
-      <input type="hidden" id="selCodeOld" value="<?php echo $code_sel; ?>" />
-  	  <select name="terrCodeChkBoxChooser" id="terrCodeChkBoxChooser" onChange="jsFunction4()">
-        
-      <?php
-      foreach ($sel_data as $terrgroup_selecion) {
-        $sel_string = "";
-        foreach ($terrgroup_selecion as $key => $value) {
-            switch ($key) {
-                case "code":
-                    $sel_string = $value;
-                    break;
-                    
-                case "first":
-                    $sel_string .= $value;
-                    break;
-                    
-                case "offset":
-                    $sel_offset = $value;
-                    break;
-                
-                case "last":
-                    $sel_string .= "-" . $value;
-                    break;
+      <table id="selectortable">
+  		<tr>
+          <td width="35%">
+            <span>Valitse sivu:</span>
+            <?php $display_baseurl = base_url("index.php/event_controller/display"); ?>
+            <input type="hidden" id="displayBaseUrl" value="<?php echo $display_baseurl; ?>" />
+    
+            <input type="hidden" id="selCodeOld" value="<?php echo $code_sel; ?>" />
+  	        <select name="terrCodeChkBoxChooser" id="terrCodeChkBoxChooser" onChange="jsFunction4()">
+              
+            <?php
+            foreach ($sel_data as $terrgroup_selecion) {
+              $sel_string = "";
+              foreach ($terrgroup_selecion as $key => $value) {
+                  switch ($key) {
+                      case "code":
+                          $sel_string = $value;
+                          break;
+                          
+                      case "first":
+                          $sel_string .= $value;
+                          break;
+                          
+                      case "offset":
+                          $sel_offset = $value;
+                          break;
+                      
+                      case "last":
+                          $sel_string .= "-" . $value;
+                          break;
+                  }
+              }?>
+  	 	      <option value="<?php echo $sel_string; ?>" page_offset="<?php echo $sel_offset; ?>" <?php if ($code_sel == $sel_string) { echo "selected='selected'"; } ?> ><?php echo $sel_string; ?></option>
+              <?php 
             }
-        }?>
-  		<option value="<?php echo $sel_string; ?>" page_offset="<?php echo $sel_offset; ?>" <?php if ($code_sel == $sel_string) { echo "selected='selected'"; } ?> ><?php echo $sel_string; ?></option>
-        <?php 
-      }
-      ?>
-      </select>
+            ?>
+            </select>
+          </td>
+          <td width="15%">
+          </td>
+          <td width="40%">
+          </td>
+          <td width="10%">
+            <span>Alkutilaan </span>
+            <a href="<?php echo base_url("index.php/event_controller/display"); ?>" target="_parent" class="btn-clear"><button>CLR</button></a>
+          </td>
+  		</tr>
+      </table>
     </div>
          
     <div id="content">
@@ -150,7 +163,7 @@
               <?php } 
                 $rowidx++; ?>
             <?php }
-            for ($j=$rowidx;$j < 26; $j++) { ?>
+            for ($j=$rowidx;$j < 24; $j++) { ?>
             <tr class="tyhja_rivi" >
               <?php for ($i=0;$i < 5; $i++) {?>
                 <td class="event_nimi" colspan="4"></td>

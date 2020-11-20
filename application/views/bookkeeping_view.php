@@ -34,6 +34,25 @@
     <!-- Asetetaan sivun pääotsikko -->
     <h1>Alueet - Kirjanpito</h1>
         
+    <div id="selector_area">
+      <table id="selectortable">
+  		<tr>
+          <td width="35%">
+            <?php $display_baseurl = base_url("index.php/event_controller/display"); ?>
+            <input type="hidden" id="displayBaseUrl" value="<?php echo $display_baseurl; ?>" />
+          </td>
+          <td width="15%">
+          </td>
+          <td width="40%">
+          </td>
+          <td width="10%">
+            <span>Alkutilaan </span>
+            <a href="<?php echo base_url("index.php/event_controller/display"); ?>" target="_parent" class="btn-clear"><button>CLR</button></a>
+          </td>
+  		</tr>
+      </table>
+    </div>
+  
     <div id="content">
       <div class="tableWrap">
         <?php foreach ($bookkeeping as $bookkeeping_row) { ?>
@@ -118,7 +137,7 @@
                   <?php } 
                   $rowidx++; ?>
                 <?php }
-                for ($j=$rowidx;$j < 26; $j++) { ?>
+                for ($j=$rowidx;$j < 24; $j++) { ?>
                   <tr class="tyhja_rivi" >
                   <?php for ($i=0;$i < 5; $i++) {?>
                     <td class="event_nimi" colspan="4"></td>
