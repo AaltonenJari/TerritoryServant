@@ -302,3 +302,9 @@ a slight movement of the header row */
   padding:5px 5px 5px 80px; 
   font-family: "Arial", Times, serif;
 }
+
+.about_desc {
+  padding: 4px;
+  font-family: sans-serif;
+  font-size:20px
+}
