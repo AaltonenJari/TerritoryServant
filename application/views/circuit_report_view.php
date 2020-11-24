@@ -32,7 +32,7 @@
     
     <!-- Asetetaan sivun pääotsikko -->
     <?php if ($is_cw_coming) { ?>
-      <h1>Kierrosvalvojan alueraportti <?php echo $report_date; ?></h1>
+      <h1>Alueraportti kierrosvalvojalle <?php echo $report_date; ?></h1>
     <?php } else { ?>
       <h1>Alueet - käyntitilanne <?php echo $report_date; ?></h1>
     <?php } ?>

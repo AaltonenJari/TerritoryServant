@@ -18,6 +18,7 @@ class Territory_model extends CI_Model {
                 $sort_columns[] = $field_name;
             }
         }
+        $sort_columns[] = "terr_group"; //Lisätään viela lajittelu aluekoodin mukaan
         $sort_by = (in_array($sort_by, $sort_columns)) ? $sort_by : 'alue_code';
         
         $fetch_columns = array();
@@ -50,40 +51,45 @@ class Territory_model extends CI_Model {
             $srchDate = date_format(date_create_from_format('j.n.Y', $this->session->userdata('circuitWeekStart')), 'Y-m-d');
         }
         
-        // alue_lastdate < 12 monhts
-        if ($date_sel == '1') {
-            $date_12_months = strtotime($srchDate ." -12 months");
-            $limit_date = date ('Y-m-d' , $date_12_months);
-            $this->db->where('alue_lastdate <=', $limit_date);
-        }
-        // alue_lastdate < 4 monhts
-        if ($date_sel == '2') {
-            $date_4_months = strtotime($srchDate ." -4 months");
-            $limit_date = date ('Y-m-d' , $date_4_months);
-            $this->db->where('alue_lastdate <=', $limit_date);
-        }
+        switch ($date_sel) {
+            case 0: //Ei rajausta
+                $limit_date = "";
+                break;
+            
+            case 1: // alue_lastdate < 12 monhts
+            case 6: //Circuot overseer's report
+                $date_12_months = strtotime($srchDate ." -12 months");
+                $limit_date = date ('Y-m-d' , $date_12_months);
+                $this->db->where('alue_lastdate <=', $limit_date);
+                break;
+                
+            case 2: // alue_lastdate < 4 monhts
+                $date_4_months = strtotime($srchDate ." -4 months");
+                $limit_date = date ('Y-m-d' , $date_4_months);
+                $this->db->where('alue_lastdate <=', $limit_date);
+                break;
         
-        // alue_lastdate < 6 monhts
-        if ($date_sel == '3') {
-            $date_6_months = strtotime($srchDate ." -6 months");
-            $limit_date = date ('Y-m-d' , $date_6_months);
-            $this->db->where('alue_lastdate <=', $limit_date);
-        }
+            case 3: //alue_lastdate < 6 monhts
+                $date_6_months = strtotime($srchDate ." -6 months");
+                $limit_date = date ('Y-m-d' , $date_6_months);
+                $this->db->where('alue_lastdate <=', $limit_date);
+                break;
+
+            case 4: // event_last_date < 12 monhts
+                $date_12_months = strtotime($srchDate ." -12 months");
+                $limit_date = date ('Y-m-d' , $date_12_months);
+                $this->db->where('event_last_date <=', $limit_date);
+                break;
         
-        // event_last_date < 12 monhts
-        if ($date_sel == '4') {
-            $date_12_months = strtotime($srchDate ." -12 months");
-            $limit_date = date ('Y-m-d' , $date_12_months);
-            $this->db->where('event_last_date <=', $limit_date);
-        }
-        
-        // event_last_date < 4 monhts && alue_lastdate < 4 monhts
-        if ($date_sel == '5') {
-            $date_4_months = strtotime($srchDate ." -4 months");
-            $limit_date = date ('Y-m-d' , $date_4_months);
-            $this->db->where('event_last_date <=', $limit_date);
-        
-            $this->db->where('alue_lastdate <=', $limit_date);
+            case 5: // event_last_date < 4 monhts && alue_lastdate < 4 monhts
+                $date_4_months = strtotime($srchDate ." -4 months");
+                $limit_date = date ('Y-m-d' , $date_4_months);
+                $this->db->where('event_last_date <=', $limit_date);
+                $this->db->where('alue_lastdate <=', $limit_date);
+                break;
+
+            default: //Ei rajausta
+                break;
         }
         
         // Onko rajattu alueryhmän mukaan?
@@ -153,6 +159,12 @@ class Territory_model extends CI_Model {
                 $query = $this->db->order_by("CAST(SUBSTR(alue_code FROM 2) AS UNSIGNED)", "ASC");
                 break;
                 
+            case "terr_group":
+                $query = $this->db->order_by("SUBSTR(alue_code FROM 1 FOR 1)", "ASC");
+                $query = $this->db->order_by("alue_lastdate", "ASC");
+                $query = $this->db->order_by("CAST(SUBSTR(alue_code FROM 2) AS UNSIGNED)", "ASC");
+                break;
+            
             default:
                 $query = $this->db->order_by("SUBSTR(alue_code FROM 1 FOR 1)", $sort_order);
                 $query = $this->db->order_by("CAST(SUBSTR(alue_code FROM 2) AS UNSIGNED)", $sort_order);
@@ -193,24 +205,45 @@ class Territory_model extends CI_Model {
             $srchDate = date_format(date_create_from_format('j.n.Y', $this->session->userdata('circuitWeekStart')), 'Y-m-d');
         }
         
-        // alue_lastdate < 12 monhts
-        if ($date_sel == '1') {
-            $date_12_months = strtotime($srchDate ." -12 months");
-            $limit_date = date ('Y-m-d' , $date_12_months);
-            $this->db->where('alue_lastdate <=', $limit_date);
-        }
-        // alue_lastdate < 4 monhts
-        if ($date_sel == '2') {
-            $date_4_months = strtotime($srchDate ." -4 months");
-            $limit_date = date ('Y-m-d' , $date_4_months);
-            $this->db->where('alue_lastdate <=', $limit_date);
-        }
-        
-        // alue_lastdate < 6 monhts
-        if ($date_sel == '3') {
-            $date_6_months = strtotime($srchDate ." -6 months");
-            $limit_date = date ('Y-m-d' , $date_6_months);
-            $this->db->where('alue_lastdate <=', $limit_date);
+        switch ($date_sel) {
+            case 0: //Ei rajausta
+                $limit_date = "";
+                break;
+                
+            case 1: // alue_lastdate < 12 monhts
+            case 6: //Circuot overseer's report    
+                $date_12_months = strtotime($srchDate ." -12 months");
+                $limit_date = date ('Y-m-d' , $date_12_months);
+                $this->db->where('alue_lastdate <=', $limit_date);
+                break;
+                
+            case 2: // alue_lastdate < 4 monhts
+                $date_4_months = strtotime($srchDate ." -4 months");
+                $limit_date = date ('Y-m-d' , $date_4_months);
+                $this->db->where('alue_lastdate <=', $limit_date);
+                break;
+                
+            case 3: //alue_lastdate < 6 monhts
+                $date_6_months = strtotime($srchDate ." -6 months");
+                $limit_date = date ('Y-m-d' , $date_6_months);
+                $this->db->where('alue_lastdate <=', $limit_date);
+                break;
+                
+            case 4: // event_last_date < 12 monhts
+                $date_12_months = strtotime($srchDate ." -12 months");
+                $limit_date = date ('Y-m-d' , $date_12_months);
+                $this->db->where('event_last_date <=', $limit_date);
+                break;
+                
+            case 5: // event_last_date < 4 monhts && alue_lastdate < 4 monhts
+                $date_4_months = strtotime($srchDate ." -4 months");
+                $limit_date = date ('Y-m-d' , $date_4_months);
+                $this->db->where('event_last_date <=', $limit_date);
+                 $this->db->where('alue_lastdate <=', $limit_date);
+                break;
+ 
+            default: //Ei rajausta
+                break;
         }
 
         // Onko rajattu alueryhmän mukaan?

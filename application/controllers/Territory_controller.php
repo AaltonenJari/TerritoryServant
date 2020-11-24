@@ -45,7 +45,12 @@ class Territory_controller extends CI_Controller
         //Jos parametreja ei ole annettu, älä käytä kv-viikon alkupäivää rajauksessa
         $numargs = func_num_args();
         if ($numargs == 0) {
+            //Poista tässä myös 'kierrosviikon alusta' -asetus
             $limit_date_sw = "0";
+            $territory_view_state_data = array(
+                'limit_date_sw'          => $limit_date_sw
+            );
+            $this->session->set_userdata($territory_view_state_data);
             
             //Poistetaan virheteksti näkyvistä
             if(isset($_SESSION['error'])){
@@ -167,6 +172,88 @@ class Territory_controller extends CI_Controller
         $this->load->view('territory_view', $data);
     }
     
+    public function display_frontpage_terr_groups()
+    {
+        //Aseta näyttöparametrit
+        $sort_by = 'terr_group';
+        $sort_order = 'asc';
+        $chkbox_sel = '1'; //Aluepöydässä
+        $date_sel = '2'; //yli 4 kk käymättä
+        $code_sel = '0'; //Kaikki
+        $bt_switch = '0';
+        $filter = '';
+        
+        //State variables for territory_view
+        $territory_view_state = array(
+            'sort_by'         => $sort_by,
+            'sort_order'      => $sort_order,
+            'chkbox_sel'      => $chkbox_sel,
+            'date_sel'        => $date_sel,
+            'code_sel'        => $code_sel,
+            'filter'          => $filter,
+            'sivutunnus'      => "1",
+            'limit_date_sw'   => "0"
+        );
+        $this->session->set_userdata($territory_view_state);
+        
+        //Poistetaan virheteksti näkyvistä
+        if(isset($_SESSION['error'])){
+            unset($_SESSION['error']);
+        }
+        
+        //Hakuparametrit näytölle
+        $data['display_fields'] = array(
+            'alue_code'		=> 'numero',
+            'alue_detail'	=> 'alue_nimi',
+            'alue_location'	=> 'lisätieto',
+            'lainassa'		=> 'lainassa',
+            'alue_lastdate'	    => 'käyty',
+            'event_last_date'	=> 'otettu',
+            'name'	        => 'kenellä'
+        );
+        
+        //Hakuparametrit kantaan
+        $data['database_fields'] = array(
+            'alue_code'		=> 'alue_koodi',
+            'alue_detail'	=> 'alue_nimi',
+            'alue_location'	=> 'alue_tietoja',
+            'lainassa'		=> 'alue_lainassa',
+            'alue_lastdate'	    => 'merkitty',
+            'event_last_date'	=> 'otettu',
+            'person_name'	=> 'etunimi',
+            'person_lastname'	=> 'sukunimi'
+        );
+        
+        //Korjaa ääkköset takaisin
+        $filter = urldecode($filter);
+        
+        //Käytetäänkö rajauspäivämääränä kuluvaa päivää vai kierrosviikon alkupäivää
+        $limit_date_sw = $this->session->userdata('limit_date_sw');
+        
+        //Hae tiedot
+        $results = $this->Territory_model->search($data['database_fields'], $sort_by, $sort_order, $chkbox_sel, $date_sel, $code_sel, $bt_switch, $limit_date_sw);
+        //Tiedot näytölle sopiviksi
+        $data['alueet'] = $this->create_terr_displayrows($results);
+        
+        $data['num_results'] = $results['num_rows'];
+        
+        $data['pagination'] = "";
+        
+        //Parameters back to view page
+        $data['sort_by'] = $sort_by;
+        $data['sort_order'] = $sort_order;
+        $data['chkbox_sel'] = $chkbox_sel;
+        $data['date_sel'] = $date_sel;
+        $data['code_sel'] = $code_sel;
+        $data['filter'] = $filter;
+        
+        //Hae aluekoodit
+        $tresults = $this->Event_model->get_terr_codes();
+        $data['territory_codes'] = $tresults['rows'];
+        
+        $this->load->view('territory_view', $data);
+    }
+    
     public function display_mark_exhort() 
     {
         //Aseta näyttöparametrit
@@ -186,8 +273,7 @@ class Territory_controller extends CI_Controller
             'date_sel'        => $date_sel,
             'code_sel'        => $code_sel,
             'filter'          => $filter,
-            'sivutunnus'      => "2",
-            'limit_date_sw'   => "0"
+            'sivutunnus'      => "2"
         );
         $this->session->set_userdata($territory_view_state_data);
         
@@ -204,7 +290,6 @@ class Territory_controller extends CI_Controller
         
         //Käytetäänkö rajauspäivämääränä kuluvaa päivää vai kierrosviikon alkupäivää
         $limit_date_sw = $this->session->userdata('limit_date_sw');
-        
         //Hae tiedot
         $results = $this->Territory_model->search($data['database_fields'], $sort_by, $sort_order, $chkbox_sel, $date_sel, $code_sel, $bt_switch, $limit_date_sw);
         
@@ -222,7 +307,7 @@ class Territory_controller extends CI_Controller
         $sort_by = 'name';
         $sort_order = 'asc';
         $chkbox_sel = '2';
-        $date_sel = '0';
+        $date_sel = '4';
         $code_sel = '0';
         $bt_switch = '0';
         $filter = '';
@@ -235,8 +320,7 @@ class Territory_controller extends CI_Controller
             'date_sel'        => $date_sel,
             'code_sel'        => $code_sel,
             'filter'          => $filter,
-            'sivutunnus'      => "2",
-            'limit_date_sw'   => "0"
+            'sivutunnus'      => "2"
         );
         $this->session->set_userdata($territory_view_state_data);
         
@@ -312,6 +396,21 @@ class Territory_controller extends CI_Controller
         $data['vuosi_lainassa'] = $this->Territory_model->getTerritoryCount('2', '1', '0', '0', $date_sw);
         $data['vuosi_laatikossa'] = $this->Territory_model->getTerritoryCount('1', '1', '0', '0', $date_sw);
         
+        $sort_by = 'name';
+        $sort_order = 'asc';
+        $chkbox_sel = '0'; //Kaikki alueet
+        $date_sel = '6'; //yli 12 kk käymättä
+        $code_sel = '0'; //Kaikki
+
+        $territory_view_state = array(
+            'sort_by'         => $sort_by,
+            'sort_order'      => $sort_order,
+            'chkbox_sel'      => $chkbox_sel,
+            'date_sel'        => $date_sel,
+            'code_sel'        => $code_sel
+        );
+        $this->session->set_userdata($territory_view_state);
+        
         $this->load->view('circuit_report_view', $data);
     }
     
@@ -358,28 +457,30 @@ class Territory_controller extends CI_Controller
         }
         
         $limit_date_sw = $this->session->userdata('limit_date_sw');
+                
+        $date_sel = $this->session->userdata('date_sel');
+        switch ($date_sel) {
+            case 4: //takaisin palautuskehoitus-sivulle
+                $this->display_return_exhort();
+                break;
         
-        //Jos pvm-rajaus on kv-viikon alku, hae oletuksena kaikki yli 12 kk käymättä olleet alueet
-        if (!empty($limit_date_sw)) {
-            $sort_by = 'name';
-            $chkbox_sel = '0';
-            $date_sel = '1';
-            $code_sel = '0';
-        } else {
-            $sort_by = $this->session->userdata('sort_by');
-            $chkbox_sel = $this->session->userdata('chkbox_sel');
-            $date_sel = $this->session->userdata('date_sel');
-            $code_sel = $this->session->userdata('code_sel');
+            case 5: //takaisin merkitsemiskehoitus-sivulle
+                $this->display_mark_exhort();
+                break;
+                
+            case 6: //kierrosvalvojan raportti
+                $this->display_co_report();
+                break;
+                
+            default: //Palaa pääsivulle
+                $this->display($this->session->userdata('sort_by'),
+                $this->session->userdata('sort_order'),
+                $this->session->userdata('chkbox_sel'),
+                $this->session->userdata('date_sel'),
+                $this->session->userdata('code_sel'),
+                $this->session->userdata('filter'));
+                break;
         }
-        
-        //Palaa pääsivulle
-        $this->display($sort_by,
-            $this->session->userdata('sort_order'),
-            $chkbox_sel,
-            $date_sel,
-            $code_sel,
-            $this->session->userdata('filter'));
-        
     }
     
     public function create_terr_displayrows($results) 
@@ -544,8 +645,13 @@ class Territory_controller extends CI_Controller
         $territoty = array();
         $prev_name = "";
         
-        $limitDate = new DateTime();
-        $limitDate->modify('-1 year');
+        if ($this->session->userdata('limit_date_sw') == '0') {
+            $limitDate = new DateTime(); // today
+        } else {
+            //Circuit week starting date
+            $limitDate = new DateTime($this->session->userdata('circuitWeekStart'));
+        }
+        $limitDate->modify('-1 year'); //Nykyhetkestä tai kv-viikon alusta
          
         foreach ($results['rows'] as $terr_row) {
             $lending_date = new DateTime($terr_row->event_last_date);
@@ -874,41 +980,47 @@ class Territory_controller extends CI_Controller
             case "3": //Lisäys, undo
                 $this->Event_model->insert($event_data);
 
-                //Hae lisäty tapahtumarivi
-                $results = $this->Event_model->get_latest_event_data($columns_event, $alue_id, $event_save_switch);
-                $resultrow = $results['rows'][0];
-   
-                //Lisää lokitapahtuma
-                $log_data = array(
-                    'log_event_id' => $resultrow->event_id,
-                    'log_event_type' => $resultrow->event_type,
-                    'log_event_date' => $resultrow->event_date,
-                    'log_event_person' => $resultrow->event_user,
-                    'log_event_terr' => $alue_id,
-                    'log_user_id' => $this->session->userdata('user_id'),
-                    'log_operation_code' => $operation
-                );
-                $this->Log_model->insert($log_data);
+                //Jos lokitus on päällä,
+                if ($this->session->userdata('logging') != '0') {
+                    //Hae lisäty tapahtumarivi
+                    $results = $this->Event_model->get_latest_event_data($columns_event, $alue_id, $event_save_switch);
+                    $resultrow = $results['rows'][0];
+                    
+                    //lisää lokitapahtuma
+                    $log_data = array(
+                        'log_event_id' => $resultrow->event_id,
+                        'log_event_type' => $resultrow->event_type,
+                        'log_event_date' => $resultrow->event_date,
+                        'log_event_person' => $resultrow->event_user,
+                        'log_event_terr' => $alue_id,
+                        'log_user_id' => $this->session->userdata('user_id'),
+                        'log_operation_code' => $operation
+                    );
+                    $this->Log_model->insert($log_data);
+                }
                 break;
                 
             case "2": //Poisto
             case "4": //Poisto, redo
-                //Hae tapahtumarivi ennen poistoa
-                $results = $this->Event_model->get_latest_event_data($columns_event, $alue_id, $event_save_switch);
-                $resultrow = $results['rows'][0];
-                
-                //Lisää lokitapahtuma ennen poistoa
-                $log_data = array(
-                    'log_event_id' => $resultrow->event_id,
-                    'log_event_type' => $resultrow->event_type,
-                    'log_event_date' => $resultrow->event_date,
-                    'log_event_person' => $resultrow->event_user,
-                    'log_event_terr' => $alue_id,
-                    'log_user_id' => $this->session->userdata('user_id'),
-                    'log_operation_code' => $operation
-                );
-                $this->Log_model->insert($log_data);
-                
+                //Jos lokitus on päällä,
+                if ($this->session->userdata('logging') != '0') {
+                    //Hae tapahtumarivi ennen poistoa
+                    $results = $this->Event_model->get_latest_event_data($columns_event, $alue_id, $event_save_switch);
+                    $resultrow = $results['rows'][0];
+                    
+                    //lisää lokitapahtuma ennen poistoa
+                    $log_data = array(
+                        'log_event_id' => $resultrow->event_id,
+                        'log_event_type' => $resultrow->event_type,
+                        'log_event_date' => $resultrow->event_date,
+                        'log_event_person' => $resultrow->event_user,
+                        'log_event_terr' => $alue_id,
+                        'log_user_id' => $this->session->userdata('user_id'),
+                        'log_operation_code' => $operation
+                    );
+                    $this->Log_model->insert($log_data);
+                }
+                 
                 $this->Event_model->delete($event_data['event_id']);
                 break;
                 
@@ -1632,17 +1744,20 @@ class Territory_controller extends CI_Controller
                             $alue_lastdate = $event_date;
                         }
                     }
-                    //Lisää lokitapahtuma ennen poistoa
-                    $log_data = array(
-                        'log_event_id' => $resultrow2->event_id,
-                        'log_event_type' => $resultrow2->event_type,
-                        'log_event_date' => $resultrow2->event_date,
-                        'log_event_person' => $resultrow2->event_user,
-                        'log_event_terr' => $alue_id,
-                        'log_user_id' => $this->session->userdata('user_id'),
-                        'log_operation_code' => $operation
-                    );
-                    $this->Log_model->insert($log_data);
+                    //Jos lokitus on päällä,
+                    if ($this->session->userdata('logging') != '0') {
+                        //lisää lokitapahtuma ennen poistoa
+                        $log_data = array(
+                            'log_event_id' => $resultrow2->event_id,
+                            'log_event_type' => $resultrow2->event_type,
+                            'log_event_date' => $resultrow2->event_date,
+                            'log_event_person' => $resultrow2->event_user,
+                            'log_event_terr' => $alue_id,
+                            'log_user_id' => $this->session->userdata('user_id'),
+                            'log_operation_code' => $operation
+                        );
+                        $this->Log_model->insert($log_data);
+                    }
                     //Poista tapahtuma
                     $this->Event_model->delete($resultrow2->event_id);
                 }
@@ -1669,5 +1784,14 @@ class Territory_controller extends CI_Controller
         } else {
             $this->display_frontpage();
         }
+    }
+    
+    public function display_about() 
+    {
+        $data['version'] = $this->session->userdata('version');
+        $data['version_date'] = $this->session->userdata('version_date');
+        $data['author'] = $this->session->userdata('author');
+        
+        $this->load->view('about_view', $data);
     }
 }

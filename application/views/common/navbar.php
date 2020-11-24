@@ -24,6 +24,13 @@
                 </div>
               </button>
             </a>
+            <div class="dropdown-content">
+              <div class="nav-sub">
+                <ul>
+                  <li><a href="<?php echo base_url("index.php/territory_controller/display_frontpage_terr_groups"); ?>">Alueryhmittäin</a></li>
+                </ul>
+              </div>
+            </div>
           </div>
         </li>
         <li>
@@ -42,7 +49,13 @@
                   <li><a href="<?php echo base_url("index.php/territory_controller/display_mark_exhort"); ?>">Merkitsemiskehotuslistat</a></li>
                   <li><a href="<?php echo base_url("index.php/territory_controller/display_return_exhort"); ?>">Palauttamiskehotuslistat</a></li>
                   <li><a href="<?php echo base_url("index.php/territory_controller/display_co_report"); ?>">KV-raportti</a></li>
-                  <li><a href="#" class="link"><input type="checkbox" id="cweek_check_id" name="cweek_check" value="<?php echo $this->session->userdata('limit_date_sw'); ?>" <?php if (!empty($this->session->userdata('limit_date_sw'))) { ?>checked <?php } ?>>Kierrosviikon alusta</a></li>
+                  <?php 
+                    $todayDate = new DateTime(); // today
+                    $cvwEndDate = new DateTime($this->session->userdata('circuitWeekEnd'));
+                    //Toggle circuit week day in searches only if circuit week is coming
+                    if ($cvwEndDate > $todayDate) { ?>
+                      <li><a href="#" class="link"><input type="checkbox" id="cweek_check_id" name="cweek_check" value="<?php echo $this->session->userdata('limit_date_sw'); ?>" <?php if (!empty($this->session->userdata('limit_date_sw'))) { ?>checked <?php } ?>>Kierrosviikon alusta</a></li>
+                  <?php } ?>
                 </ul>
               </div>
             </div>
@@ -142,7 +155,7 @@
         <li>
           <div class="dropdown">
             <?php if ($sivu_tunnus == "7") { $dropbtn_classes = $dropbtn_classes_base . " active"; } else { $dropbtn_classes = $dropbtn_classes_base; } ?>
-            <a href="#" >
+              <a href="<?php echo base_url("index.php/territory_controller/display_about"); ?>" >
               <button class="<?php echo $dropbtn_classes; ?>">Tietoja</button>
             </a>
           </div>

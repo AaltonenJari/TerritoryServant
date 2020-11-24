@@ -316,10 +316,24 @@ class Settings_model extends CI_Model
             //Merkitään asetukset alustetuksi
             $session_initialized = array(
                 'eventSaveSwitchOld' => $this->session->userdata('eventSaveSwitch'),
+                'version' => 'V1.0',
+                'version_date' => '24.11.2020',
+                'author' => 'Jari Aaltonen',
                 'initialized'     => 'K'
             );
             $this->session->set_userdata($session_initialized);
         }
+
+        //Jos loki-taulu on poissa, älä anna muuttaa lokitusta päälle
+        if (!$this->Settings_model->tableExists('event_log') || !$this->Settings_model->tableExists('settings')) {
+            if ($this->session->userdata('logging') != '0') {
+                $settings_data = array(
+                    'logging' => '0' //Lokiin kirjoitus ei käytössä
+                );
+                $this->session->set_userdata($settings_data);
+            }
+        }
+        
     }
 
     public function default_settings() 
