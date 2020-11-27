@@ -1792,6 +1792,7 @@ class Territory_controller extends CI_Controller
         $data['version_date'] = $this->session->userdata('version_date');
         $data['author'] = $this->session->userdata('author');
         
+        $data['mysql_version'] = $this->Territory_model->get_mysql_version();
         $this->load->view('about_view', $data);
     }
 }

@@ -340,4 +340,12 @@ class Territory_model extends CI_Model {
 	    $this->db->where("alue_code", $old_terr_nbr);
 	    $this->db->update("alue", $data);
 	}
+	
+	public function get_mysql_version() 
+	{
+	    $query = $this->db->query("SHOW VARIABLES LIKE 'version'");
+	    $result_array = $query->result();
+	    $version = $result_array[0]->Value;
+	    return $version;
+	}
 }
