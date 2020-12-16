@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Nov 23, 2020 at 07:35 PM
+-- Generation Time: Nov 26, 2020 at 04:44 PM
 -- Server version: 8.0.18
 -- PHP Version: 7.4.0
 
@@ -52,12 +52,12 @@ INSERT INTO `settings` (`setting_id`, `setting_order_id`, `setting_input_type`, 
 (5, 12, 'dropbox', 'eventOrder', 'Tapahtumamerkintöjen järjestys:', 'DESC', 0),
 (6, 13, 'dropbox', 'archiveYears', 'Tapahtumamerkinnät ajalta korkeintaan:', '12', 0),
 (7, 14, 'dropbox', 'btSwitch', 'Liikealueiden näyttäminen:', '0', 0),
-(8, 15, 'dropbox', 'eventSaveSwitch', 'Tapahtumamerkintöjen tallennustapa:', '1', 0),
-(9, 16, 'date', 'circuitWeekStart', 'Kierrosviikko alkaa:', '08.12.2020', 0),
+(8, 15, 'dropbox', 'eventSaveSwitch', 'Tapahtumamerkintöjen tallennustapa:', '0', 0),
+(9, 16, 'date', 'circuitWeekStart', 'Kierrosviikko alkaa:', '8.12.2020', 0),
 (10, 17, 'datereadonly', 'circuitWeekEnd', 'Kierrosviikko päättyy:', '13.12.2020', 0),
 (11, 22, 'dropbox', 'terrCodePresentation', 'Aluekoodin editystapa:', 'X999', 1),
 (12, 23, 'checkbox', 'useTerritoryDetaiTable', 'Alue_detail-taulu käytössä:', '0', 1),
-(13, 21, 'checkbox', 'logging', 'Lokiin kirjoitus käytössä:', '1', 1);
+(13, 21, 'checkbox', 'logging', 'Lokiin kirjoitus käytössä:', '0', 1);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

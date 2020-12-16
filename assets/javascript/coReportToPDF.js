@@ -6,9 +6,12 @@ function createPDF()
 	var style = "<style>";
 	
 	style = style + "h1 {text-align: center; font-family: \"Arial\", Times, serif; font-size: 26px; }";
+	style = style + "h2 {padding:10px 10px 0px 40px; font-family: Verdana,Arial,Helvetica,sans-serif; font-size: 18px; color: #228; }";
 	
-	style = style + ".coReportRow { height: 15px; padding:5px 5px 5px 50px; font-family: \"Arial\", Times, serif; }";
-	style = style + ".coReportRow2 { height: 15px; padding:5px 5px 5px 80px; font-family: \"Arial\", Times, serif; }";
+ 	style = style + ".coReportSubHdr { padding:10px 10px 0px 40px;  font-family: Verdana,Arial,Helvetica,sans-serif; font-size: 18px; color: #228; }";
+	style = style + ".coReportRow { height: 15px; padding:5px 5px 5px 100px; font-family: \"Arial\", Times, serif; }";
+	style = style + ".coReportRow2 { height: 15px; padding:5px 5px 5px 130px; font-family: \"Arial\", Times, serif; }";
+
 	style = style + ".tyhja_rivi { height: 15px; } ";
 	
 	style = style + "</style>";
@@ -21,7 +24,6 @@ function createPDF()
 	win.document.write(style);
 	win.document.write('</head>');
 	win.document.write('<body>');
-	win.document.write('<H1>Alueet - käyntitilanne</H1>');
 	win.document.write(sTable);
 	win.document.write('</body></html>');
 	

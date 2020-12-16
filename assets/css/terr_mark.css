@@ -46,6 +46,15 @@ label{
   font-size:17px
 }
 
+.insert_value {
+  padding-left: 4px;
+  font-size:15px;
+  width:190px;
+  -moz-box-sizing:border-box;
+  -webkit-box-sizing:border-box;
+  box-sizing:border-box;
+}
+
 
 #cardtable tr {
   height:30px;

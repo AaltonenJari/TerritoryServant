@@ -54,9 +54,12 @@ table {
   background: #00cccc57;
 }
 
+#table2 tbody tr td {
+  padding-left: 15px;
+}
 
-form{
-  width:620px;
+form {
+  width:650px;
   padding: 20px 20px 20px;
   background:linear-gradient(#fff,#ABDBFF);
   border:1px solid #ccc;
@@ -64,13 +67,29 @@ form{
   font-family:'Marcellus',serif;
   float:left;
   margin-top:10px;
-  margin-left:400px; 
+  margin-left:50px; 
   margin-bottom:50px;
   margin-right:auto;  
 }
 
+/* Test styling */
+.headerArea {
+  padding:0px 10px 0px 40px; 
+  text-align: left;
+}
+
+h1 {
+  font-family: Verdana,Arial,Helvetica,sans-serif;
+  font-size: 24px;
+}
+
+h2 {
+  font-family: Verdana,Arial,Helvetica,sans-serif;
+  font-size: 18px;
+  color: #228;
+}
+
 .setting_desc {
-  padding-left: 4px;
   font-size:17px
 }
 
@@ -83,21 +102,14 @@ form{
   box-sizing:border-box;
 }
 
-h1{
-  text-align:center;
-  font-size:28px;
-  margin-top:14px;
-  margin-bottom:10px;
-}
-
-hr{
+hr {
   border:0;
   border-bottom:1.5px solid #ccc;
   margin-top:-10px;
   margin-bottom:30px
 }
 
-label{
+label {
   padding-left: 4px;
   font-size:17px;
   width:250px;

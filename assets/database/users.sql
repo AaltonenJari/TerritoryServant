@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Nov 23, 2020 at 07:35 PM
+-- Generation Time: Nov 26, 2020 at 09:34 AM
 -- Server version: 8.0.18
 -- PHP Version: 7.4.0
 
@@ -38,12 +38,18 @@ CREATE TABLE IF NOT EXISTS `users` (
   `user_email` varchar(60) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT ' ',
   `user_admin` tinyint(3) UNSIGNED NOT NULL DEFAULT '0',
   PRIMARY KEY (`user_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `users`
 --
 
+INSERT INTO `users` (`user_id`, `user_username`, `user_password`, `user_firstname`, `user_lastname`, `user_email`, `user_admin`) VALUES
+(1, 'alue', 'alue', 'alue', '', ' ', 0),
+(2, 'sali', 'sali', 'sali', ' ', ' ', 0),
+(3, 'Jartsa', 'Ge30', 'Jari', 'Aaltonen', 'jari.aaltonen@gmail.com', 1),
+(4, 'Enska', 'alue', 'Ensio', 'Lähteenmäki', '', 1),
+(5, 'Reima', '3Mo4', 'Reima', 'Karvonen', '', 1);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
