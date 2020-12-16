@@ -2,7 +2,16 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Alueet - seuranta ja merkitseminen</title>
+  <?php //Asetetaan sivun pääotsikko
+    $sivu_tunnus = $this->session->userdata('sivutunnus');
+  ?>
+
+  <?php if ($sivu_tunnus == "1") { ?>
+       <title>TerritoryServant - Etusivu</title>
+  <?php } else { ?>
+       <title>TerritoryServant - Seuranta</title>
+  <?php } ?>
+ 
   <link rel="stylesheet" type="text/css" href="<?php echo base_url("assets/css/navbar.css"); ?>">
   <link rel="stylesheet" type="text/css" href="<?php echo base_url("assets/css/territory.css"); ?>">
   
@@ -22,17 +31,22 @@
 <body>
 
   <div id="wrapper">
-    <!-- Asetetaan navigointipalkki ja tämä sivu aktiiviseksi -->
-    <?php $sivu_tunnus = $this->session->userdata('sivutunnus');?>
     <?php $this->load->view('common/navbar.php')?>
 
-    <!-- Asetetaan sivun pääotsikko -->
-    <?php if ($sivu_tunnus == "1") { ?>
-      <h1>Tervetuloa käyttämään alueohjelmaa!</h1>
-      <h2>Suosittele seuraavia alueita.</h2>
+	<div class="headerArea">
+    <?php 
+      // Asetetaan navigointipalkki ja sivu aktiiviseksi
+      if ($sivu_tunnus == "1") { ?>
+      <?php if (!empty($this->session->userdata('useSignIn'))) { ?>
+        <h1>Tervetuloa TerritoryServant-aluetietojärjestelmään, <?php echo $this->session->userdata('user_firstname') . " ". $this->session->userdata('user_lastname') ?>! </h1>
+      <?php } else { ?>
+        <h1>Tervetuloa käyttämään TerritoryServant-aluetietojärjestelmää!</h1>
+      <?php } ?>
+      <h2>Suosittele näitä alueita</h2>
     <?php } else { ?>
-      <h1>Alueet - seuranta ja merkitseminen</h1>
+      <h1>TerritoryServant - Seuranta ja alueiden merkitseminen</h1>
     <?php } ?>
+	</div>
 
     <div id="filterArea" class="filterArea">
       <table id="selectortable">

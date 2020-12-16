@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Aluen merkitseminen</title>
+  <title>TerritoryServant - Merkitseminen</title>
   <link rel="stylesheet" type="text/css" href="<?php echo base_url("assets/css/terr_mark.css"); ?>">
   <!--link jquery ui css-->
   <link type="text/css" rel="stylesheet" href="<?php echo base_url('assets/jquery-ui-1.12.1/jquery-ui.css'); ?>" />
@@ -19,7 +19,7 @@
   <div id="container">
     <?php echo form_open('territory_controller/check_territory'); ?>
     
-    <h1>Merkitse alue</h1>
+    <h1>Alueen merkitseminen</h1>
     <?php 
     //Muuttujat pvm-vertailua varten
     $alue_lastdate_datetype = new DateTime($alue_lastdate);
@@ -118,7 +118,19 @@
       
       <tr>
         <td>
-          <?php echo form_label('Merkintäpvm:'); ?>
+          <?php 
+          //Näytettävä kenttä
+          if ($lainassa == 0) {
+              $dmark_text = 'Lainauspvm:';
+          } else {
+              $dmark_text = 'Merkintäpvm:';
+          }
+          $dmark_label_name = 'dmark_text_name';
+          $attributes = [
+              'id' => "dmark_text_id"
+          ];
+          echo form_label($dmark_text, $dmark_label_name, $attributes);
+          ?>
         </td>
         <td>
           <?php 
@@ -214,9 +226,13 @@ $("#dmerk").datepicker(
 $('input[type="checkbox"]').click(function() {
     if (!this.checked) {
         $('#djnimi').val('');
+        $("#dmark_text_id").html('Palautuspvm:');
     } else {
+        if ($('#hidden_jnimi_old').val() != '') {
+            $("#dmark_text_id").html('Merkintäpvm:');
+        }
         $('#djnimi').val($('#hidden_jnimi_old').val());
-    }
+     }
 
 });
 
@@ -224,16 +240,29 @@ function jsFunction() {
 	// Päivitä checkbox sen mukaan, onko nimi annettu vai ei
 	var myselect = document.getElementById("djnimi");
 	var chk_lainassa = document.getElementsByName("dlainassa")[0];
+	var mark_text = document.getElementById("dmark_text_id");
+	var old_name = document.getElementById("hidden_jnimi_old");
+	
 
 	if (myselect.options[myselect.selectedIndex].value != ' ') {
 	  chk_lainassa.value = "1";
 	  chk_lainassa.checked = true;
+
+	  if (myselect.options[myselect.selectedIndex].value != old_name.value) {
+		  mark_text.innerHTML = "Lainauspvm:";
+	  } else {
+		  mark_text.innerHTML = "Merkintäpvm:";
+	  }
+	  
 	  if (myselect.options[myselect.selectedIndex].value != 'uusinimi') {
 	    document.getElementById("djnimi_id").value = myselect.options[myselect.selectedIndex].value;
 	  }
 	} else {
 	  chk_lainassa.value = "0";
 	  chk_lainassa.checked = false;
+	  if (old_name.value != '') {
+ 	      mark_text.innerHTML = "Palautuspvm:";
+	  }
     }
 
 	//Lisätäänkö uusi nimi? Laitetaan silloin lisäkenttä näkyviin

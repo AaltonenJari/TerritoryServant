@@ -317,7 +317,7 @@ class Settings_model extends CI_Model
             $session_initialized = array(
                 'eventSaveSwitchOld' => $this->session->userdata('eventSaveSwitch'),
                 'version' => 'V1.0',
-                'version_date' => '27.11.2020',
+                'version_date' => '16.12.2020',
                 'author' => 'Jari Aaltonen',
                 'initialized'     => 'K'
             );

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Alueet - Raportti kierrosvalvojalle</title>
+  <title>TerritoryServant - Seuranta</title>
   <link rel="stylesheet" type="text/css" href="<?php echo base_url("assets/css/navbar.css"); ?>">
   <link rel="stylesheet" type="text/css" href="<?php echo base_url("assets/css/territory.css"); ?>">
 
@@ -30,28 +30,35 @@
     ?>
     <?php $this->load->view('common/navbar.php')?>
     
+ 	<div id="content">
+
     <!-- Asetetaan sivun pääotsikko -->
+    <div class="headerArea">
     <?php if ($is_cw_coming) { ?>
-      <h1>Alueraportti kierrosvalvojalle <?php echo $report_date; ?></h1>
+      <h1>Raportti kierrosvalvojalle alueista <?php echo $report_date; ?></h1>
     <?php } else { ?>
-      <h1>Alueet - käyntitilanne <?php echo $report_date; ?></h1>
+      <h1>TerritoryServant - alueiden käyntitilanne <?php echo $report_date; ?></h1>
     <?php } ?>
+    </div>
  
     <?php $terr_url = base_url("index.php/territory_controller/display/lainassa/asc/0/1/0"); ?>
- 	<div id="content">
-      <div class="tyhja_rivi"> 
-   	  </div>
- 	  <div class="coReportRow">
- 	    <?php if ($is_cw_coming) { ?>
+
+    <h2 class="coReportSubHdr">
+    <?php if ($is_cw_coming) { ?>
  	      Kierrosvalvojan vierailuaika: 
 	      <span id="circuit_week_start_date"> <?php echo $circuit_week_start; ?></span>
 	      -
 	      <span id="circuit_week_end_date"> <?php echo $circuit_week_end; ?></span>
-	    <?php } ?>
-	  </div>
- 	  <div class="coReportRow">
+     <?php } else { ?>
+ 	      Tilasto vuoden käymättä olleista alueista 
+     <?php } ?>
+	 </h2>
+    
+    <h2 class="coReportSubHdr">Seurakunnan alueet, <?php echo $this->session->userdata('congregationName') ?></h2>
+ 
+	  <div class="coReportRow">
  	    Aluekortteja yhteensä:
-	    <span id="territort_total_count_id"> <?php echo $territort_total_count; ?></span>
+	    <span id="territory_total_count_id"> <?php echo $territory_total_count; ?></span>
 	    kpl.
 	  </div>
 	  <div class="tyhja_rivi"> 
@@ -87,6 +94,10 @@
  	     </div>
  	     <div class="tyhja_rivi"> 
    	     </div>
+	  <?php } else { ?>
+	    <div class="coReportRow">
+  	      Alueita ei ole lainattu toisiin seurakuntiin.
+        </div>
 	  <?php } ?>
 	  <div class="coReportRow">
 	    Liikealueita:
@@ -96,21 +107,19 @@
    	  </div>
       <div class="coReportRow">
 	    Seurakunnalla on käytettävissä
-	    <?php $actual_count = $territort_total_count - $borrowed_total - $liikealue_count; ?>
+	    <?php $actual_count = $territory_total_count - $borrowed_total - $liikealue_count; ?>
 	    <span id="actual_count_id"> <?php echo $actual_count; ?> aluekorttia.</span>
       </div>
       <div class="coReportRow">
  	    Toisin sanoen
  	    <?php if ($borrowed_total > 0) { ?>
-	      <span id="actual_count_id"> <?php echo $territort_total_count; ?> - <?php echo $borrowed_total; ?> - <?php echo $liikealue_count; ?> eli
+	      <span id="actual_count_id"> <?php echo $territory_total_count; ?> - <?php echo $borrowed_total; ?> - <?php echo $liikealue_count; ?> eli
 	      <?php echo $actual_count; ?> aluekorttia.</span>
         <?php } else { ?>
-	      <span id="actual_count_id"> <?php echo $territort_total_count; ?> - <?php echo $liikealue_count; ?> eli
+	      <span id="actual_count_id"> <?php echo $territory_total_count; ?> - <?php echo $liikealue_count; ?> eli
           <?php echo $actual_count; ?> aluekorttia.</span>
     	<?php } ?>
 	  </div>
-      <div class="tyhja_rivi"> 
-   	  </div>
       <div class="tyhja_rivi"> 
    	  </div>
       <div class="coReportRow">
@@ -123,15 +132,25 @@
 	    loput
 	    <span id="vuosi_lainassa_id"> <?php echo $vuosi_lainassa; ?> kpl lainassa julistajilla.</span>
       </div>
+
+      <h2 class="coReportSubHdr">Yhteenveto</h2>
+   	  <div class="coReportRow">
+    	  Alueita yhteensä <b><?php echo $actual_count; ?></b> kpl.
+      </div>
+   	  <div class="coReportRow">
+    	  Vuoden sisällä käymättä: <b><?php echo $vuosi_kaikki; ?></b> kpl.
+      </div>
+   	  <div class="coReportRow">
+    	  Vuoden sisällä käyty: <b><?php echo $covered_total; ?></b> kpl.
+      </div>
+   	  <div class="coReportRow">
+    	  Prosentti: <b><?php echo $covered_percent; ?></b> %
+      </div>
       <div class="tyhja_rivi"> 
    	  </div>
-      <div class="tyhja_rivi"> 
-   	  </div>
-      <div class="tyhja_rivi"> 
-   	  </div>
-      <div class="coReportRow">
+      <p class="coReportSubHdr">
  	    Alueita hoitavat veljet
-	  </div>
+	  </p>
  	</div><!-- content -->
 
     <div class="middleArea">

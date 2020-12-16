@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Alueet - seuranta ja merkitseminen</title>
+  <title>TerritoryServant - Seuranta</title>
   <link rel="stylesheet" type="text/css" href="<?php echo base_url("assets/css/navbar.css"); ?>">
   <link rel="stylesheet" type="text/css" href="<?php echo base_url("assets/css/territory.css"); ?>">
   
@@ -31,18 +31,19 @@
  
     <!-- Asetetaan sivun pääotsikko -->
     <?php 
-    if ($exhort == "RETURN") {
-        $hdr_string = "Alueet - palautuskehotukset";
+      if ($exhort == "RETURN") {
+        $hdr_string = "TerritoryServant - Palautuskehotukset";
         $explainer = "Alue saa olla lainassa samalla julistajalla korkeintaan vuoden.";
         $terr_url = base_url("index.php/territory_controller/display/name/asc/2/4/0");
         
-    } else {
-        $hdr_string = "Alueet - merkitsemiskehotukset";
+      } else {
+        $hdr_string = "TerritoryServant - Merkitsemiskehotukset";
         $explainer = "Alue tulisi käydä läpi neljässä kuukaudessa. Sitten siitä tulisi ilmoittaa aluepöytään, jotta alue voidaan merkitä käydyksi (km 4/07 s. 8, od s. 98).";
         $terr_url = base_url("index.php/territory_controller/display/name/asc/2/5/0");
-    }
+      }
     ?>
-    <div id="listhdr">
+
+    <div id="listhdr" class="headerArea">
       <h1><?php echo $hdr_string; ?></h1>
     </div>
 

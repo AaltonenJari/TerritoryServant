@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Alueet - Asetukset</title>
+  <title>TerritoryServant - Asetukset</title>
   <link rel="stylesheet" type="text/css" href="<?php echo base_url("assets/css/navbar.css"); ?>">
   <link rel="stylesheet" type="text/css" href="<?php echo base_url("assets/css/settings.css"); ?>">
   
@@ -28,9 +28,10 @@
     ?>
     <?php $this->load->view('common/navbar.php')?>
 
-    <!-- Asetetaan sivun pääotsikko -->
-    <h1>Asetukset - Ylläpito</h1>
-
+   <div class="headerArea">
+      <!-- Asetetaan sivun pääotsikko -->
+      <h1>TerritoryServant - Asetukset</h1>
+    </div>
 
     <div id="content">
       <?php 

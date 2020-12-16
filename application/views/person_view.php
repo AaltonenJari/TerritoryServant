@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Henkilötiedot - ylläpito</title>
+  <title>TerritoryServant - Ylläpito</title>
   <link rel="stylesheet" type="text/css" href="<?php echo base_url("assets/css/navbar.css"); ?>">
   <link rel="stylesheet" type="text/css" href="<?php echo base_url("assets/css/person.css"); ?>">
   
@@ -31,8 +31,10 @@
     ?>
     <?php $this->load->view('common/navbar.php')?>
 
-    <!-- Asetetaan sivun pääotsikko -->
-    <h1>Henkilötiedot - Ylläpito</h1>
+   <div class="headerArea">
+      <!-- Asetetaan sivun pääotsikko -->
+      <h1>TerritoryServant - Henkilötietojen ylläpito</h1>
+    </div>
 
     <div id="filterArea" class="filterArea">
       <table id="selectortable">

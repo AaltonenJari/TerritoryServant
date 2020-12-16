@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Henkilötietojen lisäys</title>
+  <title>TerritoryServant - Ylläpito</title>
   <link rel="stylesheet" type="text/css" href="<?php echo base_url("assets/css/terr_mark.css"); ?>">
   <!--link jquery ui css-->
   <link type="text/css" rel="stylesheet" href="<?php echo base_url('assets/jquery-ui-1.12.1/jquery-ui.css'); ?>" />
@@ -27,8 +27,15 @@
           <?php echo form_label('Etunimi: '); ?>
         </td>
         <td>
-          <?php echo form_input(array('id'=>'person_name',
-              'name'=>'person_name','value'=> $person_name)); ?>
+          <?php 
+            $data_input = [
+              'id'    => 'person_name',
+              'name'  => 'person_name',
+              'value' =>  $person_name,
+              'class' => 'insert_value'
+            ];
+            echo form_input($data_input);
+          ?>
         </td>
       </tr>
       <tr>
@@ -36,8 +43,15 @@
           <?php echo form_label('Sukunimi: '); ?>
         </td>
         <td>
-          <?php echo form_input(array('id'=>'person_lastname',
-              'name'=>'person_lastname','value'=> $person_lastname)); ?>
+          <?php 
+            $data_input = [
+                'id'    => 'person_lastname',
+                'name'  => 'person_lastname',
+                'value' =>  $person_lastname,
+                'class' => 'insert_value'
+            ];
+            echo form_input($data_input);
+          ?>
         </td>
       </tr>
       <tr>
@@ -48,6 +62,7 @@
           <?php 
           $js = [
               'id'       => 'group_id',
+              'class'    => 'insert_value',
               'onChange' => 'jsGroupChance(this, person_group);'
           ];
           echo form_dropdown('person_group_dropbox', $groups, $person_group_string, $js);
@@ -73,6 +88,7 @@
           <?php 
           $js = [
               'id'       => 'overseer_id',
+              'class'    => 'insert_value',
               'onChange' => 'jsOverseerChance(this, person_leader);'
           ];
           echo form_dropdown('overseers_dropbox', $overseers, $person_leader, $js);
@@ -94,8 +110,15 @@
           <?php echo form_label('Näytetäänkö: '); ?>
         </td>
         <td>
-          <?php echo form_input(array('id'=>'person_show',
-              'name'=>'person_show','value'=> $person_show)); ?>
+          <?php
+            $data_input = [
+                'id'    => 'person_show',
+                'name'  => 'person_show',
+                'value' =>  $person_show,
+                'class' => 'insert_value'
+            ];
+            echo form_input($data_input);
+          ?>
         </td>
       </tr>
     </table>

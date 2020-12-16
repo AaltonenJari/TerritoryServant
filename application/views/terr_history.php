@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Aluen merkitseminen</title>
+  <title>TerritoryServant - Historia</title>
   <link rel="stylesheet" type="text/css" href="<?php echo base_url("assets/css/terr_mark.css"); ?>">
   <link rel="stylesheet" type="text/css" href="<?php echo base_url("assets/css/territory.css"); ?>">
   <link rel="stylesheet" type="text/css" href="<?php echo base_url("assets/css/events.css"); ?>">

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>TerritoryServant - tietoja</title>
+  <title>TerritoryServant - Tietoja</title>
   <link rel="stylesheet" type="text/css" href="<?php echo base_url("assets/css/navbar.css"); ?>">
   <link rel="stylesheet" type="text/css" href="<?php echo base_url("assets/css/territory.css"); ?>">
   
@@ -27,64 +27,64 @@
     ?>
     <?php $this->load->view('common/navbar.php')?>
 
-    <!-- Asetetaan sivun pääotsikko -->
-    <h1>TerritoryServant - Tietoja</h1>
-
-
+   <div class="headerArea">
+      <!-- Asetetaan sivun pääotsikko -->
+      <h1>TerritoryServant - Tietoja</h1>
+    </div>
+  
     <div id="content">
-    <span>Ohjelmaversio: <?php echo $version; ?></span>
-	<br/>
-    <span>Versiopäivä: <?php echo $version_date; ?></span>
-	<br/>
-    <br/>
-    <div class="about_desc">
-    <span>
-  	  <b>TerritoryServant - alueidenhoito-ohjelma</b> on kehitetty helpottamaan seurakunnan alueiden hoitoa.
-	  Ohjelman avulla voit kirjata alueiden lainaukset, palautukset ja merkkaukset.
-	  Ohjelmalla voit seurata myös alueiden käyntiä ja kiertoa.
-	  Seurantaa helpottavat myös erilaiset raportit, jotka voi tarvittaessa tulostaa.
-    </span>
-    <br/>
-    <br/>
-    <span>
-      Ohjelma on kehitetty Kankaanpään seurakunnan alueiden hoitoon. Se käyttää olemassaolevaa tietokantaa,
-      jota voi käyttää rinnakkain myös aikaisemman alueidenhoito-ohjelman kanssa.
-      Jatkossa ohjelmaa voidaan kehittää myös muiden seurakuntien tarpeeseen.	
-    </span>
-    <br/>
-    <br/>
-    <span>
-      <b>Toimintaympäristö:</b>
-      <br/>
-      WAMP/LAMP web server version: <?php echo $_SERVER['SERVER_SOFTWARE']; ?> 
-      <br/>
-      Ohjelmistokehys: Codeigniter version: <?php echo CI_VERSION; ?>
-      <br/>
-      Tietokanta: MySQL version: <?php echo $mysql_version; ?>
+      <div class="version_desc">
+        <span>Ohjelmaversio: <?php echo $version; ?></span>
+	    <br/>
+        <span>Versiopäivä: <?php echo $version_date; ?></span>
+	    <br/>
+        <br/>
+      </div>
+      <div class="about_desc">
+      <span>
+  	    <b class="aboutSubHdr">TerritoryServant - alueidenhoito-ohjelma</b> on kehitetty helpottamaan seurakunnan alueiden hoitoa.
+	    <br/>Ohjelman avulla voit kirjata alueiden lainaukset, palautukset ja merkkaukset.
+	    <br/>Ohjelmalla voit seurata myös alueiden käyntiä ja kiertoa.
+	    <br/>Seurantaa helpottavat myös erilaiset raportit, jotka voi tarvittaessa tulostaa.
+      </span>
       <br/>
       <br/>
-    </span>
-    <span>
-      <b>Käyttöliittymä:</b>
+      <span>
+        Ohjelma on kehitetty Kankaanpään seurakunnan alueiden hoitoon. Se käyttää olemassaolevaa tietokantaa,
+        <br/>jota voi käyttää rinnakkain myös aikaisemman alueidenhoito-ohjelman kanssa.
+        <br/>Jatkossa ohjelmaa voidaan kehittää myös muiden seurakuntien tarpeeseen.	
+      </span>
       <br/>
-      javaScript version:
-      <label id="javascript_version"></label>
-      <br/>
-      jQuery version:
-      <label id="jquery_version"></label>
-      <br/>
-      jQuery UI version:
-      <label id="jquery_ui_version"></label>
-      (kalenteri on suomalainen)
-      <br/>
-      HTML5, CSS3
-      <br/>
-    </span>
-
-    </div><!-- about_desc -->
-    <br/>
-    <br/>
-	<span>Tekijä: <?php echo $author; ?></span>
+      <span>
+        <h2 class="aboutSubHdr">Toimintaympäristö</h2>
+        WAMP/LAMP web server version: <?php echo $_SERVER['SERVER_SOFTWARE']; ?> 
+        <br/>
+        Ohjelmistokehys: Codeigniter version: <?php echo CI_VERSION; ?>
+        <br/>
+        Tietokanta: MySQL version: <?php echo $mysql_version; ?>
+        <br/>
+      </span>
+      <span>
+        <h2 class="aboutSubHdr">Käyttöliittymä</h2>
+        javaScript version:
+        <label id="javascript_version"></label>
+        <br/>
+        jQuery version:
+        <label id="jquery_version"></label>
+        <br/>
+        jQuery UI version:
+        <label id="jquery_ui_version"></label>
+        (kalenteri on suomalainen)
+        <br/>
+        HTML5, CSS3
+        <br/>
+      </span>
+      </div><!-- about_desc -->
+      <div class="version_desc">
+        <br/>
+        <br/>
+  	    <span>Tekijä: <?php echo $author; ?></span>
+      </div>
     </div><!-- content -->
   </div><!-- wrapper -->
 </body>

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Alueet - seuranta ja merkitseminen</title>
+  <title>TerritoryServant - Tapahtumat</title>
   <link rel="stylesheet" type="text/css" href="<?php echo base_url("assets/css/navbar.css"); ?>">
   <link rel="stylesheet" type="text/css" href="<?php echo base_url("assets/css/territory.css"); ?>">
   <link rel="stylesheet" type="text/css" href="<?php echo base_url("assets/css/events.css"); ?>">
@@ -31,8 +31,10 @@
     ?>
     <?php $this->load->view('common/navbar.php')?>
     
-    <!-- Asetetaan sivun pääotsikko -->
-    <h1>Alueet - Kirjanpito</h1>
+    <div class="headerArea">
+      <!-- Asetetaan sivun pääotsikko -->
+      <h1>TerritoryServant - Alueiden kirjanpito</h1>
+    </div>
         
     <div id="selector_area">
       <table id="selectortable">

@@ -383,18 +383,31 @@ class Territory_controller extends CI_Controller
         }
         
         //Total count query
-        $data['territort_total_count'] = $this->Territory_model->getTerritoryCount('0', '0', '0', '1', $date_sw);
+        $territory_total = $this->Territory_model->getTerritoryCount('0', '0', '0', '1', $date_sw);
+        $data['territory_total_count'] = $territory_total;
  
         //Hae tiedot alueita lainanneista seurakunnista
         $results = $this->Territory_model->get_borrowing_congs();
         $data['lainaukset'] = $results['rows'];
+        $borrowed_total = count($results['rows']);
+         
+        $liikealue_lkm = $this->Territory_model->get_terr_group_count('L');
+        $data['liikealue_count'] = $liikealue_lkm;
         
-        $data['liikealue_count'] = $this->Territory_model->get_terr_group_count('L');
+        $actual_total = $territory_total - $borrowed_total - $liikealue_lkm;
+        $data['actual_total'] = $actual_total;
         
         //Vuosi käymättä lkm
-        $data['vuosi_kaikki'] = $this->Territory_model->getTerritoryCount('0', '1', '0', '0', $date_sw);
+        $year_uncovered_total = $this->Territory_model->getTerritoryCount('0', '1', '0', '0', $date_sw);
+        $data['vuosi_kaikki'] = $year_uncovered_total;
         $data['vuosi_lainassa'] = $this->Territory_model->getTerritoryCount('2', '1', '0', '0', $date_sw);
         $data['vuosi_laatikossa'] = $this->Territory_model->getTerritoryCount('1', '1', '0', '0', $date_sw);
+        
+        $covered_total = $actual_total - $year_uncovered_total;
+        $data['covered_total'] = $covered_total;
+        $covered_percent = $covered_total / $actual_total * 100;
+        $covered_percent = round($covered_percent); //Pyöristys
+        $data['covered_percent'] = $covered_percent;
         
         $sort_by = 'name';
         $sort_order = 'asc';
