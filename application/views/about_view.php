@@ -42,7 +42,7 @@
       </div>
       <div class="about_desc">
       <span>
-  	    <b class="aboutSubHdr">TerritoryServant - alueidenhoito-ohjelma</b> on kehitetty helpottamaan seurakunnan alueiden hoitoa.
+  	    <b class="aboutSubHdr">TerritoryServant - alueidenhoito-ohjelma</b> on kehitetty helpottamaan alueiden hoitoa.
 	    <br/>Ohjelman avulla voit kirjata alueiden lainaukset, palautukset ja merkkaukset.
 	    <br/>Ohjelmalla voit seurata myös alueiden käyntiä ja kiertoa.
 	    <br/>Seurantaa helpottavat myös erilaiset raportit, jotka voi tarvittaessa tulostaa.
@@ -50,9 +50,9 @@
       <br/>
       <br/>
       <span>
-        Ohjelma on kehitetty Kankaanpään seurakunnan alueiden hoitoon. Se käyttää olemassaolevaa tietokantaa,
+        Ohjelma on kehitetty Kankaanpäässä. Se käyttää olemassaolevaa tietokantaa,
         <br/>jota voi käyttää rinnakkain myös aikaisemman alueidenhoito-ohjelman kanssa.
-        <br/>Jatkossa ohjelmaa voidaan kehittää myös muiden seurakuntien tarpeeseen.	
+        <br/>Jatkossa ohjelmaa voidaan kehittää myös muihin vastaaviin tarpeisiin.	
       </span>
       <br/>
       <span>
