@@ -1,0 +1,102 @@
+#container{
+  width:960px;
+  height:610px;
+  margin-top:50px;
+  margin-left:auto; 
+  margin-bottom:50px;
+  margin-right:auto;  
+}
+
+table {
+  width: 100%;
+  font-family: sans-serif;
+}
+
+#fugo{
+  float:right
+}
+
+form{
+  width:320px;
+  padding:0 20px 20px;
+  background:linear-gradient(#fff,#ABDBFF);
+  border:1px solid #ccc;
+  box-shadow:0 0 5px;
+  font-family:'Marcellus',serif;
+  float:left;
+  margin-top:10px;
+  margin-left:200px; 
+  margin-bottom:50px;
+  margin-right:auto;  
+}
+
+h1{
+  text-align:center;
+  font-size:28px
+}
+
+hr{
+  border:0;
+  border-bottom:1.5px solid #ccc;
+  margin-top:-10px;
+  margin-bottom:30px
+}
+
+label{
+  font-size:17px
+}
+
+
+#cardtable tr {
+  height:30px;
+}
+
+input.submit_btn {
+  padding:3px 5px 3px 5px; 
+  margin-left: 0px;
+  border:none;
+  box-shadow:0 0 3px
+  margin-top:20px;
+  font-size:18px;
+  background:linear-gradient(#00cccc 5%,#36caf0 100%);
+  border:1px solid #0F799E;
+  color:#fff;
+  font-weight:700;
+  cursor:pointer;
+  text-shadow:0 1px 0 #13506D
+}
+
+input.submit_undo {
+  margin-top:20px;
+  margin-left: 0px;
+  border:1px solid #0F799E;
+  max-width: 40px;
+  max-height: 46px;
+  cursor:pointer;
+}
+
+input.submit_btn:hover {
+  background:linear-gradient(#36caf0 5%,#22abe9 100%)
+}
+
+input.submit_btn_disabled {
+  margin-top:20px;
+  margin-left: 0px;
+  border:1px solid #9ea0a0;
+  max-width: 40px;
+  max-height: 46px;
+}
+
+
+#cardbuttons tr td:nth-child(3) {
+  text-align: right;
+}
+
+#cardbuttons tr td:nth-child(4) {
+  text-align: right;
+}
+
+.table_history {
+  border-collapse: collapse;
+}
+

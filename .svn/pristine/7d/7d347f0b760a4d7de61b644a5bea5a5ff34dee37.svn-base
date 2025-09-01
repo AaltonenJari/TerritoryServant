@@ -1,0 +1,149 @@
+#container{
+  width:960px;
+  height:610px;
+  margin-top:50px;
+  margin-left:auto; 
+  margin-bottom:50px;
+  margin-right:auto;  
+}
+
+
+table {
+  width: 100%;
+  font-family: sans-serif;
+}
+
+/* Set a fixed scrollable wrapper */
+.tableWrap {
+  height: 430px;
+  border: 1px solid black;
+  overflow: auto;
+}
+
+/* Set header to stick to the top of the container. */
+#table2 thead tr th {
+  position: sticky;
+  top: 0;
+}
+
+/* Because we must set sticky on th,
+ we have to apply background styles here
+ rather than on thead */
+#table2 th {
+  padding:6px 3px 10px 15px; 
+  border-left: 1px dotted rgba(200, 209, 224, 0.6);
+  border-bottom: 1px solid #e8e8e8;
+  text-transform: uppercase;
+  background: #00cccc;
+  text-align: left;
+  /* With border-collapse, we must use box-shadow or psuedo elements
+  for the header borders */
+  box-shadow: 0px 0px 0 2px #e8e8e8;
+}
+
+#table2 tbody tr {
+  border-bottom: 2px solid #e8e8e8;
+}
+
+#table2 thead {
+  font-weight: 500;
+  color: rgba(0, 0, 0, 0.85);
+}
+
+#table2 tbody tr:hover {
+  background: #00cccc57;
+}
+
+
+form{
+  width:620px;
+  padding:0 20px 20px;
+  background:linear-gradient(#fff,#ABDBFF);
+  border:1px solid #ccc;
+  box-shadow:0 0 5px;
+  font-family:'Marcellus',serif;
+  float:left;
+  margin-top:10px;
+  margin-left:400px; 
+  margin-bottom:50px;
+  margin-right:auto;  
+}
+
+.setting_desc, .setting_value {
+  padding-left: 6px;
+  font-size:17px
+}
+
+h1{
+  text-align:center;
+  font-size:28px;
+  margin-top:14px;
+  margin-bottom:10px;
+}
+
+hr{
+  border:0;
+  border-bottom:1.5px solid #ccc;
+  margin-top:-10px;
+  margin-bottom:30px
+}
+
+label{
+  font-size:17px
+}
+
+.dropdown_field {
+  font-size:17px
+}
+	
+#cardtable tr {
+  height:30px;
+}
+
+input.submit_btn {
+  padding:3px 5px 3px 5px; 
+  margin-left: 0px;
+  border:none;
+  box-shadow:0 0 3px
+  margin-top:20px;
+  font-size:18px;
+  background:linear-gradient(#00cccc 5%,#36caf0 100%);
+  border:1px solid #0F799E;
+  color:#fff;
+  font-weight:700;
+  cursor:pointer;
+  text-shadow:0 1px 0 #13506D
+}
+
+input.submit_undo {
+  margin-top:20px;
+  border:1px solid #0F799E;
+  max-width: 40px;
+  max-height: 46px;
+  cursor:pointer;
+}
+
+input.submit_btn:hover {
+  background:linear-gradient(#36caf0 5%,#22abe9 100%)
+}
+
+input.submit_btn_disabled {
+  margin-top:20px;
+  border:1px solid #9ea0a0;
+  max-width: 40px;
+  max-height: 46px;
+}
+
+
+#cardbuttons tr td:nth-child(3) {
+  text-align: right;
+}
+
+#cardbuttons tr td:nth-child(4) {
+  text-align: right;
+}
+
+.table_history {
+  border-collapse: collapse;
+}
+

@@ -1,0 +1,287 @@
+/* Set a fixed scrollable wrapper */
+.tableWrap {
+  height: 360px;
+  border: 1px solid black;
+  overflow: auto;
+}
+
+/* Set header to stick to the top of the container. */
+#table2 thead tr th {
+  position: sticky;
+  top: 0;
+}
+
+/* Because we must set sticky on th,
+ we have to apply background styles here
+ rather than on thead */
+#table2 th {
+  padding: 6px;
+  padding-left: 15px;
+  border-left: 1px dotted rgba(200, 209, 224, 0.6);
+  border-bottom: 1px solid #e8e8e8;
+  text-transform: uppercase;
+  background: #00cccc;
+  text-align: left;
+  /* With border-collapse, we must use box-shadow or psuedo elements
+  for the header borders */
+  box-shadow: 0px 0px 0 2px #e8e8e8;
+}
+
+/* Basic Demo styling */
+table {
+  width: 100%;
+  font-family: sans-serif;
+}
+
+#table2 tbody tr {
+  border-bottom: 2px solid #e8e8e8;
+}
+
+#table2 thead {
+  font-weight: 500;
+  color: rgba(0, 0, 0, 0.85);
+}
+
+#table2 tbody tr:hover {
+  background: #e6f7ff;
+}
+
+.filterArea {
+  border: 1px solid black;
+}
+
+#filterArea
+{
+  padding-bottom: 10px;
+  padding-left: 2px;	
+}
+
+#selectortable {
+   border-collapse: collapse;
+}
+
+#selectortable th {
+  padding: 3px;
+  padding-left: 15px;
+  text-align: left;
+  font-family: "Arial", Times, serif;
+  font-size: 15px;
+}
+
+#selectortable td {
+  padding-left: 15px;
+  text-align: left;
+}
+
+#selectortable th:nth-child(4) {
+  text-align: right;
+}
+
+.middleArea {
+  padding-top: 6px;
+}
+
+
+#bottomArea {
+  /* border: 1px solid black; */
+}
+
+#bottomtable {
+  border-collapse: collapse;
+}
+
+/* Test styling */
+h1 {
+  text-align: center;
+  font-family: "Arial", Times, serif;
+  font-size: 26px;
+}
+
+h2 {
+  text-align: center;
+  font-family: "Arial", Times, serif;
+  font-size: 18px;
+}
+
+/* Select the first column */
+.alue_code {
+  background-color: rgba(166,166,166,.65);
+  text-align: center;
+}
+
+.alue_detail, .alue_location, .name {
+  padding-left: 6px;
+}
+
+.lainassa {
+  text-align: center;
+}
+
+#table2 tr th:nth-child(1), #table2 tr th:nth-child(4), #table2 tr th:nth-child(5), #table2 tr th:nth-child(6) {
+  text-align: center;
+}
+
+#table2 tr:hover {
+  background: #e6f7ff !important;
+}
+
+#table2 tr:hover td {
+  background: transparent;
+}
+
+#totalcount
+{
+  font-size: 16px;
+  padding-top: 2px;
+  padding-left: 5px;	
+}
+
+#sivutusotsake
+{
+  font-size: 16px;
+  padding-top: 2px;
+  padding-left: 5px;
+  font-weight: bold;
+}
+
+button {
+  padding:8px 5px 5px 5px; 
+  font-family: "Arial", Times, serif;
+  font-size: 16px;
+  text-transform: uppercase;
+}
+
+.btn-clear {
+	float: right;
+}
+
+.btnAction {
+  float: right;
+  padding:8px 5px 5px 5px; 
+  font-family: "Arial", Times, serif;
+  font-size: 16px;
+  text-transform: uppercase;
+}
+
+.sort_asc:after {
+	content: "▲";
+}
+
+.sort_desc:after {
+	content: "▼";
+}
+
+/* Set header to stick to the top of the container. */
+#table4 thead tr th {
+  position: sticky;
+  top: 0;
+}
+
+/* If we use border,
+we must use table-collapse to avoid
+a slight movement of the header row */
+.table4 {
+ border-collapse: collapse;
+   page-break-inside: avoid;
+}
+
+/* Because we must set sticky on th,
+ we have to apply background styles here
+ rather than on thead */
+.table4 th {
+  text-align: left;
+  background: white;	
+}
+
+.table4 tbody tr td {
+  border-collapse: collapse;
+}
+
+.table4 tbody tr {
+  text-align: left;
+}
+
+.table4 tbody tr:hover {
+  background: #e6f7ff;
+}
+
+.table4 tr:hover {
+  background: #e6f7ff !important;
+}
+
+.table4 tr:hover td {
+  background: transparent;
+}
+
+.tyhja_rivi {
+  height: 15px;
+}
+
+.kehotus_selite {
+  height: 25px;
+  padding:8px 5px 5px 30px; 
+  font-family: "Arial", Times, serif;
+  font-size: 12px;
+}
+
+.julistaja {
+  padding-left: 20px;	
+  font-family: "Arial", Times, serif;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.ohjeteksti {
+  padding-left: 30px;	
+}
+
+.otsikko_numero {
+  font-weight: bold;
+  text-align: center;
+  width: 10%;
+}
+
+.otsikko_nimi {
+  font-weight: bold;
+  width: 50%;
+}
+
+.otsikko_kayty, .otsikko_otettu {
+  text-align: right;
+  font-weight: bold;
+  padding-right: 15px;	
+  width: 20%;
+}
+
+.alue_number {
+  text-align: center;
+}
+
+
+input.submit_btn {
+  margin-top:20px;
+  font-size:18px;
+  background:linear-gradient(#00cccc 5%,#36caf0 100%);
+  border:1px solid #0F799E;
+  color:#fff;
+  font-weight:700;
+  cursor:pointer;
+  text-shadow:0 1px 0 #13506D
+}
+
+input.submit_btn:hover {
+  background:linear-gradient(#36caf0 5%,#22abe9 100%)
+}
+
+input.submit_btn_disabled {
+  margin-top:20px;
+  font-size:18px;
+}
+
+#cardbuttons tr td:nth-child(3) {
+  text-align: right;
+}
+
+#cardbuttons tr td:nth-child(4) {
+  text-align: right;
+}
