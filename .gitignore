@@ -45,3 +45,18 @@ $RECYCLE.BIN/
 Network Trash Folder
 Temporary Items
 .apdisk
+
+# Piilohakemistot
+.svn/
+.settings/
+
+# PHP:n system-hakemisto
+system/
+
+# Piilotiedostot
+.project
+.buildpath
+
+# Yksittäiset tiedostot
+composer.json
+contributing.md
