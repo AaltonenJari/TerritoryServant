@@ -42,7 +42,7 @@
       <?php } else { ?>
         <h1>Tervetuloa käyttämään TerritoryServant-aluetietojärjestelmää!</h1>
       <?php } ?>
-      <h2>Suosittele näitä alueita</h2>
+      <h2>Suosittele näitä alueita tänään</h2>
     <?php } else { ?>
       <h1>TerritoryServant - Seuranta ja alueiden merkitseminen</h1>
     <?php } ?>
