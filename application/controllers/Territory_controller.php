@@ -1331,12 +1331,6 @@ class Territory_controller extends CI_Controller
                  //Tapahtuman tiedot muistiin
                 $undo_redo_stack->execute($event_data);
                 
-                if ($event_data['event_type'] == 3) {
-                    //Jos poistettiin merkkaustapahtuman lainaus, poista myös palautusmerkkaus
-                    $event_data = $this->remove_event($terr_nbr,2);
-                    //Tapahtuman tiedot muistiin
-                    $undo_redo_stack->execute($event_data);
-                }
                 $_SESSION['undo_redo_stack'] = serialize($undo_redo_stack);
                 
                 $this->territory_history($terr_nbr, $main_display);
@@ -1347,12 +1341,6 @@ class Territory_controller extends CI_Controller
                     $event_data = $undo_redo_stack->undo();
                     $this->add_event($terr_nbr, $event_data);
                     
-                    if ($event_data['event_type'] == 4) {
-                        //Jos palautettiin merkkaustapahtuman palautus, palauta myös lainausmerkkaus
-                        $event_data = $undo_redo_stack->undo();
-                        $this->add_event($terr_nbr, $event_data);
-                    }
-                        
                     $_SESSION['undo_redo_stack'] = serialize($undo_redo_stack);
                 } else {
                     $this->session->set_flashdata("error", "Can't undo.");
@@ -1364,13 +1352,7 @@ class Territory_controller extends CI_Controller
                 if ($undo_redo_stack->can_redo()) {
                     $event_data = $undo_redo_stack->redo();
                     $event_data_deleted = $this->remove_event($terr_nbr,4);
-                    
-                    if ($event_data['event_type'] == 3) {
-                        //Jos poistettiin merkkaustapahtuman lainaus, poista myös palautusmerkkaus
-                        $event_data = $undo_redo_stack->redo();
-                        $event_data_deleted = $this->remove_event($terr_nbr,4);
-                    }
-                    
+                   
                     $_SESSION['undo_redo_stack'] = serialize($undo_redo_stack);
                 } else {
                     $this->session->set_flashdata("error", "Can't redo.");

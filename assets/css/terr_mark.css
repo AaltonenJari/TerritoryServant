@@ -1,3 +1,9 @@
+:root {
+  --deep-crimson-red: #930202;
+  --dark-crimson: #890101;
+}
+
+
 #container{
   width:960px;
   height:610px;
@@ -142,19 +148,15 @@ input.submit_btn_disabled {
 }
 
 .text-danger {
-  color: #930202;
+  color: var(--deep-crimson-red);
 }
 
 .text-danger-bottom {
   padding-top: 10px;
-  color: #890101;
+  color: var(--dark-crimson);
 }
 
 .fullwidth {
     width: 100%;
     box-sizing: border-box;
-}
-.input-field-width {
-   max-width: 100%;
-   width: 180px;
 }
