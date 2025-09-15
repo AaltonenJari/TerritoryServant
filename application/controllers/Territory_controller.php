@@ -1231,6 +1231,8 @@ class Territory_controller extends CI_Controller
             'lainassa_uusi' => $lainassa_uusi
         );
         
+        $today = date("j.n.Y");
+        
         $this->session->set_userdata($session_data);
         $lainassa_vanha = $this->input->post('lainassa_old');
 
@@ -1243,26 +1245,35 @@ class Territory_controller extends CI_Controller
         $pvm_vanha_date = new DateTime($this->input->post('lastdate_old'));
         $pvm_vanha = $pvm_vanha_date->format('j.n.Y');
         
-        if ($lainassa_vanha == '0' && $lainassa_uusi == '0') {
-            $this->form_validation->set_message('verify_alue','väärä lainassa-koodi!');
-            $this->session->set_flashdata('error', 'Palautat palautunutta korttia. Yritä uudelleen.');
+        if (strtotime($pvm_uusi) > strtotime($today)) {
+            $this->form_validation->set_message('verify_alue','Päivämäärä ' . $pvm_uusi . ' virheellinen');
+            $this->session->set_flashdata('error', 'Et voi merkitä korttia tulevaisuuden päivälle');
             return false;
+        } else if ($lainassa_vanha == '0' && $lainassa_uusi == '0') {
+           $this->form_validation->set_message('verify_alue','väärä lainassa-koodi!');
+           $this->session->set_flashdata('error', 'Palautat palautunutta korttia. Yritä uudelleen.');
+           return false;
         } else if ($lainassa_uusi == '1' && empty($julistaja_uusi)) {
                 $this->form_validation->set_message('verify_alue','Lainaajan nimi tyhjä!');
                 $this->session->set_flashdata('error', 'Lainaajan nimi tyhjä. Yritä uudelleen.');
                 return false;
         } else if ($lainassa_vanha == '1' && $lainassa_uusi == '1'
-                   && $julistaja_vanha == $julistaja_uusi
-                   && $pvm_vanha == $pvm_uusi) {
+                && $julistaja_vanha == $julistaja_uusi
+                && strtotime($pvm_vanha) == strtotime($pvm_uusi)) {
                 $this->form_validation->set_message('verify_alue','Kortti on jo merkitty!');
-                $this->session->set_flashdata('error', 'Et voi merkitä korttia samana päivänä samalle henkilölle uudelleen');
+                $this->session->set_flashdata('error', 'Et voi merkitä korttia samalle henkilölle samalle päivälle uudelleen');
                 return false;
         } else if ($pvm_vanha_date > $pvm_uusi_date) {
-            $this->form_validation->set_message('verify_alue','Päivämäärä väärä!');
+            if (strtotime($pvm_vanha) > strtotime($today)) {
+                // Jos edellinen merkkauspäivä on tulevisuudessa, siitä ei välitetä
+                return true;
+            }
+            $this->form_validation->set_message('verify_alue','Päivämäärä ' . $pvm_uusi . ' virheellinen');
             $this->session->set_flashdata('error', 'Et voi merkitä korttia vanhemmalle päivälle');
             return false;
         }
-
+    
+    
         //Poistetaan aikaisemmin näkynyt virheteksti
         if(isset($_SESSION['error'])){
             unset($_SESSION['error']);

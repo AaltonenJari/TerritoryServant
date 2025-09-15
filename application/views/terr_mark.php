@@ -133,10 +133,14 @@
           ?>
         </td>
         <td>
-          <?php 
-            $attributes = 'id="dmerk" placeholder="Merkintäpvm"';
-            echo form_input('dmerk', set_value('dmerk', date("j.n.Y")), $attributes);
-           ?>
+            <?php 
+              $attributes = [
+                  'id' => 'dmerk',
+                  'placeholder' => 'Merkintäpvm',
+                  'class' => 'fullwidth'
+              ];
+              echo form_input('dmerk', set_value('dmerk', date("j.n.Y")), $attributes);
+             ?>
         </td>
       </tr>
       <tr>
@@ -144,43 +148,43 @@
           <?php echo form_label('Kenellä:'); ?>
         </td>
         <td>
-           <?php 
-           $js = [
-               'id'       => 'djnimi',
-               'onChange' => 'jsFunction();'
-           ];
-           echo form_dropdown('djnimi', $lenders, $name, $js);
+            <?php 
+            $attributes = [
+                'id'       => 'djnimi',
+                'onChange' => 'jsFunction();',
+                'class'    => 'fullwidth'
+            ];
+            echo form_dropdown('djnimi', $lenders, $name, $attributes);
+            
            
-           //input field for name other than in the drop-down list
-           $data = [
+            //input field for name other than in the drop-down list
+            $data = [
                'type'  => 'text',
                'name'  => 'djnimi',
                'id'    => 'djnimi_id',
-               'value' =>  $name,
-               'style' => 'display:none'
-           ];
-           
-           echo form_input($data);
-           
+               'value' => $name,
+               'style' => 'display:none',
+               'class' => 'fullwidth'
+            ];
+            echo form_input($data);
             
-           //Save the old name (selected value from server)
-           $data = [
-           'type'  => 'hidden',
-           'name'  => 'jnimi_old',
-           'id'    => 'hidden_jnimi_old',
-           'value' =>  $name,
-           'class' => 'hidden_jnimi_old'
-           ];
+            
+            //Save the old name (selected value from server)
+            $data = [
+               'type'  => 'hidden',
+               'name'  => 'jnimi_old',
+               'id'    => 'hidden_jnimi_old',
+               'value' =>  $name,
+               'class' => 'hidden_jnimi_old'
+            ];
            
-           echo form_input($data);
-          ?>
-         </td>
+            echo form_input($data);
+            ?>
+        </td>
       </tr>
 
       <tr>
-        <td>
-        </td>
-        <td>
+        <td colspan="2">
           <span class="text-danger"><?php echo form_error('djnimi'); ?></span>
          </td>
       </tr>
@@ -201,7 +205,9 @@
       </tr>
       <tr>
         <td colspan="3">
-          <?php echo $this->session->flashdata("error");	?>
+          <div class="text-danger-bottom">
+            <?php echo $this->session->flashdata("error");	?>
+          </div>
         </td>
        </tr>
     </table> <!-- cardbuttons -->
