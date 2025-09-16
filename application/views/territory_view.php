@@ -44,7 +44,7 @@
       <?php } ?>
       <h2>Suosittele näitä alueita tänään</h2>
     <?php } else { ?>
-      <h1>TerritoryServant - Seuranta ja alueiden merkitseminen</h1>
+      <h1>TerritoryServant - Aluekorttien merkintä ja seuranta</h1>
     <?php } ?>
 	</div>
 
@@ -69,7 +69,7 @@
           </td>
 		  <td>
 		    <input type="hidden" id="selCodeOld" value="<?php echo $code_sel; ?>" />
-      		<select name="terrCodeChkBoxChooser" id="terrCodeChkBoxChooser" onChange="jsFunction4()">
+      		<select id="terrCodeChkBoxChooser" onChange="onTerritoryCodeChange()">
          	  <option value="0" <?php if ($code_sel == "0") echo "selected=\"selected\""?> >Kaikki</option>
 			  <?php 
                 foreach ($territory_codes as $territory_code) {
@@ -82,7 +82,7 @@
 		  </td>
           <td>
  		    <input type="hidden" id="selChkBoxOld" value="<?php echo $chkbox_sel; ?>" />
-      		<select name="borrowChkBoxChooser" id="borrowChkBoxChooser" onChange="jsFunction()">
+      		<select id="borrowChkBoxChooser" onChange="onBorrowOptionChange()">
          	  <option value="0" <?php if ($chkbox_sel == "0") echo "selected=\"selected\""?> >Kaikki</option>
   		      <option value="1" <?php if ($chkbox_sel == "1") echo "selected=\"selected\""?> >Seurakunnassa</option>
   		 	  <option value="2" <?php if ($chkbox_sel == "2") echo "selected=\"selected\""?> >Lainassa</option>
@@ -90,7 +90,7 @@
           </td>
           <td>
       		<input type="hidden" id="selDateOld" value="<?php echo $date_sel; ?>" />
-       		<select name="borrowDateChooser" id="borrowDateChooser" onChange="jsFunction2()">
+       		<select id="borrowDateChooser" onChange="onBorrowRangeOptionChange()">
          	  <option value="0" <?php if ($date_sel == "0") echo "selected=\"selected\""?> >Kaikki</option>
   		 	  <option value="1" <?php if ($date_sel == "1") echo "selected=\"selected\""?> >Käyty &gt; 12 kk</option>
   		 	  <option value="2" <?php if ($date_sel == "2") echo "selected=\"selected\""?> >Käyty &gt; 4 kk</option>
@@ -98,7 +98,7 @@
        		</select> 
           </td>
           <td>
-            <a href="<?php echo base_url("index.php/territory_controller/display"); ?>" target="_parent" class="btn-clear"><button>CLR</button></a>
+            <button type="button" onclick="clearAndReset()">CLR</button>
           </td>
   		</tr>
       </table>
@@ -138,7 +138,7 @@
  	    				<?php } else if ($field_name == "alue_code") { ?>
  	    				  <?php $terr_url = base_url("index.php/Territory_controller/update") . "/" . $alue->$field_name . "/" . $filter; ?>
     			    	  <td id="<?php echo $field_name_data; ?>"> 
-    			    	    <a id="<?php echo $alue->$field_name; ?>" href="<?php echo $terr_url; ?>" onClick='jsFunction3("<?php echo $alue->$field_name; ?>")'>
+    			    	    <a id="<?php echo $alue->$field_name; ?>" href="<?php echo $terr_url; ?>" onClick='updateTerritoryLink"<?php echo $alue->$field_name; ?>")'>
     			    	      <?php echo $alue->$field_name; ?> 
    				     	    </a>
     			    	  </td>
@@ -178,47 +178,70 @@
 </body>
 <script>
 
-function jsFunction() {
+function onBorrowOptionChange() {
 	  var myselect = document.getElementById("borrowChkBoxChooser");
+
+	  // Tyhjennetään suodatuskenttä ja siihen liittyvä hidden-parametri
+	  var myFilter = document.getElementById("filterString");
+	  var myFilterParam = document.getElementById("filter_param");
+	  myFilter.value = "";
+	  myFilterParam.value = "";
+
 	  document.getElementById("selChkBoxOld").value = myselect.options[myselect.selectedIndex].value;
       var newUrl = document.getElementById("displayBaseUrl").value;
       newUrl = newUrl + "\\" + document.getElementById("selChkBoxOld").value;
       newUrl = newUrl + "\\" + document.getElementById("selDateOld").value;
       newUrl = newUrl + "\\" + document.getElementById("selCodeOld").value;
       newUrl = newUrl + "\\" + document.getElementById("filter_param").value;
-	  //alert(newUrl);
 	  location.replace(newUrl);
 }
 	
-function jsFunction2() {
+function onBorrowRangeOptionChange() {
 	  var myselect = document.getElementById("borrowDateChooser");
+
+	  // Tyhjennetään suodatuskenttä ja siihen liittyvä hidden-parametri
+	  var myFilter = document.getElementById("filterString");
+	  var myFilterParam = document.getElementById("filter_param");
+	  myFilter.value = "";
+	  myFilterParam.value = "";
+
 	  document.getElementById("selDateOld").value = myselect.options[myselect.selectedIndex].value;
       var newUrl = document.getElementById("displayBaseUrl").value;
       newUrl = newUrl + "\\" + document.getElementById("selChkBoxOld").value;
       newUrl = newUrl + "\\" + document.getElementById("selDateOld").value;
       newUrl = newUrl + "\\" + document.getElementById("selCodeOld").value;
       newUrl = newUrl + "\\" + document.getElementById("filter_param").value;
-	  //alert(newUrl);
 	  location.replace(newUrl);
 }
 
-function jsFunction3(alue_code) {
+function updateTerritoryLink(territory_code) {
     var newUrl = document.getElementById("base_update_url").value;
-	var newUrl = newUrl + "/" + alue_code + "/" + document.getElementById("filter_param").value;
-	document.getElementById(alue_code).href = newUrl;
+	var newUrl = newUrl + "/" + territory_code + "/" + document.getElementById("filter_param").value;
+	document.getElementById(territory_code).href = newUrl;
 }
 
-function jsFunction4() {
+function onTerritoryCodeChange() {
 	var myselect = document.getElementById("terrCodeChkBoxChooser");
+
+	// Tyhjennetään suodatuskenttä ja siihen liittyvä hidden-parametri
+	var myFilter = document.getElementById("filterString");
+	var myFilterParam = document.getElementById("filter_param");
+    myFilter.value = "";
+    myFilterParam.value = "";
+    
 	document.getElementById("selCodeOld").value = myselect.options[myselect.selectedIndex].value;
     var newUrl = document.getElementById("displayBaseUrl").value;
     newUrl = newUrl + "\\" + document.getElementById("selChkBoxOld").value;
     newUrl = newUrl + "\\" + document.getElementById("selDateOld").value;
     newUrl = newUrl + "\\" + document.getElementById("selCodeOld").value;
     newUrl = newUrl + "\\" + document.getElementById("filter_param").value;
-	//alert(newUrl);
 	location.replace(newUrl);
 }
 
+function clearAndReset() {
+    document.getElementById('filterString').value = '';
+    // Ohjataan perustilaan
+    window.location.href = "<?php echo base_url('index.php/territory_controller/display'); ?>";
+}
 </script>
 </html>
