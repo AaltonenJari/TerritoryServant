@@ -134,6 +134,7 @@ class Person_controller extends CI_Controller
         /** SERIALIZE **/
         $_SESSION['undo_redo_person_edit'] = serialize($undo_redo_stack);
                 
+        $data['saved_height'] = $this->session->userdata('table_height');
         $this->load->view('person_view', $data);
     }
  
@@ -424,7 +425,8 @@ class Person_controller extends CI_Controller
          $data['overseers'] = $overseers;
          $data['overseers_string'] = ' ';
          
-        $this->load->view('person_insert', $data);
+         $data['saved_height'] = $this->session->userdata('table_height');
+         $this->load->view('person_insert', $data);
     }
     
     public function check_update($filter = '')
@@ -760,6 +762,14 @@ class Person_controller extends CI_Controller
             $this->session->userdata('sort_order'),
             $this->session->userdata('group_limit_sel'),
             $this->session->userdata('filter'));
+    }
+    
+    public function save_height()
+    {
+        $height = $this->input->post('height');
+        if (is_numeric($height)) {
+            $this->session->set_userdata('table_height', (int)$height);
+        }
     }
     
     public function index()

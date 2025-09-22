@@ -169,6 +169,7 @@ class Territory_controller extends CI_Controller
         $tresults = $this->Event_model->get_terr_codes();
         $data['territory_codes'] = $tresults['rows'];
         
+        $data['saved_height'] = $this->session->userdata('table_height');
         $this->load->view('territory_view', $data);
     }
     
@@ -251,6 +252,7 @@ class Territory_controller extends CI_Controller
         $tresults = $this->Event_model->get_terr_codes();
         $data['territory_codes'] = $tresults['rows'];
         
+        $data['saved_height'] = $this->session->userdata('table_height');
         $this->load->view('territory_view', $data);
     }
     
@@ -298,6 +300,7 @@ class Territory_controller extends CI_Controller
 
         $data['exhort'] = "MARK";
         
+        $data['saved_height'] = $this->session->userdata('table_height');
         $this->load->view('territory_mark_view', $data);
     }
     
@@ -350,6 +353,7 @@ class Territory_controller extends CI_Controller
         $data['num_results'] = $terr_count;
         $data['exhort'] = "RETURN";
         
+        $data['saved_height'] = $this->session->userdata('table_height');
         $this->load->view('territory_mark_view', $data);
     }
     
@@ -424,6 +428,7 @@ class Territory_controller extends CI_Controller
         );
         $this->session->set_userdata($territory_view_state);
         
+        $data['saved_height'] = $this->session->userdata('table_height');
         $this->load->view('circuit_report_view', $data);
     }
     
@@ -780,6 +785,7 @@ class Territory_controller extends CI_Controller
         
         $data['lenders'] = $this->get_lenders();
         
+        $data['saved_height'] = $this->session->userdata('table_height');
         $this->load->view('terr_mark', $data);
         
     }
@@ -1314,6 +1320,7 @@ class Territory_controller extends CI_Controller
         $data['can_undo'] = $undo_redo_stack->can_undo();
         $data['can_redo'] = $undo_redo_stack->can_redo();
         
+        $data['saved_height'] = $this->session->userdata('table_height');
         $this->load->view('terr_history', $data);
     }
     
@@ -1775,6 +1782,14 @@ class Territory_controller extends CI_Controller
     {
         $new_url = "Event_controller/display/" . $code . "/" . $offset;
         redirect($new_url);
+    }
+    
+    public function save_height()
+    {
+        $height = $this->input->post('height');
+        if (is_numeric($height)) {
+            $this->session->set_userdata('table_height', (int)$height);
+        }
     }
     
     public function index()

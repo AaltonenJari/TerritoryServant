@@ -67,7 +67,7 @@ class Event_controller extends CI_Controller
         $undo_redo_stack = new UndoRedoStack();
         $_SESSION['undo_redo_stack'] = serialize($undo_redo_stack);
         
-        
+        $data['saved_height'] = $this->session->userdata('table_height');
         $this->load->view('event_view', $data);
     }
     
@@ -97,6 +97,7 @@ class Event_controller extends CI_Controller
 
         $data['bookkeeping'] = $event_data;
         
+        $data['saved_height'] = $this->session->userdata('table_height');
         $this->load->view('bookkeeping_view', $data);
     }
     
@@ -304,6 +305,14 @@ class Event_controller extends CI_Controller
         $page_data["links"] = $this->pagination->create_links();
         
         return $page_data;
+    }
+    
+    public function save_height()
+    {
+        $height = $this->input->post('height');
+        if (is_numeric($height)) {
+            $this->session->set_userdata('table_height', (int)$height);
+        }
     }
     
     public function index()

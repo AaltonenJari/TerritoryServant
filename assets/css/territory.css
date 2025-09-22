@@ -1,14 +1,24 @@
-/* Set a fixed scrollable wrapper */
-.tableWrap {
+.contentResizable {
   height: 330px;
   border: 1px solid black;
+  resize: vertical;
+  overflow: hidden;
+  min-height: 250px;
+  max-height: 700px;
+  padding-bottom: 4px;
+}
+
+.scrollInner {
+  height:100%;
   overflow: auto;
 }
+
 
 /* Set header to stick to the top of the container. */
 #table2 thead tr th {
   position: sticky;
   top: 0;
+  background: #00cccc;
 }
 
 /* Because we must set sticky on th,
@@ -26,7 +36,7 @@
   box-shadow: 0px 0px 0 2px #e8e8e8;
 }
 
-/* Basic Demo styling */
+/* Basic Table Styling */
 table {
   width: 100%;
   font-family: sans-serif;
@@ -99,6 +109,10 @@ table {
 
 #bottomArea {
   /* border: 1px solid black; */
+}
+
+.bottomArea {
+	padding-top: 5px;
 }
 
 #bottomtable {

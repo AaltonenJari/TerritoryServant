@@ -93,6 +93,7 @@ class Group_controller extends CI_Controller
         /** SERIALIZE **/
         $_SESSION['undo_redo_group_edit'] = serialize($undo_redo_stack);
         
+        $data['saved_height'] = $this->session->userdata('table_height');
         $this->load->view('group_view', $data);
     }
  
@@ -259,7 +260,8 @@ class Group_controller extends CI_Controller
             'group_events'	=> '0'
         );
         
-        $this->load->view('group_insert', $data);
+         $data['saved_height'] = $this->session->userdata('table_height');
+         $this->load->view('group_insert', $data);
     }
     
     public function check_update($filter = '')
@@ -557,6 +559,14 @@ class Group_controller extends CI_Controller
         $this->display($this->session->userdata('sort_by'),
             $this->session->userdata('sort_order'),
             $this->session->userdata('filter'));
+    }
+    
+    public function save_height()
+    {
+        $height = $this->input->post('height');
+        if (is_numeric($height)) {
+            $this->session->set_userdata('table_height', (int)$height);
+        }
     }
     
     public function index()

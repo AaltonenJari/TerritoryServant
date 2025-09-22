@@ -87,8 +87,8 @@
       </table>
     </div>
          
-    <div id="content">
-      <div class="tableWrap">
+	<div id="content" class="contentResizable" style="<?php echo $saved_height ? 'height:'.$saved_height.'px;' : ''; ?>">
+	  <div class="scrollInner">
         <table class="table3">
           <thead class="table3Header">
             <tr>
@@ -180,8 +180,9 @@
             <?php } ?>
           </tbody>
         </table> <!-- table3 -->
-      </div> <!-- tableWrapEvent -->
+      </div> <!-- scrollInner -->
     </div><!-- content -->
+    
     <div class="middleArea">
     </div>
     <div id="bottomArea" class="bottomArea">
@@ -240,6 +241,27 @@ function jsFunction4() {
     
 	location.replace(newUrl);
 }
+
+document.addEventListener('DOMContentLoaded', function () {
+    const box = document.querySelector('.contentResizable');
+    let lastHeight = box.offsetHeight;
+
+    const observer = new ResizeObserver(entries => {
+        for (const entry of entries) {
+            const newHeight = Math.round(entry.contentRect.height);
+            if (newHeight !== lastHeight) {
+                lastHeight = newHeight;
+                fetch("<?php echo base_url('index.php/Territory_controller/save_height'); ?>", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                    body: "height=" + newHeight
+                });
+            }
+        }
+    });
+    observer.observe(box);
+});
+
 </script>
 
 </html>

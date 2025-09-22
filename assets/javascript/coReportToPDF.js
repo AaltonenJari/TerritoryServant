@@ -2,7 +2,7 @@ function createPDF()
 {
 	//var sTable = document.getElementsByClassName('tableWrap')[0].innerHTML;
 	var sTable = document.getElementById('content').innerHTML;
-
+	
 	var style = "<style>";
 	
 	style = style + "h1 {text-align: center; font-family: \"Arial\", Times, serif; font-size: 26px; }";

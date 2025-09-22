@@ -104,11 +104,12 @@
       </table>
     </div>
 
-	<div id="content">
-	  <div class="tableWrap">
-        <table id="table2" class="order-table table">
-          <thead>
-            <tr>
+
+	<div id="content" class="contentResizable" style="<?php echo $saved_height ? 'height:'.$saved_height.'px;' : ''; ?>">
+	  <div class="scrollInner">
+          <table id="table2" class="table">
+            <thead>
+              <tr>
     			<?php foreach ($display_fields as $field_name => $field_display) { ?>
     			    <th <?php if ($sort_by == $field_name) echo "class=\"sort_" . $sort_order . "\"" ?>><span>
 						<?php $hdrurl = base_url("index.php/territory_controller/display") . "/" . $field_name . "/" .
@@ -119,11 +120,11 @@
 						<input type="hidden" id="<?php echo $field_name_old; ?>" value="<?php echo $hdrurl; ?>" />
     			    </span></th>
     			<?php } ?>
-            </tr>
-          </thead>
-          <tbody>
-		    <?php $rowidx = 0; ?>
-       		<?php foreach ($alueet as $alue) { ?>
+              </tr>
+            </thead>
+            <tbody>
+		      <?php $rowidx = 0; ?>
+       		  <?php foreach ($alueet as $alue) { ?>
                	<tr>
                		<?php $rowidx++; ?>
 	    			<?php foreach ($display_fields as $field_name => $field_display) { ?>
@@ -148,10 +149,10 @@
    					<?php } ?>
        			</tr>
              <?php } ?>
-	      </tbody>
-        </table>
+	        </tbody>
+          </table>
       </div>
-	</div><!-- content -->
+    </div><!-- content -->
 
     <div class="middleArea">
     </div>
@@ -243,5 +244,27 @@ function clearAndReset() {
     // Ohjataan perustilaan
     window.location.href = "<?php echo base_url('index.php/territory_controller/display'); ?>";
 }
+
+
+document.addEventListener('DOMContentLoaded', function () {
+    const box = document.querySelector('.contentResizable');
+    let lastHeight = box.offsetHeight;
+
+    const observer = new ResizeObserver(entries => {
+        for (const entry of entries) {
+            const newHeight = Math.round(entry.contentRect.height);
+            if (newHeight !== lastHeight) {
+                lastHeight = newHeight;
+                fetch("<?php echo base_url('index.php/Territory_controller/save_height'); ?>", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                    body: "height=" + newHeight
+                });
+            }
+        }
+    });
+    observer.observe(box);
+});
+
 </script>
 </html>

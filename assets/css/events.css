@@ -98,7 +98,7 @@ a slight movement of the header row */
   text-align: center;
   display:flex;
   justify-content:center;
-  padding-bottom: 8px;
+  padding-top: 10px;
 }
 
 .territorycodes a {
@@ -151,6 +151,7 @@ a slight movement of the header row */
 	clear:both;
     position:relative;
     text-align:center;
+    padding-top: 10px;
 }
 
 .pagination span {

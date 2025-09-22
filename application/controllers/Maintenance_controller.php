@@ -104,6 +104,7 @@ class Maintenance_controller extends CI_Controller
         /** SERIALIZE **/
         $_SESSION['undo_redo_terr_edit'] = serialize($undo_redo_stack);
         
+        $data['saved_height'] = $this->session->userdata('table_height');
         $this->load->view('maintenance_view', $data);
     }
     
@@ -219,6 +220,7 @@ class Maintenance_controller extends CI_Controller
             'alue_taloudet' => '30'
         );
         
+        $data['saved_height'] = $this->session->userdata('table_height');
         $this->load->view('terr_insert', $data);
     }
     
@@ -563,6 +565,14 @@ class Maintenance_controller extends CI_Controller
             $this->session->userdata('sort_order'),
             $this->session->userdata('code_sel'),
             $this->session->userdata('filter'));
+    }
+    
+    public function save_height()
+    {
+        $height = $this->input->post('height');
+        if (is_numeric($height)) {
+            $this->session->set_userdata('table_height', (int)$height);
+        }
     }
     
     public function index()
