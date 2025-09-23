@@ -307,14 +307,6 @@ class Event_controller extends CI_Controller
         return $page_data;
     }
     
-    public function save_height()
-    {
-        $height = $this->input->post('height');
-        if (is_numeric($height)) {
-            $this->session->set_userdata('table_height', (int)$height);
-        }
-    }
-    
     public function index()
     {
         $this->display();

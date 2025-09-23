@@ -567,14 +567,6 @@ class Maintenance_controller extends CI_Controller
             $this->session->userdata('filter'));
     }
     
-    public function save_height()
-    {
-        $height = $this->input->post('height');
-        if (is_numeric($height)) {
-            $this->session->set_userdata('table_height', (int)$height);
-        }
-    }
-    
     public function index()
     {
         $this->display();

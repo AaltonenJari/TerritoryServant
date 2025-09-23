@@ -8,6 +8,7 @@
   
   <script src="<?php echo base_url("assets/javascript/logsearch.js"); ?>"></script> 
   <script src="<?php echo base_url("assets/javascript/logToPDF.js"); ?>"></script> 
+  <script src="<?php echo base_url('assets/javascript/resizableHeight.js'); ?>"></script>
 
   <!--link jquery ui css-->
   <link type="text/css" rel="stylesheet" href="<?php echo base_url('assets/jquery-ui-1.12.1/jquery-ui.css'); ?>" />
@@ -83,8 +84,8 @@
       </table>
     </div>
 
-	<div id="content">
-	  <div class="tableWrap">
+	<div id="content" class="contentResizable" style="<?php echo $saved_height ? 'height:'.$saved_height.'px;' : ''; ?>">
+	  <div class="scrollInner">
         <table id="logtable" class="order-table table">
           <thead>
             <tr>
@@ -177,6 +178,13 @@ function jsFunction5() {
     newUrl = newUrl + "\\" + document.getElementById("filter_param").value;
 	location.replace(newUrl);
 }
+
+document.addEventListener('DOMContentLoaded', function () {
+	  enableResizableSave(
+	    '.contentResizable',
+	    '<?php echo base_url('index.php/Territory_controller/save_height'); ?>'
+	  );
+	});
 
 
 </script>

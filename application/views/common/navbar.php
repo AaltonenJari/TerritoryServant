@@ -196,7 +196,7 @@ $(document).ready(function()
 			$(".link").attr('href', str);
 		  });   
 		  //Linkin asetus alussa
-		  var val = document.getElementById("cweek_check_id").value;
+		  var val = '0';
 		  var str = document.getElementById("baseUrl").value;
 		  str = str + "/kierrosviikon_alusta/" + val;
 		  $(".link").attr('href', str);

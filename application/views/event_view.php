@@ -17,6 +17,7 @@
   
   <script src="<?php echo base_url("assets/javascript/territorysearch.js"); ?>"></script> 
   <script src="<?php echo base_url("assets/javascript/eventsToPDF.js"); ?>"></script> 
+  <script src="<?php echo base_url('assets/javascript/resizableHeight.js'); ?>"></script>
 </head>
 
 <body>
@@ -243,24 +244,11 @@ function jsFunction4() {
 }
 
 document.addEventListener('DOMContentLoaded', function () {
-    const box = document.querySelector('.contentResizable');
-    let lastHeight = box.offsetHeight;
-
-    const observer = new ResizeObserver(entries => {
-        for (const entry of entries) {
-            const newHeight = Math.round(entry.contentRect.height);
-            if (newHeight !== lastHeight) {
-                lastHeight = newHeight;
-                fetch("<?php echo base_url('index.php/Territory_controller/save_height'); ?>", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-                    body: "height=" + newHeight
-                });
-            }
-        }
-    });
-    observer.observe(box);
-});
+	  enableResizableSave(
+	    '.contentResizable',
+	    '<?php echo base_url('index.php/Territory_controller/save_height'); ?>'
+	  );
+	});
 
 </script>
 

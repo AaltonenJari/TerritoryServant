@@ -7,6 +7,7 @@
   <link rel="stylesheet" type="text/css" href="<?php echo base_url("assets/css/territory_update.css"); ?>">
   
   <script src="<?php echo base_url("assets/javascript/territoriesToPDF.js"); ?>"></script> 
+  <script src="<?php echo base_url('assets/javascript/resizableHeight.js'); ?>"></script>
 
   <!--link jquery ui css-->
   <link type="text/css" rel="stylesheet" href="<?php echo base_url('assets/jquery-ui-1.12.1/jquery-ui.css'); ?>" />
@@ -202,8 +203,9 @@
             echo form_input($data_hidden);
             ?>
           </p>
-        </div <!-- scrollInner -->>
+       </div <!-- scrollInner -->>
       </div><!-- contentResizable -->
+      
       <table id="cardbuttons">
         <tr>
           <td width="40%">
@@ -450,25 +452,11 @@ function jsFunction_redo(me) {
 }
 
 document.addEventListener('DOMContentLoaded', function () {
-    const box = document.querySelector('.contentResizable');
-    let lastHeight = box.offsetHeight;
-
-    const observer = new ResizeObserver(entries => {
-        for (const entry of entries) {
-            const newHeight = Math.round(entry.contentRect.height);
-            if (newHeight !== lastHeight) {
-                lastHeight = newHeight;
-                fetch("<?php echo base_url('index.php/Territory_controller/save_height'); ?>", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-                    body: "height=" + newHeight
-                });
-            }
-        }
-    });
-    observer.observe(box);
-});
-
+	  enableResizableSave(
+	    '.contentResizable',
+	    '<?php echo base_url('index.php/Territory_controller/save_height'); ?>'
+	  );
+	});
 
 </script>
 </html>

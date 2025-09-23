@@ -7,6 +7,8 @@
   <link rel="stylesheet" type="text/css" href="<?php echo base_url("assets/css/territory.css"); ?>">
   
   <script src="<?php echo base_url("assets/javascript/markExhortToPDF.js"); ?>"></script> 
+  <script src="<?php echo base_url('assets/javascript/resizableHeight.js'); ?>"></script>
+
   <!--link jquery ui css-->
   <link type="text/css" rel="stylesheet" href="<?php echo base_url('assets/jquery-ui-1.12.1/jquery-ui.css'); ?>" />
 
@@ -47,8 +49,8 @@
       <h1><?php echo $hdr_string; ?></h1>
     </div>
 
-	<div id="content">
-	  <div class="tableWrap">
+	<div id="content" class="contentResizable" style="<?php echo $saved_height ? 'height:'.$saved_height.'px;' : ''; ?>">
+	  <div class="scrollInner">
     	<?php $rowidx = 0;
     	foreach ($terr_mark_list as $publisher) { ?>
     	  <table class="table4">
@@ -138,8 +140,8 @@
     		</tbody>
           </table>
     	<?php }?>
- 	  </div><!-- tableMarkTerr -->
-	</div><!-- content -->
+      </div>
+    </div><!-- content -->
 
     <div class="middleArea">
     </div>
@@ -175,5 +177,14 @@ function jsFunction3(param) {
 	  //alert(newUrl);
 	  location.replace(newUrl);
 }
+
+document.addEventListener('DOMContentLoaded', function () {
+	  enableResizableSave(
+	    '.contentResizable',
+	    '<?php echo base_url('index.php/Territory_controller/save_height'); ?>'
+	  );
+	});
+
+
 </script>
 </html>

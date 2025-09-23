@@ -115,6 +115,7 @@ class Log_controller extends CI_Controller
         //Muokkaa haetut tiedot näytön optioiksi
         $data['userOptions'] = $this->create_user_options($user_results);
     
+        $data['saved_height'] = $this->session->userdata('table_height');
         $this->load->view('log_view', $data);
     }
     

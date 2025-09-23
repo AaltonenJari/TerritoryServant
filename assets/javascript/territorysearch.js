@@ -120,12 +120,25 @@
         };
     })(Array.prototype);
 
-    document.addEventListener('readystatechange', function() {
-        if (document.readyState === 'complete') {
-            LightTableFilter.init();
-            document.getElementById("filterString").value = document.getElementById("filter_param").value;
-            //alertTextInput();
-            filterString.dispatchEvent(new Event("input"));
+    document.addEventListener('readystatechange', function () {
+    	  if (document.readyState === 'complete') {
+    	    LightTableFilter.init();
+
+    	    const paramEl = document.getElementById('filter_param');
+    	    const filterEl = document.getElementById('filterString');
+
+    	    if (!paramEl) {
+    	      console.warn('#filter_param puuttuu DOMista.');
+    	      return;
+    	    }
+    	    if (!filterEl) {
+    	      console.warn('#filterString puuttuu DOMista.');
+    	      return;
+    	    }
+
+    	    filterEl.value = paramEl.value || '';
+    	    // input-tapahtuma käyttäen bubbling-ominaisuutta, jos joku kuuntelee ylhäältä
+    	    filterEl.dispatchEvent(new Event('input', { bubbles: true, cancelable: true }));
         }
     });
 
