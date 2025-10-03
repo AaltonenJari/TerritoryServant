@@ -203,7 +203,7 @@
             echo form_input($data_hidden);
             ?>
           </p>
-       </div <!-- scrollInner -->>
+       </div>
       </div><!-- contentResizable -->
       
       <table id="cardbuttons">
@@ -387,7 +387,7 @@ $(document).ready(function() {
 	  document.getElementById("tableRowCount").innerHTML = rowCount;
 
 	  //Zebra stripe the table after filtering
-	  $("#table2 tbody tr:visible:even").css("background-color", "#eee");
+	  $("#table2 tbody tr:visible:even").css("background-color", "#eee")
 });
 
 function filter_table(searchText) {

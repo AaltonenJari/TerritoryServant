@@ -181,6 +181,7 @@
                                    //Editoitava kenttä
                                    $js = [
                                        'id'       => $field_input_name_id,
+                                       'class' => 'group_select_input',
                                        'onChange' => "jsGroupChance(this, " . $field_input_name_data2 .", " . $personid . ")"
                                    ];
                                    echo form_dropdown($field_input_name_id, $groups, $person->$field_name, $js);
@@ -216,6 +217,7 @@
                                    $field_input_name_data2 = "input_overseer_id" . $rowidx;
                                    $js = [
                                        'id'       => $field_input_name_data2,
+                                       'class' => 'group_overseer_select_input',
                                        'onChange' => "jsOverseerChance(this, " . $field_input_name_id .", " . $personid. ")"
                                    ];
                                    
@@ -291,7 +293,7 @@
             echo form_input($data_hidden);
             ?>
           </p>
-       </div <!-- scrollInner -->>
+        </div>
       </div><!-- contentResizable -->
 
       <table id="cardbuttons">

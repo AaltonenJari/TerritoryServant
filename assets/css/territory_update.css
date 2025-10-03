@@ -121,6 +121,11 @@ h2 {
 
 .alue_detail, .alue_location, .alue_taloudet {
   padding-left: 6px;
+  width: 98%;
+  background-color: inherit;
+  border-width: 1px;
+  border-color: #a4cbcb;
+  vertical-align: middle;
 }
 
 #table2 tr th:nth-child(1), #table2 tr th:nth-child(5) {
@@ -131,12 +136,17 @@ h2 {
   text-align: center;
 }
 
+/* Hover riville ja sen inputeille */
 #table2 tr:hover {
   background: #e6f7ff !important;
 }
+#table2 tr:hover input {
+  background: inherit;
+}
 
-#table2 tr:hover td {
-  background: transparent;
+/* Focus inputeille – vähän tummempi sävy kuin hover */
+#table2 tr input:focus {
+  background: #cceeff !important;
 }
 
 #totalcount

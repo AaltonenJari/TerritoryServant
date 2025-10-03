@@ -200,7 +200,7 @@
             echo form_input($data_hidden);
             ?>
           </p>
-        </div <!-- scrollInner -->>
+        </div>
       </div><!-- contentResizable -->
 
       <table id="cardbuttons">

@@ -51,8 +51,17 @@ table {
   color: rgba(0, 0, 0, 0.85);
 }
 
-#table2 tbody tr:hover {
-  background: #e6f7ff;
+/* Hover riville ja sen inputeille */
+#table2 tr:hover {
+  background: #e6f7ff !important;
+}
+#table2 tr:hover input {
+  background: inherit;
+}
+
+/* Focus inputeille – vähän tummempi sävy kuin hover */
+#table2 tr input:focus {
+  background: #cceeff !important;
 }
 
 .filterArea {
@@ -121,12 +130,30 @@ h2 {
 
 .person_name, .person_lastname, .person_group, .person_leader, .person_show  {
   padding-left: 6px;
+  width: 98%;
+  background-color: inherit;
+  border-width: 1px;
+  border-color: #a4cbcb;
+  vertical-align: middle;
 }
 
 .user_username, .user_firstname, .user_lastname, .user_email, .input_user_admin1_dropdown  {
   padding-left: 6px;
+  width: 98%;
+  background-color: inherit;
+  border-width: 1px;
+  border-color: #a4cbcb;
+  vertical-align: middle;
 }
 
+.group_select_input, .group_overseer_select_input {
+  padding-left: 6px;
+  width: 100%;
+  background-color: inherit;
+  border-width: 1px;
+  border-color: #a4cbcb;
+  vertical-align: middle;
+}
 
 #table2 tr th:nth-child(1), #table2 tr th:nth-child(7) {
   text-align: center;

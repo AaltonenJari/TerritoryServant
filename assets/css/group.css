@@ -121,6 +121,10 @@ h2 {
 
 .group_name, .group_events  {
   padding-left: 6px;
+  background: inherit;
+  border-width: 1px;
+  border-color: #a4cbcb;
+  vertical-align: middle;
 }
 
 #table2 tr th:nth-child(1), #table2 tr th:nth-child(4) {
@@ -131,12 +135,17 @@ h2 {
   text-align: center;
 }
 
+/* Hover riville ja sen inputeille */
 #table2 tr:hover {
   background: #e6f7ff !important;
 }
+#table2 tr:hover input {
+  background: inherit;
+}
 
-#table2 tr:hover td {
-  background: transparent;
+/* Focus inputeille – vähän tummempi sävy kuin hover */
+#table2 tr input:focus {
+  background: #cceeff !important;
 }
 
 #totalcount

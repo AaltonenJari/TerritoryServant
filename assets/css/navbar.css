@@ -103,40 +103,38 @@
 
 .tooltip .tooltiptext {
   visibility: hidden;
-  width: 500px;
-  background: #000000;
-  color: #FFFFFF;
-  height: 60px;
-  line-height: 60px;
-  text-align: center;
-  border-radius: 8px;
-  /* Position the tooltip */
+  background: #FFFFFF;
+  color: #000000;
+  font-size: 16px;
+  text-transform: none;
+  border-radius: 4px;
+  padding: 6px 8px;
+  white-space: nowrap;
   position: absolute;
-  z-index: 1;
-  top: 220%;
+  bottom: 100%;
+  margin-bottom: 5px; 
   left: 50%;
-  margin-left: -80px;
-  box-shadow: 4px 3px 10px #800000;
+  transform: translateX(-50%);
+  box-shadow: 0px 2px 6px rgba(0,0,0,0.2);
+  opacity: 0;
+  transition: opacity 0.2s;
+  z-index: 1;
 }
 
 .tooltip .tooltiptext::after {
   content: "";
   position: absolute;
-  bottom: 100%;
-  left: 20%;
-  margin-left: -8px;
-  border-bottom: 8px solid #000000;
-  border-right: 8px solid transparent;
-  border-left: 8px solid transparent;
+  top: 100%;        /* nuoli alareunaan */
+  left: 50%;
+  margin-left: -6px;
+  border-width: 6px;
+  border-style: solid;
+  border-color: #FFFFFF transparent transparent transparent;
 }
 
 .tooltip:hover .tooltiptext {
   visibility: visible;
-  opacity: 0.7;
-  top: 50px; 
-  left: 0%; 
-  margin-left: -50px;
-  z-index: 999;
+  opacity: 1;
 }
 
 /* Sub-menu */

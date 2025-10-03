@@ -20,7 +20,7 @@
             <a href="<?php echo base_url("index.php/territory_controller/display_frontpage"); ?>" >
               <button class="<?php echo $dropbtn_classes; ?>">
                 <div class="tooltip">Etusivu
-                  <span class="tooltiptext">Tervetuloa käyttämään alueohjelmaa!</span>
+                  <span class="tooltiptext">Tervetuloa!</span>
                 </div>
               </button>
             </a>
@@ -89,7 +89,7 @@
             <a href="<?php echo base_url("index.php/maintenance_controller/display"); ?>" >
               <button class="<?php echo $dropbtn_classes; ?>">
                 <div class="tooltip">Ylläpito
-                  <span class="tooltiptext">Alueet - Ylläpito</span>
+                  <span class="tooltiptext">Tiedot - Ylläpito</span>
                 </div>
               </button>
             </a>
