@@ -1,4 +1,4 @@
-function createPDF() 
+function coReportToPDF() 
 {
 	//var sTable = document.getElementsByClassName('tableWrap')[0].innerHTML;
 	var sTable = document.getElementById('content').innerHTML;
@@ -21,6 +21,7 @@ function createPDF()
 	
 	win.document.write('<!DOCTYPE html>');
 	win.document.write('<html><head>');
+	win.document.write('<title>Raportti kierrosvalvojalle</title>');
 	win.document.write(style);
 	win.document.write('</head>');
 	win.document.write('<body>');

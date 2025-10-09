@@ -101,8 +101,8 @@ class Person_controller extends CI_Controller
         //Ryhmänvalvoja-valitsin
         $overseers = array(
             '0'		=> ' ',
-            '1'		=> 'ryhmänvalvoja',
-            '2'	    => 'ryhmänvalvojan apulainen'
+            '1'		=> 'Ryhmänvalvoja',
+            '2'	    => 'Ryhmänvalvojan apulainen'
         );
         $data['overseers'] = $overseers;
         
@@ -416,11 +416,10 @@ class Person_controller extends CI_Controller
          $data['groups'] = $this->create_group_rows($group_results);
          $data['person_group_string'] = '5 = Ei Ryhmää';
          
-         
          $overseers = array(
              '0'		=> ' ',
-             '1'		=> 'ryhmänvalvoja',
-             '2'	    => 'ryhmänvalvojan apulainen'
+             '1'		=> 'Ryhmänvalvoja',
+             '2'	    => 'Ryhmänvalvojan apulainen'
          );
          $data['overseers'] = $overseers;
          $data['overseers_string'] = ' ';

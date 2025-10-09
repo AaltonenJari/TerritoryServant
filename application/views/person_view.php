@@ -403,7 +403,7 @@
           </td>
           <td width="15%">
             <div id="reportPrint">
-              <input type="button" value="Raportti" class="btnAction" onclick="createPDF()" />
+              <input type="button" value="Raportti" class="btnAction" onclick="personMaintenanceToPDF()" />
             </div>
           </td>
         </tr>

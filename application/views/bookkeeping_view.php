@@ -17,6 +17,7 @@
   
   <script src="<?php echo base_url("assets/javascript/territorysearch.js"); ?>"></script> 
   <script src="<?php echo base_url("assets/javascript/eventsToPDF.js"); ?>"></script> 
+  <script src="<?php echo base_url('assets/javascript/resizableHeight.js'); ?>"></script>
 </head>
 
 <body>
@@ -55,8 +56,8 @@
       </table>
     </div>
   
-    <div id="content">
-      <div class="tableWrap">
+    <div id="content" class="contentResizable" style="<?php echo $saved_height ? 'height:'.$saved_height.'px;' : ''; ?>">
+      <div class="scrollInner">
         <?php foreach ($bookkeeping as $bookkeeping_row) { ?>
         <table class="table3">
           <?php 
@@ -159,7 +160,7 @@
         } ?>  <!-- foreach $bookkeeping_row  -->
         </table> <!-- table3 -->
         <?php } ?> <!-- foreach $bookkeeping  -->
-      </div> <!-- tableWrapEvent -->
+      </div> <!-- scrollInner -->
     </div><!-- content -->
     
     <div class="middleArea">
@@ -177,7 +178,7 @@
           </td>
           <td width="15%">
             <div id="reportPrint">
-              <input type="button" value="Raportti" class="btnAction" onclick="createPDF()" />
+              <input type="button" value="Raportti" class="btnAction" onclick="bookKeepongToPDF()" />
             </div>
           </td>
         </tr>
@@ -185,4 +186,17 @@
     </div>
   </div><!-- wrapper -->
 </body>
+
+<script>
+
+document.addEventListener('DOMContentLoaded', function () {
+	  enableResizableSave(
+	    '.contentResizable',
+	    '<?php echo base_url('index.php/Territory_controller/save_height'); ?>'
+	  );
+	});
+
+</script>
+
+
 </html>
