@@ -129,7 +129,7 @@
             <?php } ?>
           </div>
         </li>
-        <?php if (!empty($this->session->userdata('useSignIn')) || $user != "guest") { ?>
+        <?php if (!empty($this->session->userdata('useSignIn')) && $user != "guest") { ?>
         <li>
           <div class="dropdown">
             <?php if ($sivu_tunnus == "6") { $dropbtn_classes = $dropbtn_classes_base . " active"; } else { $dropbtn_classes = $dropbtn_classes_base; } ?>
@@ -160,7 +160,7 @@
             </a>
           </div>
         </li>
-        <?php if (!empty($this->session->userdata('useSignIn')) || $user != "guest") { ?>
+        <?php if (!empty($this->session->userdata('useSignIn')) && $user != "guest") { ?>
         <li>
           <div class="dropdown">
             <button class="user_info">Käyttäjä: <?php echo $user; ?>

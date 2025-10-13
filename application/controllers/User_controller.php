@@ -162,6 +162,14 @@ class User_controller extends CI_Controller
             'user_admin'
         );
         $resultrow = $this->User_model->get_row_by_key($columns, $user_id);
+        
+        if ($resultrow === null) {
+            $data['error_title'] = 'Käyttäjää ei löytynyt';
+            $data['error_message'] = 'Valitse alla olevasta painikkeesta palataksesi etusivulle.';
+            $this->load->view('common/territory_error_view', $data);
+            return;
+        }
+        
         $data['user'] = $resultrow;
         
         //Aseta optiot

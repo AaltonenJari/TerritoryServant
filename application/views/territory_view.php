@@ -38,8 +38,8 @@
     <?php 
       // Asetetaan navigointipalkki ja sivu aktiiviseksi
       if ($sivu_tunnus == "1") { ?>
-      <?php if (!empty($this->session->userdata('useSignIn'))) { ?>
-        <h1>Tervetuloa TerritoryServant-aluetietojärjestelmään, <?php echo $this->session->userdata('user_firstname') . " ". $this->session->userdata('user_lastname') ?>! </h1>
+      <?php if (!empty($this->session->userdata('useSignIn')) && !empty($this->session->userdata('user_lastname'))) { ?>
+        <h1>Tervetuloa TerritoryServant-aluetietojärjestelmään, <?php echo $this->session->userdata('username') ?>! </h1>
       <?php } else { ?>
         <h1>Tervetuloa käyttämään TerritoryServant-aluetietojärjestelmää!</h1>
       <?php } ?>

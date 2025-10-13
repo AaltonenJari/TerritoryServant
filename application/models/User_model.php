@@ -112,7 +112,11 @@ class User_model extends CI_Model
         $this->db->where('user_id', $key_id);
         
         $reault_array = $this->db->get()->result_array();
-        return $reault_array[0];
+        if (!empty($result_array)) {
+            return $result_array[0];
+        } else {
+            return null;
+        }
     }
     
     public function insert($data) {
