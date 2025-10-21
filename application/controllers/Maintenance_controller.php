@@ -53,6 +53,7 @@ class Maintenance_controller extends CI_Controller
             'alue_detail'	=> 'alue_nimi',
             'alue_location'	=> 'lisätieto',
             'alue_taloudet'	=> 'koko',
+            'alue_group'	=> 'ryhma',
             'event_count'	=> 'määrä'
         );
 
@@ -120,6 +121,7 @@ class Maintenance_controller extends CI_Controller
                     case "alue_detail":
                     case "alue_location":
                     case "alue_taloudet":
+                    case "alue_group":
                     case "event_count":
                         $resultrow->$key = $value;
                         break;
@@ -401,7 +403,7 @@ class Maintenance_controller extends CI_Controller
 
     }
         
-    public function delete($terr_nbr, $filter = '')
+    public function update_status($terr_nbr, $action = 'delete', $filter = '')
     {
         //State variables of territory_view
         $territory_view_state_data = array(
@@ -436,7 +438,7 @@ class Maintenance_controller extends CI_Controller
         );
         
         $terr_edit_info = array(
-            'operation'	=> 'delete',
+            'operation'	=> 'edit',
             'key'		=> $terr_nbr,
             'data_old'	=> $terr_data_old,
             'data_new'	=> null
@@ -448,8 +450,12 @@ class Maintenance_controller extends CI_Controller
         /** SERIALIZE **/
         $_SESSION['undo_redo_terr_edit'] = serialize($undo_redo_stack);
         
-        //Poista tietue
-        $this->Maintenance_model->delete($terr_nbr);
+        // Suorita oikea toimenpide
+        if ($action === 'recover') {
+            $this->Maintenance_model->mark_as_recovered($terr_nbr);
+        } else {
+            $this->Maintenance_model->mark_as_deleted($terr_nbr);
+        }
         
         //Palataan päänäytölle siinä tilassa, kuin se oli ennen päivitystä
         $this->display($this->session->userdata('sort_by'),
@@ -472,7 +478,8 @@ class Maintenance_controller extends CI_Controller
                     $update_data = array(
                       'alue_detail' => $edit_info_data['data_old']['alue_detail'],
                       'alue_location' => $edit_info_data['data_old']['alue_location'],
-                      'alue_taloudet' => $edit_info_data['data_old']['alue_taloudet']
+                      'alue_taloudet' => $edit_info_data['data_old']['alue_taloudet'],
+                      'alue_group'	=> $edit_info_data['data_old']['alue_group']
                     );
                     $this->Territory_model->update($update_data, $edit_info_data['key']);
                     break;
@@ -528,7 +535,8 @@ class Maintenance_controller extends CI_Controller
                     $update_data = array(
                        'alue_detail' => $edit_info_data['data_new']['alue_detail'],
                        'alue_location' => $edit_info_data['data_new']['alue_location'],
-                       'alue_taloudet' => $edit_info_data['data_new']['alue_taloudet']
+                       'alue_taloudet' => $edit_info_data['data_new']['alue_taloudet'],
+                       'alue_group'	=> $edit_info_data['data_new']['alue_group'],
                     );
                     $this->Territory_model->update($update_data, $edit_info_data['key']);
                     break;

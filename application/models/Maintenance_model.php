@@ -131,6 +131,24 @@ class Maintenance_model extends CI_Model
         $result = $this->db->delete('alue');
     }
     
+    public function mark_as_deleted($key)
+    {
+        $data = array(
+            'alue_group'	=> '99'
+        );
+        
+        $this->update($data, $key);
+    }
+    
+    public function mark_as_recovered($key)
+    {
+        $data = array(
+            'alue_group'	=> '5'
+        );
+        
+        $this->update($data, $key);
+    }
+    
     public function update($data, $key) 
     {
         $this->db->set($data);

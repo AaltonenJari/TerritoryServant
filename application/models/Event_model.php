@@ -20,6 +20,9 @@ class Event_model extends CI_Model
             ->like('alue_code', $code)
             ->limit($limit, $offset);
         
+        //Älä ota mukaan alueita, jotka on merkitty poistetuiksi
+        $this->db->where('alue_group <> 99');
+            
 		$query = $this->db->order_by("SUBSTR(alue_code FROM 1 FOR 1)", "ASC");
 		$query = $this->db->order_by("CAST(SUBSTR(alue_code FROM 2) AS UNSIGNED)", "ASC");
 		
@@ -37,6 +40,9 @@ class Event_model extends CI_Model
         $query = $this->db->select('COUNT(*) as count', FALSE)
         ->from('alue')
         ->like('alue_code', $code);
+        
+        //Älä ota mukaan alueita, jotka on merkitty poistetuiksi
+        $this->db->where('alue_group <> 99');
         
         $res = $query->get()->result();
         return ($res[0]->count);
@@ -74,6 +80,9 @@ class Event_model extends CI_Model
             $this->db->where('event_date >=', $limit_date);
         }
         
+        //Älä ota mukaan alueita, jotka on merkitty poistetuiksi
+        $this->db->where('alue_group <> 99');
+        
         $this->db->join('person', 'event_user = person.person_id');
         $this->db->join('alue', 'event_alue = alue.alue_id');
         
@@ -96,6 +105,9 @@ class Event_model extends CI_Model
         ->from('alue_events')
         ->where('event_date', $alue_id)
         ->limit($limit, $offset);
+        
+        //Älä ota mukaan alueita, jotka on merkitty poistetuiksi
+        $this->db->where('alue_group <> 99');
         
         $this->db->join('person', 'event_user = person.person_id');
         $this->db->join('alue', 'event_alue = alue.alue_id');

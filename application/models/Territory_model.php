@@ -92,6 +92,9 @@ class Territory_model extends CI_Model {
                 break;
         }
         
+        //Älä ota mukaan alueita, jotka on merkitty poistetuiksi
+        $this->db->where('alue_group <> 99');
+        
         // Onko rajattu alueryhmän mukaan?
         if ($code_sel != '0') {
             $this->db->like('alue_code', $code_sel);

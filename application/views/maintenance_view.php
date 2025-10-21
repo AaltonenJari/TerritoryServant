@@ -53,14 +53,14 @@
       		<input type="hidden" id="displayBaseUrl" value="<?php echo $display_baseurl; ?>" />
 
 	        <input type="hidden" id="filter_param" value="<?php echo $filter; ?>"/>
-	        <input type="hidden" id="base_delete_url" value="<?php echo base_url("index.php/Maintenance_controller/delete"); ?>" />
+	        <input type="hidden" id="base_delete_url" value="<?php echo base_url("index.php/Maintenance_controller/update_status"); ?>" />
 
 	  		<?php $form_action_baseurl = base_url("index.php/Maintenance_controller/check_update"); ?>
       		<input type="hidden" id="formBaseUrl" value="<?php echo $form_action_baseurl; ?>" />
           </td>
 		  <td>
 		    <input type="hidden" id="selCodeOld" value="<?php echo $code_sel; ?>" />
-      		<select name="terrCodeChkBoxChooser" id="terrCodeChkBoxChooser" onChange="jsFunction4()">
+      		<select name="terrCodeChkBoxChooser" id="terrCodeChkBoxChooser" onChange="territory_code_change()">
          	  <option value="0" <?php if ($code_sel == "0") echo "selected=\"selected\""?> >Kaikki</option>
 			  <?php 
                 foreach ($territory_codes as $territory_code) {
@@ -153,9 +153,27 @@
                                case "event_count": ?>
                                    <td id="<?php echo $field_id_data; ?>"> 
                                    <?php
-                                   if (empty($alue->$field_name)) {
- 									  $delete_url = base_url("index.php/Maintenance_controller/delete") . "/" . $alue->alue_code . "/" . $filter; ?>
-   		  	                          <a id="<?php echo "del_" . $alue->alue_code; ?>" href="<?php echo $delete_url; ?>" onClick='jsFunction3("<?php echo $alue->alue_code; ?>")'>Poista</a>
+                                   if ($alue->alue_group == '99') {
+                                       // Palauta
+                                       $recover_url = base_url("index.php/Maintenance_controller/update_status")
+                                           . "/" . $alue->alue_code . "/recover/" . $filter;
+                                       ?>
+                                       <a id="<?php echo "recover_" . $alue->alue_code; ?>"
+                                          href="<?php echo $recover_url; ?>"
+                                          onClick='territory_update_status("<?php echo $alue->alue_code; ?>", "recover")'>
+                                          Palauta
+                                       </a>
+                                   <?php
+                                   } else {
+                                       // Poista
+                                       $delete_url = base_url("index.php/Maintenance_controller/update_status")
+                                           . "/" . $alue->alue_code . "/delete/" . $filter;
+                                       ?>
+                                       <a id="<?php echo "delete_" . $alue->alue_code; ?>"
+                                          href="<?php echo $delete_url; ?>"
+                                          onClick='territory_update_status("<?php echo $alue->alue_code; ?>", "delete")'>
+                                          Poista
+                                       </a>
                                    <?php } ?>
                                    </td>
                                    <?php
@@ -418,14 +436,15 @@ function filter_table(searchText) {
 	  return rowCount;
 }
 
-function jsFunction3(alue_code) {
-    var newUrl = document.getElementById("base_delete_url").value;
-	newUrl = newUrl + "/" + alue_code + "/" + document.getElementById("filter_param").value;
-    var idIndex = "del_" + alue_code;
-	document.getElementById(idIndex).href = newUrl;
+function territory_update_status(alue_code, action) {
+    var baseUrl = document.getElementById("base_delete_url").value;
+    var filter = document.getElementById("filter_param").value;
+    var newUrl = baseUrl + "/" + alue_code + "/" + action + "/" + filter;
+    var idIndex = action + "_" + alue_code;
+    document.getElementById(idIndex).href = newUrl;
 }
 
-function jsFunction4() {
+function territory_code_change() {
 	var myselect = document.getElementById("terrCodeChkBoxChooser");
 	document.getElementById("selCodeOld").value = myselect.options[myselect.selectedIndex].value;
 
