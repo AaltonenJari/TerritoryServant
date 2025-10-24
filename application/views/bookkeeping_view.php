@@ -38,22 +38,14 @@
     </div>
         
     <div id="selector_area">
-      <table id="selectortable">
-  		<tr>
-          <td width="35%">
-            <?php $display_baseurl = base_url("index.php/event_controller/display"); ?>
-            <input type="hidden" id="displayBaseUrl" value="<?php echo $display_baseurl; ?>" />
-          </td>
-          <td width="15%">
-          </td>
-          <td width="40%">
-          </td>
-          <td width="10%">
-            <span>Alkutilaan </span>
-            <a href="<?php echo base_url("index.php/event_controller/display"); ?>" target="_parent" class="btn-clear"><button>CLR</button></a>
-          </td>
-  		</tr>
-      </table>
+      <div class="selector-container right-only">
+        <div class="selector-right">
+          <span>Alkutilaan </span>
+          <a href="<?php echo base_url("index.php/event_controller/display"); ?>" target="_parent" class="btn-clear">
+            <button>CLR</button>
+          </a>
+        </div>
+      </div>
     </div>
   
     <div id="content" class="contentResizable" style="<?php echo $saved_height ? 'height:'.$saved_height.'px;' : ''; ?>">

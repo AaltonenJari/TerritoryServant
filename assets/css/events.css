@@ -113,9 +113,9 @@ a slight movement of the header row */
 }
 
 .territorycodes a.active {
-  background-color: #4CAF50;
+  background-color: #44bd78;
   color: white;
-  border: 1px solid #4CAF50;
+  border: 1px solid #44bd78;
 }
 
 .territorycodes a:hover:not(.active) {
@@ -132,12 +132,42 @@ a slight movement of the header row */
   border-bottom-right-radius: 5px;
 }
 
-#selector_area
-{
+
+#selector_area {
   font-family: sans-serif;
   font-weight: 500;
   font-size: 20px;
-  padding:0px 0px 5px 2px; 
+  padding: 0px 0px 5px 2px;
+}
+
+/* --- Pääasettelu --- */
+.selector-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 3px 8px 3px 8px;  /* vastaa alkuperäisen taulun solupaddingeja */
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.selector-container.right-only {
+  justify-content: flex-end;
+}
+
+/* Vasen ja oikea puoli */
+.selector-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.selector-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-align: right;
+  padding-right: 10px;
 }
 
 #terrCodeChkBoxChooser
@@ -176,9 +206,9 @@ a slight movement of the header row */
   padding: 8px 16px;
   text-decoration: none;
   transition: background-color .3s;
-  background-color: #4CAF50;
+  background-color: #44bd78;
   border-radius: 5px;
-  border: 1px solid #4CAF50;
+  border: 1px solid #44bd78;
   font-weight: bold;
 }
 

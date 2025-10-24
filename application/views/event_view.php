@@ -38,54 +38,47 @@
     </div>
 
     <div id="selector_area">
-      <table id="selectortable">
-  		<tr>
-          <td width="35%">
-            <span>Valitse sivu:</span>
-            <?php $display_baseurl = base_url("index.php/event_controller/display"); ?>
-            <input type="hidden" id="displayBaseUrl" value="<?php echo $display_baseurl; ?>" />
-    
-            <input type="hidden" id="selCodeOld" value="<?php echo $code_sel; ?>" />
-  	        <select name="terrCodeChkBoxChooser" id="terrCodeChkBoxChooser" onChange="jsFunction4()">
-              
+      <div class="selector-container">
+        <div class="selector-left">
+          <span>Valitse sivu:</span>
+          <?php $display_baseurl = base_url("index.php/event_controller/display"); ?>
+          <input type="hidden" id="displayBaseUrl" value="<?php echo $display_baseurl; ?>" />
+          <input type="hidden" id="selCodeOld" value="<?php echo $code_sel; ?>" />
+
+          <select name="terrCodeChkBoxChooser" id="terrCodeChkBoxChooser" onChange="jsFunction4()">
             <?php
-            foreach ($sel_data as $terrgroup_selecion) {
+            foreach ($sel_data as $terrgroup_selection) {
               $sel_string = "";
-              foreach ($terrgroup_selecion as $key => $value) {
+              foreach ($terrgroup_selection as $key => $value) {
                   switch ($key) {
                       case "code":
                           $sel_string = $value;
                           break;
-                          
                       case "first":
                           $sel_string .= $value;
                           break;
-                          
                       case "offset":
                           $sel_offset = $value;
                           break;
-                      
                       case "last":
                           $sel_string .= "-" . $value;
                           break;
                   }
               }?>
-  	 	      <option value="<?php echo $sel_string; ?>" page_offset="<?php echo $sel_offset; ?>" <?php if ($code_sel == $sel_string) { echo "selected='selected'"; } ?> ><?php echo $sel_string; ?></option>
-              <?php 
-            }
-            ?>
-            </select>
-          </td>
-          <td width="15%">
-          </td>
-          <td width="40%">
-          </td>
-          <td width="10%">
-            <span>Alkutilaan </span>
-            <a href="<?php echo base_url("index.php/event_controller/display"); ?>" target="_parent" class="btn-clear"><button>CLR</button></a>
-          </td>
-  		</tr>
-      </table>
+              <option value="<?php echo $sel_string; ?>" page_offset="<?php echo $sel_offset; ?>" <?php if ($code_sel == $sel_string) { echo "selected='selected'"; } ?>>
+                <?php echo $sel_string; ?>
+              </option>
+            <?php } ?>
+          </select>
+        </div>
+
+        <div class="selector-right">
+          <span>Alkutilaan </span>
+          <a href="<?php echo base_url("index.php/event_controller/display"); ?>" target="_parent" class="btn-clear">
+            <button>CLR</button>
+          </a>
+        </div>
+      </div>
     </div>
          
 	<div id="content" class="contentResizable" style="<?php echo $saved_height ? 'height:'.$saved_height.'px;' : ''; ?>">

@@ -2,19 +2,9 @@
   <?php $sivu_tunnus = $this->session->userdata('sivutunnus');  ?>
   <?php $dropbtn_classes_base = "dropbtn" ?>
 
-  <?php if (!empty($this->session->userdata('username'))) {?>
- 
-    <?php $base_url = base_url("index.php/territory_controller") ?>
-    <input type="hidden" id="baseUrl" value="<?php echo $base_url; ?>" />
-    
-    <?php 
-    $user = $this->session->userdata('username');
-    $userid = $this->session->userdata('user_id');
-    $admin = $this->session->userdata('admin'); 
-    ?>
-    <div class="naw_wrapper">
-      <ul>
-        <li>
+    <div class="nav_wrapper">
+      <ul class="wrapper-navbar">
+        <li class="navbar-item">
           <div class="dropdown">
             <?php if ($sivu_tunnus == "1") { $dropbtn_classes = $dropbtn_classes_base . " active"; } else { $dropbtn_classes = $dropbtn_classes_base; } ?>
             <a href="<?php echo base_url("index.php/territory_controller/display_frontpage"); ?>" >
@@ -26,14 +16,14 @@
             </a>
             <div class="dropdown-content">
               <div class="nav-sub">
-                <ul>
-                  <li><a href="<?php echo base_url("index.php/territory_controller/display_frontpage_terr_groups"); ?>">Alueryhmittäin</a></li>
+                <ul class="nav-sub-linklist">
+                  <li ><a class="nav-sub-link" href="<?php echo base_url("index.php/territory_controller/display_frontpage_terr_groups"); ?>">Alueryhmittäin</a></li>
                 </ul>
               </div>
             </div>
           </div>
         </li>
-        <li>
+        <li class="navbar-item">
           <div class="dropdown">
             <?php if ($sivu_tunnus == "2") { $dropbtn_classes = $dropbtn_classes_base . " active"; } else { $dropbtn_classes = $dropbtn_classes_base; } ?>
             <a href="<?php echo base_url("index.php/territory_controller/display"); ?>" >
@@ -45,10 +35,10 @@
             </a>
             <div class="dropdown-content">
               <div class="nav-sub">
-                <ul>
-                  <li><a href="<?php echo base_url("index.php/territory_controller/display_mark_exhort"); ?>">Merkitsemiskehotuslistat</a></li>
-                  <li><a href="<?php echo base_url("index.php/territory_controller/display_return_exhort"); ?>">Palauttamiskehotuslistat</a></li>
-                  <li><a href="<?php echo base_url("index.php/territory_controller/display_co_report"); ?>">KV-raportti</a></li>
+                <ul class="nav-sub-linklist">
+                  <li><a class="nav-sub-link" href="<?php echo base_url("index.php/territory_controller/display_mark_exhort"); ?>">Merkitsemiskehotuslistat</a></li>
+                  <li><a class="nav-sub-link" href="<?php echo base_url("index.php/territory_controller/display_return_exhort"); ?>">Palauttamiskehotuslistat</a></li>
+                  <li><a class="nav-sub-link" href="<?php echo base_url("index.php/territory_controller/display_co_report"); ?>">KV-raportti</a></li>
                   <?php 
                     $todayDate = new DateTime(); // today
                     $cvwEndDate = new DateTime($this->session->userdata('circuitWeekEnd'));
@@ -61,7 +51,7 @@
             </div>
           </div>
         </li>
-        <li>
+        <li class="navbar-item">
           <div class="dropdown">
             <?php if ($sivu_tunnus == "3") { $dropbtn_classes = $dropbtn_classes_base . " active"; } else { $dropbtn_classes = $dropbtn_classes_base; } ?>
             <a href="<?php echo base_url("index.php/event_controller/display"); ?>" >
@@ -73,17 +63,14 @@
             </a>
             <div class="dropdown-content">
               <div class="nav-sub">
-                <ul>
-                  <li><a href="<?php echo base_url("index.php/event_controller/display_bookkeeping"); ?>">Koko kirjanpito</a></li>
-                  <?php if (!empty($this->session->userdata('logging'))) { //Näytä loki, jos lokitus on päällä ?>
-                    <li><a href="<?php echo base_url("index.php/log_controller/display"); ?>">Tapahtumaloki</a></li>
-                  <?php } ?>
+                <ul class="nav-sub-linklist">
+                  <li><a class="nav-sub-link" href="<?php echo base_url("index.php/event_controller/display_bookkeeping"); ?>">Koko kirjanpito</a></li>
                 </ul>
               </div>
             </div>
           </div>
         </li>
-        <li>
+        <li class="navbar-item">
           <div class="dropdown">
             <?php if ($sivu_tunnus == "4") { $dropbtn_classes = $dropbtn_classes_base . " active"; } else { $dropbtn_classes = $dropbtn_classes_base; } ?>
             <a href="<?php echo base_url("index.php/maintenance_controller/display"); ?>" >
@@ -95,15 +82,15 @@
             </a>
             <div class="dropdown-content">
               <div class="nav-sub">
-                <ul>
-                  <li><a href="<?php echo base_url("index.php/Person_controller/display"); ?>">Henkilötiedot</a></li>
-                  <li><a href="<?php echo base_url("index.php/Group_controller/display"); ?>">Ryhmät</a></li>
+                <ul class="nav-sub-linklist">
+                  <li><a class="nav-sub-link" href="<?php echo base_url("index.php/Person_controller/display"); ?>">Henkilötiedot</a></li>
+                  <li><a class="nav-sub-link" href="<?php echo base_url("index.php/Group_controller/display"); ?>">Ryhmät</a></li>
                 </ul>
               </div>
             </div>
           </div>
         </li>
-        <li>
+        <li class="navbar-item">
           <div class="dropdown">
             <?php if ($sivu_tunnus == "5") { $dropbtn_classes = $dropbtn_classes_base . " active"; } else { $dropbtn_classes = $dropbtn_classes_base; } ?>
             <a href="<?php echo base_url("index.php/Settings_controller/display"); ?>" >
@@ -121,38 +108,15 @@
               ?>
               <div class="dropdown-content">
                 <div class="nav-sub">
-                  <ul>
-                    <li><a href="<?php echo base_url("index.php/territory_controller/remove_mark_events"); ?>">Poista merkkaukset</a></li>
+                  <ul class="nav-sub-linklist">
+                    <li><a class="nav-sub-link" href="<?php echo base_url("index.php/territory_controller/remove_mark_events"); ?>">Poista merkkaukset</a></li>
                   </ul>
                 </div>
               </div>
             <?php } ?>
           </div>
         </li>
-        <?php if (!empty($this->session->userdata('useSignIn')) && $user != "guest") { ?>
-        <li>
-          <div class="dropdown">
-            <?php if ($sivu_tunnus == "6") { $dropbtn_classes = $dropbtn_classes_base . " active"; } else { $dropbtn_classes = $dropbtn_classes_base; } ?>
-            <a href="<?php echo base_url("index.php/User_controller/update_profile/own/" . $userid); ?>" >
-              <button class="<?php echo $dropbtn_classes; ?>">
-                <div class="tooltip">Käyttäjät
-                  <span class="tooltiptext">Oman käyttäjäprofiilin päivitys</span>
-                </div>
-              </button>
-            </a>
-            <?php if (!empty($this->session->userdata('admin'))) { //Käyttäjähallinta vain pääkäyttäjille ?>
-            <div class="dropdown-content">
-              <div class="nav-sub">
-                <ul>
-                  <li><a href="<?php echo base_url("index.php/User_controller/display"); ?>">Käyttäjähallinta</a></li>
-                </ul>
-              </div>
-            </div>
-            <?php } ?>
-          </div>
-        </li> 
-        <?php }?>
-        <li>
+        <li class="navbar-item">
           <div class="dropdown">
             <?php if ($sivu_tunnus == "7") { $dropbtn_classes = $dropbtn_classes_base . " active"; } else { $dropbtn_classes = $dropbtn_classes_base; } ?>
               <a href="<?php echo base_url("index.php/territory_controller/display_about"); ?>" >
@@ -160,23 +124,8 @@
             </a>
           </div>
         </li>
-        <?php if (!empty($this->session->userdata('useSignIn')) && $user != "guest") { ?>
-        <li>
-          <div class="dropdown">
-            <button class="user_info">Käyttäjä: <?php echo $user; ?>
-			  <a href='<?php echo base_url("index.php/LoginController/logout"); ?>'><span class="user_out">ULOS</span></a>
-            </button>
-          </div>
-        </li>
-        <?php }?>
       </ul>
     </div>
-<?php } else {
-    $new_url = base_url("index.php/LoginController");
-    header('Location: ' . $new_url);
-    exit;
-    //redirect($new_url);
-  } ?>
 </nav>
 
 <script type="text/javascript">
