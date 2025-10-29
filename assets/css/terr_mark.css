@@ -160,3 +160,99 @@ input.submit_btn_disabled {
     width: 100%;
     box-sizing: border-box;
 }
+
+.delete_event_area {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 400px;
+  height: 500px;
+}
+
+.delete_event_subhdr {
+    font-size: 20px;
+    padding:0px 0px 15px 5px; 
+}
+
+
+.delete_settings {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-top: 15px;
+  font-size: 14px;
+  padding-left: 20px; 
+}
+
+.delete_setting {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+
+.year_dropdown {
+  margin: 0px 5px;
+  background-color: inherit;
+}
+
+.delete_checkbox {
+    margin: 0 0 0 4px;
+	transform: scale(1.1);
+}
+
+.delete_feedback {
+  background: linear-gradient(#E4F2FF, #A3CCF5);
+  border: 1px solid #8ABFEA;
+  border-radius: 8px;
+  padding: 10px 15px;
+  color: #1A3B57; /* Tummansininen-harmaa */
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  opacity: 0;
+  transform: translateY(-5px);
+  animation: fadeInFeedback 0.5s ease-out forwards;
+}
+
+
+.delete_feedback p {
+  margin: 4px 0;
+  padding: 5px 0px 5px 5px;
+}
+
+@keyframes fadeInFeedback {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+.form-footer {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end; /* Vie alalaitaan */
+  height: 100%; /* Varmista että formin korkeus sallii tämän */
+}
+
+.button-group {
+  display: flex;
+  justify-content: space-between; /* Vasemmalle, keskelle, oikealle */
+  align-items: center;
+  width: 100%;
+  margin-top: 1rem;
+}
+
+.submit_btn {
+  padding: 8px 16px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.form-error {
+  margin-top: 10px;
+  color: red;
+}

@@ -469,7 +469,6 @@ function jsFunction4() {
 	var myselect = document.getElementById("terrCodeChkBoxChooser");
 	document.getElementById("selCodeOld").value = myselect.options[myselect.selectedIndex].value;
     var newUrl = document.getElementById("displayBaseUrl").value;
-	//alert(newUrl);
 	location.replace(newUrl);
 }
 

@@ -165,7 +165,8 @@ class User_controller extends CI_Controller
         
         if ($resultrow === null) {
             $data['error_title'] = 'Käyttäjää ei löytynyt';
-            $data['error_message'] = 'Valitse alla olevasta painikkeesta palataksesi etusivulle.';
+            $data['error_message'] = 'Valitse alla olevasta painikkeesta palataksesi pääsivulle.';
+            $data['base_url'] = 'user_controller/display_frontpage';
             $this->load->view('common/territory_error_view', $data);
             return;
         }

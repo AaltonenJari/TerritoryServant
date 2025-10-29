@@ -405,4 +405,58 @@ class Event_model extends CI_Model
         
         return $ret;
     }
+    
+    public function delete_events($limit_date)
+    {
+        // Suorita poisto
+        $this->db->where('event_date < ',$limit_date);
+        $result = $this->db->delete('alue_events');
+        
+        // Tarkista onnistuiko poisto
+        if ($result === FALSE) {
+            log_message('error', 'Virhe poistettaessa tapahtumia: ' . $this->db->error()['message']);
+            return null; // palautetaan null virheen merkiksi
+        }
+        
+        // Palauta poistettujen rivien määrä
+        return $this->db->affected_rows();
+    }
+    
+    public function delete_persons_having_no_events()
+    {
+        // 1. Laske poistettavat rivit
+        $count_sql = "
+            SELECT COUNT(*) AS cnt
+            FROM person p
+            WHERE NOT EXISTS (
+                SELECT 1 FROM alue_events e
+                WHERE e.event_user = p.person_id
+            )
+        ";
+        $query = $this->db->query($count_sql);
+        $count = (int) $query->row()->cnt;
+        
+        // Jos ei mitään poistettavaa
+        if ($count === 0) {
+            return 0;
+        }
+        
+        // 2. Suorita varsinainen poisto
+        $delete_sql = "
+            DELETE FROM person
+            WHERE NOT EXISTS (
+                SELECT 1 FROM alue_events e
+                WHERE e.event_user = person.person_id
+            )
+        ";
+        $result = $this->db->query($delete_sql);
+        
+        if ($result === FALSE) {
+            log_message('error', 'Virhe poistettaessa henkilöitä: ' . $this->db->error()['message']);
+            return null;
+        }
+        
+        // Palauta laskettu poistettujen määrä
+        return $count;
+    }
 }

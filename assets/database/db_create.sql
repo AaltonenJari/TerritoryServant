@@ -112,41 +112,6 @@ CREATE TABLE IF NOT EXISTS `settings` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
---
--- Table structure for table `users`
---
-
-DROP TABLE IF EXISTS `users`;
-CREATE TABLE IF NOT EXISTS `users` (
-  `user_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `user_username` varchar(20) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
-  `user_password` varchar(20) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
-  `user_firstname` varchar(30) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT ' ',
-  `user_lastname` varchar(30) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT ' ',
-  `user_email` varchar(60) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT ' ',
-  `user_admin` tinyint(3) UNSIGNED NOT NULL DEFAULT '0',
-  PRIMARY KEY (`user_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
---
--- Table structure for table `event_log`
---
-
-DROP TABLE IF EXISTS `event_log`;
-CREATE TABLE IF NOT EXISTS `event_log` (
-  `log_id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `log_event_id` int(10) UNSIGNED DEFAULT NULL,
-  `log_event_type` int(10) UNSIGNED DEFAULT NULL,
-  `log_event_date` date DEFAULT NULL,
-  `log_event_person` int(10) UNSIGNED DEFAULT NULL,
-  `log_event_terr` int(10) UNSIGNED DEFAULT NULL,
-  `log_user_id` int(10) UNSIGNED DEFAULT NULL,
-  `log_operation_code` tinyint(2) UNSIGNED NOT NULL DEFAULT '1',
-  `log_timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`log_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
-
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

@@ -307,6 +307,116 @@ class Event_controller extends CI_Controller
         return $page_data;
     }
     
+    public function event_delete_view($selectedYears = '6', $deletePersons = FALSE)
+    {
+        $data = $this->getCleanupSummaryData($selectedYears, $deletePersons);
+        
+        $this->load->view('event_delete_dialog', $data);
+    }
+    
+    public function check_delete_options()
+    {
+        $selectedYears = $this->input->post('archive_years');
+        $deletePersons = $this->input->post('delete_persons'); // palauttaa '1' jos valittu, NULL jos ei
+        
+        $action = $this->input->post('action');
+        switch ($action) {
+            case "Poista":
+                if(isset($_SESSION['error'])){
+                    unset($_SESSION['error']);
+                }
+                
+                $deleted_event_count = $this->delete_events($selectedYears);
+                if ($deleted_event_count === null) {
+                    echo "virhe";
+                    $data['error_title'] = 'Virhe tietojen poistossa';
+                    $data['error_message'] = 'Valitse alla olevasta painikkeesta palataksesi pääsivulle.';
+                    $data['base_url'] = 'event_controller/display';
+                    $this->load->view('common/territory_error_view', $data);
+                    return;
+                }
+                
+                $deleted_person_count = 0;
+                if ($deletePersons) {
+                    // Checkbox oli valittuna
+                    $deleted_person_count = $this->delete_persons_with_no_events();
+                }
+                
+                // 🔹 Kootaan data näkymälle
+                $data = $this->getCleanupSummaryData($selectedYears, $deletePersons, $deleted_event_count, $deleted_person_count);
+                
+                // Näytetään näkymä uudelleen palautteella
+                $this->load->view('event_delete_dialog', $data);
+                
+                break;
+                
+            case "Paluu":
+                if(isset($_SESSION['error'])){
+                    unset($_SESSION['error']);
+                }
+                //Palataan päänäytölle
+                $this->display();
+                break;
+                
+            default:
+                $msg = "Tunnistamaton toiminto";
+                $this->session->set_flashdata('error', $msg);
+                $this->event_delete_view($selectedYears, $deletePersons);
+                break;
+        } // switch
+        
+        return;
+    }
+    
+    private function getCleanupSummaryData($selectedYears, $deletePersons = false, $deleted_event_count = 0, $deleted_person_count = 0)
+    {
+        return [
+            'archiveYearsOptions' => [
+                '2'  => '2 vuotta',
+                '3'  => '3 vuotta',
+                '4'  => '4 vuotta',
+                '5'  => '5 vuotta',
+                '6'  => '6 vuotta',
+                '7'  => '7 vuotta',
+                '8'  => '8 vuotta',
+                '9'  => '9 vuotta',
+                '10' => '10 vuotta'
+            ],
+            'selectedYear'         => $selectedYears,
+            'deletePersons'        => $deletePersons,
+            'deleted_event_count'  => $deleted_event_count,
+            'deleted_person_count' => $deleted_person_count
+        ];
+    }
+    
+    public function delete_events($selectedYears) {
+        // Hae nykyinen vuosi ja vähennä siitä $selectedYears
+        $year = date('Y') - $selectedYears;
+        
+        // Luo päivämäärä tammikuun 1. päivälle kyseisen vuoden alusta
+        $date = new DateTime("$year-01-01");
+        
+        $limit_date = $date->format('Y-m-d'); // Pvm muodossa "YYYY-MM-DD"
+        
+        $deleted_rows = $this->Event_model->delete_events($limit_date);
+        
+        if ($deleted_rows === null) {
+            return;
+        }
+        
+        return $deleted_rows;
+    }
+    
+    public function delete_persons_with_no_events() {
+        $deleted_rows = $this->Event_model->delete_persons_having_no_events();
+        
+        if ($deleted_rows === null) {
+            return;
+        }
+        
+        return $deleted_rows;
+    }
+    
     public function index()
     {
         $this->display();

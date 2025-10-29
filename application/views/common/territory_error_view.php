@@ -38,7 +38,7 @@
     <div class="error-box">
         <h2><?= $error_title ?></h2>
         <p><?= $error_message ?></p>
-        <a href="<?= site_url('territory_controller/display_frontpage') ?>" class="button">
+        <a href="<?= site_url($base_url) ?>" class="button">
             Palaa etusivulle
         </a>
     </div>

@@ -2,6 +2,9 @@
   <?php $sivu_tunnus = $this->session->userdata('sivutunnus');  ?>
   <?php $dropbtn_classes_base = "dropbtn" ?>
 
+  <?php $base_url = base_url("index.php/territory_controller") ?>
+  <input type="hidden" id="baseUrl" value="<?php echo $base_url; ?>" />
+
     <div class="nav_wrapper">
       <ul class="wrapper-navbar">
         <li class="navbar-item">
@@ -65,6 +68,7 @@
               <div class="nav-sub">
                 <ul class="nav-sub-linklist">
                   <li><a class="nav-sub-link" href="<?php echo base_url("index.php/event_controller/display_bookkeeping"); ?>">Koko kirjanpito</a></li>
+                  <li><a class="nav-sub-link" href="<?php echo base_url("index.php/event_controller/event_delete_view"); ?>">Poista tapahtumia</a></li>
                 </ul>
               </div>
             </div>
@@ -100,20 +104,6 @@
                 </div>
               </button>
             </a>
-            <?php 
-              $eventSaveSwitchOld = $this->session->userdata('eventSaveSwitchOld');
-              $eventSaveSwitch = $this->session->userdata('eventSaveSwitch');
-              if ($eventSaveSwitchOld == 1 && $eventSaveSwitch == 0) {
-                  //Muutos 1 => 0: Näytetään mahdollisuus poistaa merkkaustapahtumat
-              ?>
-              <div class="dropdown-content">
-                <div class="nav-sub">
-                  <ul class="nav-sub-linklist">
-                    <li><a class="nav-sub-link" href="<?php echo base_url("index.php/territory_controller/remove_mark_events"); ?>">Poista merkkaukset</a></li>
-                  </ul>
-                </div>
-              </div>
-            <?php } ?>
           </div>
         </li>
         <li class="navbar-item">
