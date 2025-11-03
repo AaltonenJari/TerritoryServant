@@ -304,104 +304,92 @@
             ?>
           </p>
       </div><!-- tableWrap -->
-      <table id="cardbuttons">
-        <tr>
-          <td width="35%">
-            <?php          
-            $data = [
-               'type'  => 'submit',
-               'id'    => 'submit_remove',
-               'name'  => 'action_btn',
-               'value' => 'Päivitä',
-               'class' => 'submit_btn'
-            ];
-               
-            $js = ['onClick' => 'jsFunction_update(this);'];
-            echo form_input($data,' ',$js);
+      
+      <div class="footer-area">
+        <div class="button-group">
+          <div class="button-left">
+            <?php
+              $data = [
+                'type'  => 'submit',
+                'id'    => 'submit_remove',
+                'name'  => 'action_btn',
+                'value' => 'Päivitä',
+                'class' => 'submit_btn'
+              ];
+              $js = ['onClick' => 'jsFunction_update(this);'];
+              echo form_input($data, ' ', $js);
             ?>
-           </td>
-          <td width="10%">
+          </div>
+  
+          <div class="button-center">
             <?php if ($can_undo) {
-                $data = [
-                    'type'  => 'image',
-                    'id'    => 'submit_undo',
-                    'name'  => 'action_btn',
-                    'value' => 'Undo',
-                    'class' => 'submit_undo',
-                    'src' => base_url("assets/images/Undo.jpg")
-                ];
-                
-                $js = ['onClick' => 'jsFunction_undo(this);'];
-                echo form_submit($data,' ',$js);
+              $data = [
+                'type'  => 'image',
+                'id'    => 'submit_undo',
+                'name'  => 'action_btn',
+                'value' => 'Undo',
+                'class' => 'submit_undo',
+                'src'   => base_url("assets/images/Undo.jpg")
+              ];
+              $js = ['onClick' => 'jsFunction_undo(this);'];
+              echo form_submit($data, ' ', $js);
             } else {
-                $data = [
-                    'type'  => 'image',
-                    'id'    => 'submit_undo_disabled',
-                    'name'  => 'action_btn_disabled',
-                    'value' => 'Undo',
-                    'class' => 'submit_btn_disabled',
-                    'src' => base_url("assets/images/Undo_disabled.jpg"),
-                    'disabled'  => 'true'
-                ];
-                echo form_submit($data);
+              echo form_submit([
+                'type'     => 'image',
+                'id'       => 'submit_undo_disabled',
+                'name'     => 'action_btn_disabled',
+                'value'    => 'Undo',
+                'class'    => 'submit_btn_disabled',
+                'src'      => base_url("assets/images/Undo_disabled.jpg"),
+                'disabled' => 'true'
+              ]);
             } ?>
-            </td>
-          <td width="25%">
+
             <?php if ($can_redo) {
-                $data = [
-                    'type'  => 'image',
-                    'id'    => 'submit_redo',
-                    'name'  => 'action_btn',
-                    'value' => 'Redo',
-                    'class' => 'submit_undo',
-                    'src' => base_url("assets/images/Redo.jpg")
-                ];
-                
-                $js = ['onClick' => 'jsFunction_redo(this);'];
-                echo form_submit($data,' ',$js);
-                
+              $data = [
+                'type'  => 'image',
+                'id'    => 'submit_redo',
+                'name'  => 'action_btn',
+                'value' => 'Redo',
+                'class' => 'submit_undo',
+                'src'   => base_url("assets/images/Redo.jpg")
+              ];
+              $js = ['onClick' => 'jsFunction_redo(this);'];
+              echo form_submit($data, ' ', $js);
             } else {
-                $data = [
-                    'type'  => 'image',
-                    'id'    => 'submit_redo_disabled',
-                    'name'  => 'action_btn_disabled',
-                    'value' => 'Redo',
-                    'class' => 'submit_btn_disabled',
-                    'src' => base_url("assets/images/Redo_disabled.jpg"),
-                    'disabled'  => 'true'
-                ];
-                echo form_submit($data);
+              echo form_submit([
+                'type'     => 'image',
+                'id'       => 'submit_redo_disabled',
+                'name'     => 'action_btn_disabled',
+                'value'    => 'Redo',
+                'class'    => 'submit_btn_disabled',
+                'src'      => base_url("assets/images/Redo_disabled.jpg"),
+                'disabled' => 'true'
+              ]);
             } ?>
-            </td>
-          <td width="10%">
-          </td>
-          <td width="20%">
-            <?php          
-            $data = [
-               'type'  => 'submit',
-               'id'    => 'submit_return_history',
-               'name'  => 'action_btn',
-               'value' => 'Paluu',
-               'class' => 'submit_btn'
-            ];
-               
-            $js = ['onClick' => 'jsFunction_return(this);'];
-            echo form_input($data,' ',$js);
+          </div>
+
+          <div class="button-right">
+            <?php
+              $data = [
+                'type'  => 'submit',
+                'id'    => 'submit_return_history',
+                'name'  => 'action_btn',
+                'value' => 'Paluu',
+                'class' => 'submit_btn'
+              ];
+              $js = ['onClick' => 'jsFunction_return(this);'];
+              echo form_input($data, ' ', $js);
             ?>
-         </td>
-        </tr>
-        <tr>
-          <td colspan="5">
-            <?php echo $table_not_found;	?>
-          </td>
-        </tr>
-        <tr>
-          <td colspan="4">
-            <?php echo $this->session->flashdata("error");	?>
-          </td>
-        </tr>
-      </table> <!-- cardbuttons -->
-    
+         </div>
+      </div>
+
+      <div class="form-error">
+        <?php echo $table_not_found; ?>
+        <?php echo $this->session->flashdata("error"); ?>
+      </div>
+     </div>
+     
     <?php echo form_close(); ?>
     </div><!-- content -->
 

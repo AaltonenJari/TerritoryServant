@@ -17,130 +17,139 @@
 <body>
 
   <div id="container">
-    <?php echo form_open('person_controller/check_insert'); ?>
+    <?php echo form_open('person_controller/check_insert', ['class' => 'maintenance_form_area']); ?>
     
-    <h1>Lisää henkilö</h1>
+    <div class="dialog-form-container">    
+      <h1>Lisää henkilö</h1>
     
-    <table id="cardtable">
-      <tr>
-        <td>
-          <?php echo form_label('Etunimi: '); ?>
-        </td>
-        <td>
-          <?php 
-            $data_input = [
-              'id'    => 'person_name',
-              'name'  => 'person_name',
-              'value' =>  $person_name,
-              'class' => 'insert_value'
-            ];
-            echo form_input($data_input);
-          ?>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <?php echo form_label('Sukunimi: '); ?>
-        </td>
-        <td>
-          <?php 
-            $data_input = [
-                'id'    => 'person_lastname',
-                'name'  => 'person_lastname',
-                'value' =>  $person_lastname,
-                'class' => 'insert_value'
-            ];
-            echo form_input($data_input);
-          ?>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <?php echo form_label('Palvelusryhmä: '); ?>
-        </td>
-        <td>
-          <?php 
-          $js = [
-              'id'       => 'group_id',
-              'class'    => 'insert_value',
-              'onChange' => 'jsGroupChance(this, person_group);'
-          ];
-          echo form_dropdown('person_group_dropbox', $groups, $person_group_string, $js);
+      <div class="dialog-form-content">
+        <table id="cardtable">
+          <tr>
+            <td>
+              <?php echo form_label('Etunimi: '); ?>
+            </td>
+            <td>
+              <?php 
+                $data_input = [
+                  'id'    => 'person_name',
+                  'name'  => 'person_name',
+                  'value' =>  $person_name,
+                  'class' => 'insert_value'
+                ];
+                echo form_input($data_input);
+              ?>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <?php echo form_label('Sukunimi: '); ?>
+            </td>
+            <td>
+              <?php 
+                $data_input = [
+                    'id'    => 'person_lastname',
+                    'name'  => 'person_lastname',
+                    'value' =>  $person_lastname,
+                    'class' => 'insert_value'
+                ];
+                echo form_input($data_input);
+              ?>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <?php echo form_label('Palvelusryhmä: '); ?>
+            </td>
+            <td>
+              <?php 
+              $js = [
+                  'id'       => 'group_id',
+                  'class'    => 'insert_value',
+                  'onChange' => 'jsGroupChance(this, person_group);'
+              ];
+              echo form_dropdown('person_group_dropbox', $groups, $person_group_string, $js);
           
-          $data_hidden = [
-              'type'  => 'hidden',
-              'id'    => 'person_group',
-              'name'  => 'person_group',
-              'value' =>  $person_group,
-              'class' => 'person_group'
-          ];
-          echo form_input($data_hidden);
-           
-          ?>
-        </td>
-      </tr>
+              $data_hidden = [
+                  'type'  => 'hidden',
+                  'id'    => 'person_group',
+                  'name'  => 'person_group',
+                  'value' =>  $person_group,
+                  'class' => 'person_group'
+              ];
+              echo form_input($data_hidden);
+              ?>
+            </td>
+          </tr>
 
-      <tr>
-        <td>
-          <?php echo form_label('Ryhmänvalvoja: '); ?>
-        </td>
-        <td>
-          <?php 
-          $js = [
-              'id'       => 'overseer_id',
-              'class'    => 'insert_value',
-              'onChange' => 'jsOverseerChance(this, person_leader);'
-          ];
-          echo form_dropdown('overseers_dropbox', $overseers, $person_leader, $js);
+          <tr>
+            <td>
+              <?php echo form_label('Ryhmänvalvoja: '); ?>
+            </td>
+            <td>
+              <?php 
+              $js = [
+                  'id'       => 'overseer_id',
+                  'class'    => 'insert_value',
+                  'onChange' => 'jsOverseerChance(this, person_leader);'
+              ];
+              echo form_dropdown('overseers_dropbox', $overseers, $person_leader, $js);
           
-          $data_hidden = [
-              'type'  => 'hidden',
-              'id'    => 'person_leader',
-              'name'  => 'person_leader',
-              'value' =>  $person_leader,
-              'class' => 'person_leader'
-          ];
-          echo form_input($data_hidden);
-          ?>
-        </td>
-      </tr>
+              $data_hidden = [
+                  'type'  => 'hidden',
+                  'id'    => 'person_leader',
+                  'name'  => 'person_leader',
+                  'value' =>  $person_leader,
+                  'class' => 'person_leader'
+              ];
+              echo form_input($data_hidden);
+              ?>
+            </td>
+          </tr>
 
-      <tr>
-        <td>
-          <?php echo form_label('Näytetäänkö: '); ?>
-        </td>
-        <td>
-          <?php
-            $data_input = [
-                'id'    => 'person_show',
-                'name'  => 'person_show',
-                'value' =>  $person_show,
-                'class' => 'insert_value'
-            ];
-            echo form_input($data_input);
-          ?>
-        </td>
-      </tr>
-    </table>
+          <tr>
+            <td>
+              <?php echo form_label('Näytetäänkö: '); ?>
+            </td>
+            <td>
+              <?php
+                $data_input = [
+                    'id'    => 'person_show',
+                    'name'  => 'person_show',
+                    'value' =>  $person_show,
+                    'class' => 'insert_value'
+                ];
+                echo form_input($data_input);
+              ?>
+            </td>
+          </tr>
+        </table> <!-- cardtable -->
     
-    <table id="cardbuttons">
-      <tr>
-        <td width="30%">
-          <?php echo form_submit(array('id' => 'submit', 'class'=> 'submit_btn', 'name' => 'action', 'value' => 'Lisää')); ?>
-        </td>
-        <td width="30%">
-        </td>
-        <td width="40%">
-          <?php echo form_submit(array('id' => 'submit', 'class'=> 'submit_btn', 'name' => 'action', 'value' => 'Paluu')); ?>
-        </td>
-      </tr>
-      <tr>
-        <td colspan="3">
-          <?php echo $this->session->flashdata("error");	?>
-        </td>
-      </tr>
-    </table>
-    
+        <div class="footer-area">
+          <div class="button-group">
+            <div class="button-left">
+              <?php echo form_submit([
+                'class' => 'submit_btn',
+                'name'  => 'action',
+                'value' => 'Lisää'
+              ]); ?>
+            </div>
+ 
+            <div class="button-right">
+              <?php echo form_submit([
+                'class' => 'submit_btn',
+                'name'  => 'action',
+                'value' => 'Paluu'
+              ]); ?>
+            </div>
+          </div>
+
+          <div class="form-error">
+            <?php echo $this->session->flashdata("error"); ?>
+          </div>
+        </div><!-- footer-area -->
+
+      </div><!-- dialog-form-content -->
+    </div><!-- dialog-form-container -->
     <?php echo form_close(); ?>
 
   </div><!-- container -->

@@ -59,17 +59,16 @@ table {
 }
 
 form {
-  width:650px;
-  padding: 20px 20px 20px;
-  background:linear-gradient(#fff,#ABDBFF);
-  border:1px solid #ccc;
-  box-shadow:0 0 5px;
-  font-family:'Marcellus',serif;
-  float:left;
-  margin-top:10px;
-  margin-left:50px; 
-  margin-bottom:50px;
-  margin-right:auto;  
+  width: 650px;
+  padding: 20px;
+  background: linear-gradient(#fff, #ABDBFF);
+  border: 1px solid #ccc;
+  box-shadow: 0 0 5px;
+  font-family: 'Marcellus', serif;
+  margin: 40px auto 0 auto; 
+  position: relative;
+  min-height: 550px;
+  box-sizing: border-box;
 }
 
 /* Test styling */
@@ -138,54 +137,89 @@ label {
   box-sizing:border-box;
 }
 
-#cardtable tr {
-  height:30px;
+
+/* Footer pysyy formin alalaidassa */
+.footer-area {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 0px 25px;
+  box-sizing: border-box;
 }
 
-input.submit_btn {
-  padding:3px 5px 3px 5px; 
-  margin-left: 0px;
-  border:none;
-  box-shadow:0 0 3px
-  margin-top:20px;
-  font-size:18px;
-  background:linear-gradient(#00cccc 5%,#36caf0 100%);
-  border:1px solid #0F799E;
-  color:#fff;
-  font-weight:700;
-  cursor:pointer;
-  text-shadow:0 1px 0 #13506D
+/* Kolmirivinen asettelu */
+.button-group {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
 }
 
+/* Keskialue (Undo / Redo) */
+.button-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 80px;
+}
+
+/* Painikkeiden perusilme */
+.footer-area input[type="submit"],
+.footer-area input[type="image"],
+.footer-area button {
+  cursor: pointer;
+  vertical-align: middle;
+  transition: transform 0.2s ease;
+}
+
+.footer-area input:hover {
+  transform: scale(1.05);
+}
+
+/* Keskipainikkeet korkeampia */
+.button-center input,
+.button-center button {
+  height: 60px;
+}
+
+/* Kuvapainikkeet */
 input.submit_undo {
-  margin-top:20px;
-  border:1px solid #0F799E;
+  border: 1px solid #0F799E;
   max-width: 40px;
   max-height: 46px;
-  cursor:pointer;
-}
-
-input.submit_btn:hover {
-  background:linear-gradient(#36caf0 5%,#22abe9 100%)
 }
 
 input.submit_btn_disabled {
-  margin-top:20px;
-  border:1px solid #9ea0a0;
+  border: 1px solid #9ea0a0;
   max-width: 40px;
   max-height: 46px;
 }
 
-
-#cardbuttons tr td:nth-child(3) {
-  text-align: right;
+/* Vasemman ja oikean napin tyyli */
+.button-left input,
+.button-right input {
+  height: 40px;
+  padding: 3px 5px;
+  border: 1px solid #0F799E;
+  background: linear-gradient(#00cccc 5%, #36caf0 100%);
+  color: #fff;
+  font-size: 18px;
+  font-weight: 700;
+  text-shadow: 0 1px 0 #13506D;
+  box-shadow: 0 0 3px;
 }
 
-#cardbuttons tr td:nth-child(4) {
-  text-align: right;
+.button-left input:hover,
+.button-right input:hover {
+  background: linear-gradient(#36caf0 5%, #22abe9 100%);
 }
 
-.table_history {
-  border-collapse: collapse;
+/* Viestilohko */
+.form-error {
+  margin: 10px 0px 5px 0px;
+  color: red;
 }
-

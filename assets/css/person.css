@@ -297,40 +297,83 @@ a slight movement of the header row */
   text-align: center;
 }
 
-
-input.submit_btn {
-  font-size:18px;
-  background:linear-gradient(#00cccc 5%,#36caf0 100%);
-  border:1px solid #0F799E;
-  color:#fff;
-  font-weight:700;
-  cursor:pointer;
-  text-shadow:0 1px 0 #13506D
+.button-area {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end; /* Vie alalaitaan */
+  height: 100%; /* Varmista että formin korkeus sallii tämän */
+  padding: 0 60px 10px 60px;
 }
 
+.button-group {
+  display: flex;
+  justify-content: space-between; /* Vasemmalle, keskelle, oikealle */
+  align-items: center;
+  width: 100%;
+  margin-top: 1rem;
+}
+
+/* Keskialue (Undo / Redo) */
+.buttons-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 160px;
+}
+
+/* Painikkeiden perusilme */
+.footer-area input[type="submit"],
+.footer-area input[type="image"],
+.footer-area button {
+  cursor: pointer;
+  vertical-align: middle;
+  transition: transform 0.2s ease;
+}
+
+.footer-area input:hover {
+  transform: scale(1.05);
+}
+
+/* Keskipainikkeet korkeampia */
+.button-center input,
+.button-center button {
+  height: 60px;
+}
+
+/* Kuvapainikkeet */
 input.submit_undo {
-  margin-top:5px;
-  border:1px solid #0F799E;
+  border: 1px solid #0F799E;
   max-width: 40px;
-  max-height: 40px;
-  cursor:pointer;
-}
-
-input.submit_btn:hover {
-  background:linear-gradient(#36caf0 5%,#22abe9 100%)
+  max-height: 46px;
 }
 
 input.submit_btn_disabled {
-  margin-top:5px;
-  border:1px solid #9ea0a0;
+  border: 1px solid #9ea0a0;
   max-width: 40px;
-  max-height: 40px;
+  max-height: 46px;
 }
 
-#cardbuttons tr td:nth-child(3) {
-  text-align: center;
+/* Vasemman ja oikean napin tyyli */
+.button-left input,
+.button-center input,
+.button-right input {
+  height: 40px;
+  padding: 3px 5px;
+  border: 1px solid #0F799E;
+  background: linear-gradient(#00cccc 5%, #36caf0 100%);
+  color: #fff;
+  font-size: 18px;
+  font-weight: 700;
+  text-shadow: 0 1px 0 #13506D;
+  box-shadow: 0 0 3px;
 }
 
-#cardbuttons tr td:nth-child(4) {
-  text-align: left;
+.button-left input:hover,
+.button-right input:hover {
+  background: linear-gradient(#36caf0 5%, #22abe9 100%);
+}
+
+.form-error {
+  margin: 10px 0px 5px 0px;
+  color: red;
 }

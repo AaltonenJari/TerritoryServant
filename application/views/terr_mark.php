@@ -18,201 +18,213 @@
 
   <div id="container">
     <?php echo form_open('territory_controller/check_territory'); ?>
-    
-    <h1>Alueen merkitseminen</h1>
-    <?php 
-    //Muuttujat pvm-vertailua varten
-    $alue_lastdate_datetype = new DateTime($alue_lastdate);
-    $event_last_date_datetype = new DateTime($event_last_date);
-    ?>
-    <table id="cardtable">
-      <tr>
-        <td>
-          <?php echo form_label('Aluenumero: '); ?>
-        </td>
-        <td>
-          <?php echo form_label($alue_code); ?>
-          <?php echo form_hidden('alue_code', $alue_code);  ?>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <?php echo form_label('Alueen nimi: '); ?>
-        </td>
-        <td>
-          <?php echo form_label($alue_detail); ?>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <?php echo form_label('Alueen lisätieto: '); ?>
-        </td>
-        <td>
-          <?php echo form_label($alue_location); ?>
-        </td>
-      </tr>
+    <div class="dialog-form-container">    
+      <h1>Alueen merkitseminen</h1>
+      <?php 
+      //Muuttujat pvm-vertailua varten
+      $alue_lastdate_datetype = new DateTime($alue_lastdate);
+      $event_last_date_datetype = new DateTime($event_last_date);
+      ?>
+  
+      <div class="dialog-form-content">
+  
+        <table id="cardtable">
+          <tr>
+            <td>
+              <?php echo form_label('Aluenumero: '); ?>
+            </td>
+            <td>
+              <?php echo form_label($alue_code); ?>
+              <?php echo form_hidden('alue_code', $alue_code);  ?>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <?php echo form_label('Alueen nimi: '); ?>
+            </td>
+            <td>
+              <?php echo form_label($alue_detail); ?>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <?php echo form_label('Alueen lisätieto: '); ?>
+            </td>
+            <td>
+              <?php echo form_label($alue_location); ?>
+            </td>
+          </tr>
 
-      <tr>
-        <td>
-          <?php echo form_label('Lainassa:'); ?>
-        </td>
-        <td>
+          <tr>
+            <td>
+              <?php echo form_label('Lainassa:'); ?>
+            </td>
+            <td>
           
-          <?php 
-            if ($lainassa == 1) {
-                echo form_checkbox('dlainassa', set_value('dlainassa', '1'), TRUE);
-            } else {
-                echo form_checkbox('dlainassa', set_value('dlainassa', '0'), FALSE);
-            }
-          ?>
-          <?php echo form_hidden('lainassa_old', $lainassa);  ?>
-        </td>
-      </tr>
-      
-      <tr>
-        <td>
-          <?php 
-            if ($lainassa == 1) {
-                if ($mark_type == 3) {
-                    echo form_label('Merkattu: ');
+              <?php 
+                if ($lainassa == 1) {
+                    echo form_checkbox('dlainassa', set_value('dlainassa', '1'), TRUE);
                 } else {
-                    if ($alue_lastdate_datetype > $event_last_date_datetype) {
-                        echo form_label('Käyty: ');
+                    echo form_checkbox('dlainassa', set_value('dlainassa', '0'), FALSE);
+                }
+              ?>
+              <?php echo form_hidden('lainassa_old', $lainassa);  ?>
+            </td>
+          </tr>
+      
+          <tr>
+            <td>
+              <?php 
+                if ($lainassa == 1) {
+                    if ($mark_type == 3) {
+                        echo form_label('Merkattu: ');
                     } else {
-                        echo form_label('Lainattu: ');
+                        if ($alue_lastdate_datetype > $event_last_date_datetype) {
+                            echo form_label('Käyty: ');
+                        } else {
+                            echo form_label('Lainattu: ');
+                        }
+                    }
+                } else {
+                    if ($return_type == 4) {
+                        echo form_label('Merkattu: ');
+                    } else {
+                        echo form_label('Palautettu: ');
                     }
                 }
-
-            } else {
-                if ($return_type == 4) {
-                    echo form_label('Merkattu: ');
+              ?>
+            </td>
+            <td>
+              <?php 
+                if ($lainassa == 1) {
+                    if ($alue_lastdate_datetype > $event_last_date_datetype) {
+                        $terr_lastdate = $alue_lastdate;
+                    } else {
+                        $terr_lastdate = $event_last_date;
+                    }
                 } else {
-                    echo form_label('Palautettu: ');
+                    $terr_lastdate = $mark_date;
                 }
-            }
-          ?>
-        </td>
-        <td>
-          <?php 
-            if ($lainassa == 1) {
-                if ($alue_lastdate_datetype > $event_last_date_datetype) {
-                    $terr_lastdate = $alue_lastdate;
-                } else {
-                    $terr_lastdate = $event_last_date;
-                }
-            } else {
-                $terr_lastdate = $mark_date;
-            }
-            echo form_label($terr_lastdate);
-            $data = [
-                'type'  => 'hidden',
-                'name'  => 'lastdate_old',
-                'id'    => 'hidden_lastdate_old',
-                'value' =>  $terr_lastdate,
-                'class' => 'hidden_lastdate_old'
-            ];
-            echo form_input($data);
-          ?>
-        </td>
-      </tr>
+                echo form_label($terr_lastdate);
+                $data = [
+                    'type'  => 'hidden',
+                    'name'  => 'lastdate_old',
+                    'id'    => 'hidden_lastdate_old',
+                    'value' =>  $terr_lastdate,
+                    'class' => 'hidden_lastdate_old'
+                ];
+                echo form_input($data);
+              ?>
+            </td>
+          </tr>
       
-      <tr>
-        <td>
-          <?php 
-          //Näytettävä kenttä
-          if ($lainassa == 0) {
-              $dmark_text = 'Lainauspvm:';
-          } else {
-              $dmark_text = 'Merkintäpvm:';
-          }
-          $dmark_label_name = 'dmark_text_name';
-          $attributes = [
-              'id' => "dmark_text_id"
-          ];
-          echo form_label($dmark_text, $dmark_label_name, $attributes);
-          ?>
-        </td>
-        <td>
-            <?php 
+          <tr>
+            <td>
+              <?php 
+              //Näytettävä kenttä
+              if ($lainassa == 0) {
+                  $dmark_text = 'Lainauspvm:';
+              } else {
+                  $dmark_text = 'Merkintäpvm:';
+              }
+              $dmark_label_name = 'dmark_text_name';
               $attributes = [
-                  'id' => 'dmerk',
-                  'placeholder' => 'Merkintäpvm',
-                  'class' => 'fullwidth'
+                  'id' => "dmark_text_id"
               ];
-              echo form_input('dmerk', set_value('dmerk', date("j.n.Y")), $attributes);
-             ?>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <?php echo form_label('Kenellä:'); ?>
-        </td>
-        <td>
-            <?php 
-            $attributes = [
-                'id'       => 'djnimi',
-                'onChange' => 'jsFunction();',
-                'class'    => 'fullwidth'
-            ];
-            echo form_dropdown('djnimi', $lenders, $name, $attributes);
-            
-           
-            //input field for name other than in the drop-down list
-            $data = [
-               'type'  => 'text',
-               'name'  => 'djnimi',
-               'id'    => 'djnimi_id',
-               'value' => $name,
-               'style' => 'display:none',
-               'class' => 'fullwidth'
-            ];
-            echo form_input($data);
-            
-            
-            //Save the old name (selected value from server)
-            $data = [
-               'type'  => 'hidden',
-               'name'  => 'jnimi_old',
-               'id'    => 'hidden_jnimi_old',
-               'value' =>  $name,
-               'class' => 'hidden_jnimi_old'
-            ];
-           
-            echo form_input($data);
-            ?>
-        </td>
-      </tr>
+              echo form_label($dmark_text, $dmark_label_name, $attributes);
+              ?>
+            </td>
+            <td>
+              <?php 
+                $attributes = [
+                    'id' => 'dmerk',
+                    'placeholder' => 'Merkintäpvm',
+                    'class' => 'fullwidth'
+                ];
+                echo form_input('dmerk', set_value('dmerk', date("j.n.Y")), $attributes);
+               ?>
+            </td>
+          </tr>
 
-      <tr>
-        <td colspan="2">
-          <span class="text-danger"><?php echo form_error('djnimi'); ?></span>
-         </td>
-      </tr>
+          <tr>
+            <td>
+              <?php echo form_label('Kenellä:'); ?>
+            </td>
+            <td>
+                <?php 
+                $attributes = [
+                    'id'       => 'djnimi',
+                    'onChange' => 'jsFunction();',
+                    'class'    => 'fullwidth'
+                ];
+                echo form_dropdown('djnimi', $lenders, $name, $attributes);
+           
+                //input field for name other than in the drop-down list
+                $data = [
+                   'type'  => 'text',
+                   'name'  => 'djnimi',
+                   'id'    => 'djnimi_id',
+                   'value' => $name,
+                   'style' => 'display:none',
+                   'class' => 'fullwidth'
+                ];
+                echo form_input($data);
+            
+                //Save the old name (selected value from server)
+                $data = [
+                   'type'  => 'hidden',
+                   'name'  => 'jnimi_old',
+                   'id'    => 'hidden_jnimi_old',
+                   'value' =>  $name,
+                   'class' => 'hidden_jnimi_old'
+                ];
+                echo form_input($data);
+                ?>
+            </td>
+          </tr>
+
+          <tr>
+            <td colspan="2">
+              <span class="text-danger"><?php echo form_error('djnimi'); ?></span>
+             </td>
+          </tr>
      
-    </table> <!-- cardtable -->
-    
-    <table id="cardbuttons">
-      <tr>
-        <td width="40%">
-          <?php echo form_submit(array('id' => 'submit_update', 'class'=> 'submit_btn', 'name' => 'action', 'value' => 'Päivitä')); ?>
-        </td>
-        <td width="30%">
-          <?php echo form_submit(array('id' => 'submit_history', 'class'=> 'submit_btn', 'name' => 'action', 'value' => 'Historia')); ?>
-        </td>
-        <td width="30%">
-          <?php echo form_submit(array('id' => 'submit_return_mark', 'class'=> 'submit_btn', 'name' => 'action', 'value' => 'Paluu')); ?>
-        </td>
-      </tr>
-      <tr>
-        <td colspan="3">
-          <div class="text-danger-bottom">
-            <?php echo $this->session->flashdata("error");	?>
+        </table> <!-- cardtable -->
+
+        <div class="footer-area">
+          <div class="button-group">
+            <div class="button-left">
+              <?php echo form_submit([
+                'class' => 'submit_btn',
+                'name'  => 'action',
+                'value' => 'Päivitä'
+              ]); ?>
+            </div>
+ 
+            <div class="button-center">
+              <?php echo form_submit([
+                'class' => 'submit_btn',
+                'name'  => 'action',
+                'value' => 'Historia'
+              ]); ?>
+            </div>
+
+            <div class="button-right">
+              <?php echo form_submit([
+                'class' => 'submit_btn',
+                'name'  => 'action',
+                'value' => 'Paluu'
+              ]); ?>
+            </div>
           </div>
-        </td>
-       </tr>
-    </table> <!-- cardbuttons -->
+
+          <div class="form-error">
+            <?php echo $this->session->flashdata("error"); ?>
+          </div>
+        </div><!-- footer-area -->
     
-    
+      </div><!-- dialog-form-content -->
+    </div><!-- dialog-form-container -->
     <?php echo form_close(); ?>
 
   </div><!-- container -->

@@ -17,49 +17,59 @@
 <body>
 
   <div id="container">
-    <?php echo form_open('Group_controller/check_insert'); ?>
+    <?php echo form_open('Group_controller/check_insert', ['class' => 'maintenance_form_area']); ?>
     
-    <h1>Lisää palvelusryhmä</h1>
+    <div class="dialog-form-container">    
+      <h1>Lisää palvelusryhmä</h1>
     
-    <table id="cardtable">
-      <tr>
-        <td>
-          <?php echo form_label('Ryhmän nimi: '); ?>
-        </td>
-        <td>
-          <?php echo form_input(array('id'=>'group_name',
-              'name'=>'group_name','value'=> $group_name)); ?>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <?php echo form_label('Tapahtumia: '); ?>
-        </td>
-        <td>
-          <?php echo form_input(array('id'=>'group_events',
-              'name'=>'group_events','value'=> $group_events)); ?>
-        </td>
-      </tr>
-    </table>
+      <div class="dialog-form-content">
+        <table id="cardtable">
+          <tr>
+            <td>
+              <?php echo form_label('Ryhmän nimi: '); ?>
+            </td>
+            <td>
+              <?php echo form_input(array('id'=>'group_name',
+                  'name'=>'group_name','value'=> $group_name)); ?>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <?php echo form_label('Tapahtumia: '); ?>
+            </td>
+            <td>
+              <?php echo form_input(array('id'=>'group_events',
+                  'name'=>'group_events','value'=> $group_events)); ?>
+            </td>
+          </tr>
+        </table> <!-- cardtable -->
     
-    <table id="cardbuttons">
-      <tr>
-        <td width="30%">
-          <?php echo form_submit(array('id' => 'submit', 'class'=> 'submit_btn', 'name' => 'action', 'value' => 'Lisää')); ?>
-        </td>
-        <td width="30%">
-        </td>
-        <td width="40%">
-          <?php echo form_submit(array('id' => 'submit', 'class'=> 'submit_btn', 'name' => 'action', 'value' => 'Paluu')); ?>
-        </td>
-      </tr>
-             <tr>
-               <td colspan="4">
-                 <?php echo $this->session->flashdata("error");	?>
-               </td>
-             </tr>
-    </table>
+        <div class="footer-area">
+          <div class="button-group">
+            <div class="button-left">
+              <?php echo form_submit([
+                'class' => 'submit_btn',
+                'name'  => 'action',
+                'value' => 'Lisää'
+              ]); ?>
+            </div>
+ 
+            <div class="button-right">
+              <?php echo form_submit([
+                'class' => 'submit_btn',
+                'name'  => 'action',
+                'value' => 'Paluu'
+              ]); ?>
+            </div>
+          </div>
+
+          <div class="form-error">
+            <?php echo $this->session->flashdata("error"); ?>
+          </div>
+        </div><!-- footer-area -->
     
+      </div><!-- dialog-form-content -->
+    </div><!-- dialog-form-container -->
     <?php echo form_close(); ?>
 
   </div><!-- container -->

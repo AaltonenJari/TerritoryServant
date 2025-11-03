@@ -17,72 +17,79 @@
 <body>
 
   <div id="container">
-    <?php echo form_open('maintenance_controller/check_insert'); ?>
+    <?php echo form_open('maintenance_controller/check_insert', ['class' => 'maintenance_form_area']); ?>
     
-    <h1>Lisää alue</h1>
+    <div class="dialog-form-container">    
+      <h1>Lisää alue</h1>
     
-    <table id="cardtable">
-      <tr>
-        <td>
-          <?php echo form_label('Aluenumero: '); ?>
-        </td>
-        <td>
-          <?php echo form_input(array('id'=>'alue_code',
-              'name'=>'alue_code','value'=> $alue_code)); ?>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <?php echo form_label('Alueen nimi: '); ?>
-        </td>
-        <td>
-          <?php echo form_input(array('id'=>'alue_detail',
-              'name'=>'alue_detail','value'=> $alue_detail)); ?>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <?php echo form_label('Alueen lisätieto: '); ?>
-        </td>
-        <td>
-          <?php echo form_input(array('id'=>'alue_location',
-              'name'=>'alue_location','value'=> $alue_location)); ?>
-        </td>
-      </tr>
+      <div class="dialog-form-content">
+        <table id="cardtable">
+          <tr>
+            <td>
+              <?php echo form_label('Aluenumero: '); ?>
+            </td>
+            <td>
+              <?php echo form_input(array('id'=>'alue_code',
+                  'name'=>'alue_code','value'=> $alue_code)); ?>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <?php echo form_label('Alueen nimi: '); ?>
+            </td>
+            <td>
+              <?php echo form_input(array('id'=>'alue_detail',
+                  'name'=>'alue_detail','value'=> $alue_detail)); ?>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <?php echo form_label('Alueen lisätieto: '); ?>
+            </td>
+            <td>
+              <?php echo form_input(array('id'=>'alue_location',
+                  'name'=>'alue_location','value'=> $alue_location)); ?>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <?php echo form_label('Alueen koko: '); ?>
+            </td>
+            <td>
+              <?php echo form_input(array('id'=>'alue_taloudet',
+                  'name'=>'alue_taloudet','value'=> $alue_taloudet)); ?>
+            </td>
+          </tr>
+        </table> <!-- cardtable -->
+        
+        <div class="footer-area">
+          <div class="button-group">
+            <div class="button-left">
+              <?php echo form_submit([
+                'class' => 'submit_btn',
+                'name'  => 'action',
+                'value' => 'Lisää'
+              ]); ?>
+            </div>
+ 
+            <div class="button-right">
+              <?php echo form_submit([
+                'class' => 'submit_btn',
+                'name'  => 'action',
+                'value' => 'Paluu'
+              ]); ?>
+            </div>
+          </div>
 
-      <tr>
-        <td>
-          <?php echo form_label('Alueen koko: '); ?>
-        </td>
-        <td>
-          <?php echo form_input(array('id'=>'alue_taloudet',
-              'name'=>'alue_taloudet','value'=> $alue_taloudet)); ?>
-        </td>
-      </tr>
-    </table>
+          <div class="form-error">
+            <?php echo $this->session->flashdata("error"); ?>
+          </div>
+        </div><!-- footer-area -->
     
-    <table id="cardbuttons">
-      <tr>
-        <td width="30%">
-          <?php echo form_submit(array('id' => 'submit', 'class'=> 'submit_btn', 'name' => 'action', 'value' => 'Lisää')); ?>
-        </td>
-        <td width="30%">
-        </td>
-        <td width="40%">
-          <?php echo form_submit(array('id' => 'submit', 'class'=> 'submit_btn', 'name' => 'action', 'value' => 'Paluu')); ?>
-        </td>
-      </tr>
-      <tr>
-        <td colspan="3">
-          <?php echo $this->session->flashdata("error");	?>
-        </td>
-      </tr>
-    </table>
-    
+      </div><!-- dialog-form-content -->
+    </div><!-- dialog-form-container -->
     <?php echo form_close(); ?>
 
   </div><!-- container -->
 </body>
-
-         
 </html>

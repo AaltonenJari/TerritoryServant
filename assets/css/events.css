@@ -13,7 +13,17 @@ a slight movement of the header row */
 .table3Header {
   position: sticky;
   top: 0;
-  background: white;	
+  background: white;
+}
+
+.table3Header th {
+  background-color: #F2F9FF; 
+  color: #000;
+  transition: background-color 0.2s ease;
+}
+
+.table3Header tr:hover th {
+  background-color: #e6f7ff; /* hover-väri koko riville */
 }
 
 .table3Hdr {
@@ -107,7 +117,9 @@ a slight movement of the header row */
   float: left;
   padding: 8px 16px;
   text-decoration: none;
-  transition: background-color .3s;
+  background-color: #F2F9FF; 
+  color: #000;
+  transition: background-color 0.2s ease;
   border: 1px solid #ddd;
   margin: 0 8px;
 }
@@ -119,7 +131,8 @@ a slight movement of the header row */
 }
 
 .territorycodes a:hover:not(.active) {
-  background-color: #ddd;
+  background-color: #e6f7ff;
+  border-radius: 5px;
 }
 
 .territorycodes a:first-child {
@@ -196,9 +209,10 @@ a slight movement of the header row */
   color: black;
   padding: 8px 16px;
   text-decoration: none;
-  transition: background-color .3s;
   border: 1px solid #ddd;
   margin: 0 2px; /* 0 is for top and bottom. Feel free to change it */
+  background-color: #F2F9FF; 
+  transition: background-color 0.2s ease;
 }
 
 .curlink {
@@ -217,6 +231,6 @@ a slight movement of the header row */
 .numlink a:hover:not(.curlink),
 .nextlink a:hover:not(.curlink),
 .lastlink a:hover:not(.curlink) {
-	background-color: #ddd;
+	background-color: #e6f7ff;
 	border-radius: 5px;
 }

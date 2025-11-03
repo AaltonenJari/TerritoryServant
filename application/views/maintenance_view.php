@@ -223,39 +223,26 @@
           </p>
        </div>
       </div><!-- contentResizable -->
-      
-      <table id="cardbuttons">
-        <tr>
-          <td width="40%">
-          <?php          
-          $data = [
-             'type'  => 'submit',
-             'id'    => 'submit_update',
-             'name'  => 'action_btn',
-             'value' => 'Päivitä',
-             'class' => 'submit_btn'
-          ];
-             
-          $js = ['onClick' => 'jsFunction_update(this);'];
-          echo form_input($data,' ',$js);
-          ?>
-          </td>
-          <td width="30%">
-          <?php
-          $data = [
-             'type'  => 'submit',
-             'id'    => 'submit_add',
-             'name'  => 'action_btn',
-             'value' => 'Lisää',
-             'class' => 'submit_btn'
-          ];
-             
-          $js = ['onClick' => 'jsFunction_add(this);'];
-          echo form_input($data,' ',$js);
-          ?>
-          </td>
-          <td width="15%">
-          <?php if ($can_undo) {
+
+      <div class="button-area">
+        <div class="button-group">
+          <div class="button-left">
+             <?php
+             $data = [
+                 'type'  => 'submit',
+                 'id'    => 'submit_update',
+                 'name'  => 'action_btn',
+                 'value' => 'Päivitä',
+                 'class' => 'submit_btn'
+             ];
+               
+             $js = ['onClick' => 'jsFunction_update(this);'];
+             echo form_input($data,' ',$js);
+             ?>
+          </div>
+ 
+          <div class="buttons-center">
+            <?php if ($can_undo) {
               $data = [
                   'type'  => 'image',
                   'id'    => 'submit_undo',
@@ -267,7 +254,7 @@
               
               $js = ['onClick' => 'jsFunction_undo(this);'];
               echo form_submit($data,' ',$js);
-          } else {
+            } else {
               $data = [
                   'type'  => 'image',
                   'id'    => 'submit_undo_disabled',
@@ -278,10 +265,9 @@
                   'disabled'  => 'true'
               ];
               echo form_submit($data);
-          } ?>
-          </td>
-          <td width="15%">
-          <?php if ($can_redo) {
+            } ?>
+
+            <?php if ($can_redo) {
               $data = [
                   'type'  => 'image',
                   'id'    => 'submit_redo',
@@ -294,7 +280,7 @@
               $js = ['onClick' => 'jsFunction_redo(this);'];
               echo form_submit($data,' ',$js);
               
-          } else {
+            } else {
               $data = [
                   'type'  => 'image',
                   'id'    => 'submit_redo_disabled',
@@ -305,21 +291,32 @@
                   'disabled'  => 'true'
               ];
               echo form_submit($data);
-          } ?>
-          </td>
-        </tr>
-        <tr>
-          <td colspan="4">
-          <?php echo $this->session->flashdata("error");	?>
-          </td>
-         </tr>
-      </table> <!-- cardbuttons -->
+            } ?>
+            </div>
+
+            <div class="button-right">
+              <?php
+              $data = [
+                 'type'  => 'submit',
+                 'id'    => 'submit_add',
+                 'name'  => 'action_btn',
+                 'value' => 'Lisää',
+                 'class' => 'submit_btn'
+              ];
+              
+              $js = ['onClick' => 'jsFunction_add(this);'];
+              echo form_input($data,' ',$js);
+              ?>
+            </div>
+          </div><!-- button-group -->
+
+          <div class="form-error">
+            <?php echo $this->session->flashdata("error"); ?>
+          </div>
+        </div><!-- button-area -->
     
     <?php echo form_close(); ?>
     </div><!-- content -->
-
-    <div class="middleArea">
-    </div>
 
     <div id="bottomArea" class="bottomArea">
       <table id="bottomtable">
@@ -405,34 +402,30 @@ $(document).ready(function() {
 	  document.getElementById("tableRowCount").innerHTML = rowCount;
 
 	  //Zebra stripe the table after filtering
-	  $("#table2 tbody tr:visible:even").css("background-color", "#eee")
+	  $("#table2 tbody tr:visible:even").css("background-color", "#eee");
 });
 
 function filter_table(searchText) {
-	  $rows
-	    .show()
-	    .filter(function() {
-	      var $inputs = $(this).find("input:text");
-	      var found = searchText.length == 0; // for empty search, show all rows
-	      for (var i=0; i < $inputs.length && !found; i++) {
-	        var text = $inputs.eq(i).val().toLowerCase().replace(/\s+/g, ' ');
-	        found = text.length > 0 && text.indexOf(searchText) >= 0;
+	  searchText = searchText.trim().toLowerCase();
+
+	  $rows.show().filter(function() {
+	    if (!searchText) return false; // jos hakukenttä on tyhjä, ei suodateta mitään
+
+	    var found = false;
+	    $(this).find("input:text, label, td").each(function() {
+	      var text = ($(this).val() || $(this).text() || "")
+	        .toLowerCase()
+	        .replace(/\s+/g, " ");
+	      if (text.includes(searchText)) {
+	        found = true;
+	        return false; // lopeta looppi
 	      }
-	      return !found;
-	   })
-	   .hide();
-	   
-	  //Get the row count of the filtered table
-	  var rowCount = 0;
-	  var rows = document.getElementById("table2").getElementsByTagName("tr");
-	  for (var i = 0; i < rows.length; i++) {
-	      if (rows[i].style.display == 'none') {
-	      	continue;
-	      }
-	      if (rows[i].getElementsByTagName("td").length > 0) {
-	          rowCount++;
-	      }
-	  }
+	    });
+	    return !found; // jos ei löytynyt, piilota rivi
+	  }).hide();
+
+	  // Laske näkyvät rivit
+	  var rowCount = $("#table2 tr:visible td").closest("tr").length;
 	  return rowCount;
 }
 
