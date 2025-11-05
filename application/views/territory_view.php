@@ -108,7 +108,7 @@
 
 	<div id="content" class="contentResizable" style="<?php echo $saved_height ? 'height:'.$saved_height.'px;' : ''; ?>">
 	  <div class="scrollInner">
-          <table id="table2" class="table">
+          <table id="table2" class="order-table table">
             <thead>
               <tr>
     			<?php foreach ($display_fields as $field_name => $field_display) { ?>

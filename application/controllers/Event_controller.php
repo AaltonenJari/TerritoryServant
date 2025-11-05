@@ -106,51 +106,63 @@ class Event_controller extends CI_Controller
         $page_data = array();
         
         $event_hdr_fields = array(
-            'alue_code'		=> 'alue_koodi',
-            'alue_id'	    => 'alue_id',
+            'alue_code'   => 'alue_koodi',
+            'alue_id'     => 'alue_id',
+            'alue_group'  => 'ryhma'
         );
         
         $results = $this->Event_model->search_headers($event_hdr_fields, $code, $limit, $offset);
         
         $event_fields = array(
-            'alue_code'		=> 'alue_koodi',
-            'event_type'	=> 'event_tyyppi',
-            'event_date'	=> 'event_date',
-            'person_name'	=> 'etunimi',
-            'person_lastname'	=> 'sukunimi'
+            'alue_code'        => 'alue_koodi',
+            'event_type'       => 'event_tyyppi',
+            'event_date'       => 'event_date',
+            'person_name'      => 'etunimi',
+            'person_lastname'  => 'sukunimi'
         );
         
-        $event_hdrs = array();
-        $events_data = array();
+        $event_hdrs = [];
+        $events_data = [];
         
-        foreach ($results['rows'] as $aluerivi)
-        {
+        foreach ($results['rows'] as $alue) {
             $resultrow = new stdClass;
-            foreach ($aluerivi as $key=>$value) {
-                switch ($key) {
-                    case "alue_code":
-                        $resultrow->alue_code = $value;
-                        break;
-                        
-                    case "alue_id":
-                        //Hae alueen tapahtumat tunnuksella
-                        $event_results = $this->Event_model->search_event_data($event_fields, $value, 
-                                           $archive_time, 
-                                           $event_date_order);
-                        $events_alue = $this->Event_model->tabulate_alue_events($event_results, $event_date_order);
-                        $events_data[] = $events_alue;
-                        break;
-                        
-                    default:
-                        break;
-                } // switch
-            } // foreach aluerivi
+            $resultrow->alue_code  = $alue->alue_code;
+            $resultrow->alue_id    = $alue->alue_id;
+            $resultrow->alue_group = $alue->alue_group;
+            
+            if ($alue->alue_group != 99) {
+                // Hae alueen tapahtumat tunnuksella
+                $event_results = $this->Event_model->search_event_data(
+                    $event_fields,
+                    $alue->alue_id,
+                    $archive_time,
+                    $event_date_order
+                    );
+                
+                $events_alue = $this->Event_model->tabulate_alue_events(
+                    $event_results,
+                    $event_date_order
+                    );
+                
+                $events_data[] = $events_alue;
+            } else {
+                // Luo "poistettu alue" -objekti
+                $deleted = new stdClass;
+                $deleted->code     = $alue->alue_code;
+                $deleted->returned = '';
+                $deleted->name     = 'Alue poistettu';
+                $deleted->taken    = '';
+                
+                // Asetetaan se taulukkomuotoon yhdenmukaisesti muiden kanssa
+                $events_data[] = [$deleted];
+            }
+            
             $event_hdrs[] = $resultrow;
         }
         
         $page_data['event_headers'] = $event_hdrs;
-        $page_data['event_data'] = $this->Event_model->tabulate($events_data);
-        $page_data['page_cards'] = $results['num_rows'];
+        $page_data['event_data']    = $this->Event_model->tabulate($events_data);
+        $page_data['page_cards']    = $results['num_rows'];
         
         return $page_data;
     }

@@ -130,7 +130,9 @@
                 <tr>
                   <?php if ($row_item_key == "names") { ?>
                     <?php foreach ($row_item_value as $name_key => $name_value) { ?>
-                      <td class="event_nimi" colspan="4"><?php echo $name_value; ?></td>
+                      <td class="event_nimi<?php echo ($name_value == 'Alue poistettu') ? ' deleted' : ''; ?>" colspan="4">
+                          <?php echo $name_value; ?>
+                      </td>
                     <?php } ?>
                     <?php if (count($event_headers) < 5) { ?>
                       <?php for ($i=count($event_headers);$i < 5; $i++) {?>

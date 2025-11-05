@@ -79,15 +79,17 @@ a slight movement of the header row */
 .event_nimi {
   border-color: black;
   border-style: solid;
-  /* top, right, bottom, left - just like margin and padding */
   border-width: 3px 3px 1px 3px;	
   border-collapse: collapse;
+}
+
+.deleted {
+  background-color: #eee;
 }
 
 .event_lainattu {
   border-color: black;
   border-style: solid;
-  /* top, right, bottom, left - just like margin and padding */
   border-width: 1px 1px 3px 3px;	
   border-collapse: collapse;
 }
@@ -95,7 +97,6 @@ a slight movement of the header row */
 .event_palautettu {
   border-color: black;
   border-style: solid;
-  /* top, right, bottom, left - just like margin and padding */
   border-width: 1px 3px 3px 1px;	
   border-collapse: collapse;
 }
