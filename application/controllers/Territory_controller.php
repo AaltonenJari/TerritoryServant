@@ -536,7 +536,7 @@ class Territory_controller extends CI_Controller
                     case "person_lastname":
                         if ($aluerivi->lainassa == "1") {
                             if (empty($aluerivi->person_name) && empty($aluerivi->person_lastname)) {
-                                $resultrow->name = "Ei henkilöä";
+                                $resultrow->name = " ";
                             } else {
                                 if ($this->session->userdata('namePresentation') == "0") {
                                     //0 = firstname lsatname, 1 = lastmame, firstname; (default)
@@ -544,7 +544,14 @@ class Territory_controller extends CI_Controller
                                     $resultrow->name = $aluerivi->person_name . $name_delim . $value;
                                 } else {
                                     $name_delim = ', ';
-                                    $resultrow->name = $value . $name_delim . $aluerivi->person_name;
+                                    
+                                    if (!empty($value) && !empty($aluerivi->person_name)) {
+                                        $resultrow->name = $value . $name_delim . $aluerivi->person_name;
+                                    } elseif (!empty($value)) {
+                                        $resultrow->name = $value;
+                                    } elseif (!empty($aluerivi->person_name)) {
+                                        $resultrow->name = $aluerivi->person_name;
+                                    }
                                 }
                             }
                          } else {

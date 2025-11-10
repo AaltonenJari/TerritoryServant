@@ -25,7 +25,7 @@
  we have to apply background styles here
  rather than on thead */
 #table2 th {
-  padding:3px 3px 3px 15px; 
+  padding:3px 3px 3px 8px; 
   border-left: 1px dotted rgba(200, 209, 224, 0.6);
   border-bottom: 1px solid #e8e8e8;
   text-transform: uppercase;

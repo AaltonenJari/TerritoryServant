@@ -231,7 +231,7 @@ class Event_model extends CI_Model
                     
                 case "person_lastname":
                     if (empty($event_row->person_name) && empty($event_row->person_lastname)) {
-                        $event_result_row->name = "Ei henkilöä";
+                        $event_result_row->name = " ";
                     } else {
                         if ($this->session->userdata('namePresentation') == "0") {
                             //0 = firstname lsatname
@@ -240,7 +240,14 @@ class Event_model extends CI_Model
                         } else {
                             //1 = lastmame, firstname; (default)
                             $name_delim = ', ';
-                            $event_result_row->name =  $value . $name_delim . $event_row->person_name;
+                            
+                            if (!empty($value) && !empty($event_row->person_name)) {
+                                $event_result_row->name = $value . $name_delim . $event_row->person_name;
+                            } elseif (!empty($value)) {
+                                $event_result_row->name = $value;
+                            } elseif (!empty($event_row->person_name)) {
+                                $event_result_row->name = $event_row->person_name;
+                            }
                         }
                     }
  

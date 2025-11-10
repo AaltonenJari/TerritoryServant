@@ -41,48 +41,51 @@
         <br/>
       </div>
       <div class="about_desc">
-      <span>
-  	    <b class="aboutSubHdr">TerritoryServant - alueidenhoito-ohjelma</b> on kehitetty helpottamaan alueiden hoitoa.
-	    <br/>Ohjelman avulla voit kirjata alueiden lainaukset, palautukset ja merkkaukset.
-	    <br/>Ohjelmalla voit seurata myös alueiden käyntiä ja kiertoa.
-	    <br/>Seurantaa helpottavat myös erilaiset raportit, jotka voi tarvittaessa tulostaa.
-      </span>
-      <br/>
-      <br/>
-      <span>
-        Ohjelma on kehitetty Kankaanpäässä. Se käyttää olemassaolevaa tietokantaa,
-        <br/>jota voi käyttää rinnakkain myös aikaisemman alueidenhoito-ohjelman kanssa.
-        <br/>Jatkossa ohjelmaa voidaan kehittää myös muihin vastaaviin tarpeisiin.	
-      </span>
-      <br/>
-      <span>
-        <h2 class="aboutSubHdr">Toimintaympäristö</h2>
-        WAMP/LAMP web server version: <?php echo $_SERVER['SERVER_SOFTWARE']; ?> 
-        <br/>
-        Ohjelmistokehys: Codeigniter version: <?php echo CI_VERSION; ?>
-        <br/>
-        Tietokanta: MySQL version: <?php echo $mysql_version; ?>
-        <br/>
-      </span>
-      <span>
-        <h2 class="aboutSubHdr">Käyttöliittymä</h2>
-        javaScript version:
-        <label id="javascript_version"></label>
-        <br/>
-        jQuery version:
-        <label id="jquery_version"></label>
-        <br/>
-        jQuery UI version:
-        <label id="jquery_ui_version"></label>
-        (kalenteri on suomalainen)
-        <br/>
-        HTML5, CSS3
-        <br/>
-      </span>
+        <div class="about-chapter">
+    	  <span class="about-sub-hdr">TerritoryServant - alueidenhoito-ohjelma</span> on kehitetty helpottamaan alueiden hoitoa.
+	      <br/>Ohjelman avulla voit kirjata alueiden lainaukset, palautukset ja merkkaukset.
+	      Ohjelmalla voit seurata myös alueiden käyntiä ja kiertoa.
+	      Seurantaa helpottavat myös erilaiset raportit, jotka voi tarvittaessa tulostaa.
+        </div>
+
+        <div class="about-chapter">
+          Ohjelma on kehitetty Kankaanpäässä. Se käyttää olemassaolevaa tietokantaa,
+          jota voi käyttää rinnakkain myös aikaisemman alueidenhoito-ohjelman kanssa.
+          Jatkossa ohjelmaa voidaan kehittää myös muihin vastaaviin tarpeisiin.	
+        </div>
+
+        <div class="about-chapter">
+          <div class="about-sub-hdr">Toimintaympäristö</div>
+            <ul class="about-list">
+              <li>WAMP/LAMP web server version: <?php echo $_SERVER['SERVER_SOFTWARE']; ?></li>
+              <li>Ohjelmistokehys: CodeIgniter version: <?php echo CI_VERSION; ?></li>
+              <li>Tietokanta: MySQL version: <?php echo $mysql_version; ?></li>
+            </ul>
+        </div>
+      
+        <div class="about-chapter">
+          <div class="about-sub-hdr">Käyttöliittymä</div>
+            <ul class="about-list">
+              <li>javaScript version: <label id="javascript_version"></label></li>
+              <li>jQuery version: <label id="jquery_version"></label></li>
+              <li>jQuery UI version: <label id="jquery_ui_version"></label> (kalenteri on suomalainen)</li>
+              <li>HTML5, CSS3</li>
+            </ul>
+        </div>
+        
+        <div class="about-chapter">
+          <div class="about-sub-hdr">Uutta versiossa 2.0:</div>
+            <ul class="about-list">
+              <li>Uudistettu käyttöliittymä ja pienet bugikorjaukset parantavat yleisilmettä</li>
+              <li>Siistimpi PDF-raporttien ulkoasu</li>
+              <li>Mahdollisuus merkitä alue poistetuksi ilman pysyvää poistamista</li>
+              <li>Mahdollisuus poistaa vanhentuneita tapahtumia ja henkilötietoja</li>
+            </ul>
+        </div>
+
       </div><!-- about_desc -->
+
       <div class="version_desc">
-        <br/>
-        <br/>
   	    <span>Tekijä: <?php echo $author; ?></span>
       </div>
     </div><!-- content -->
