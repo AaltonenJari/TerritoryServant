@@ -346,7 +346,7 @@ class Settings_model extends CI_Model
  
             'namePresentation'  => '1',  //0 = firstname lsatname, 1 = lastmame, firstname; (default)
             'eventOrder' => 'DESC',
-            'archiveYears' => '12',
+            'archiveYears' => '4',
             'btSwitch' => '0',  //Liikealueet: 0 = ei näytetä (default), 1 = näytetään
             'eventSaveSwitch' => '0', //Vain lainaukset ja palautukset
             'circuitWeekStart' => '8.12.2020',

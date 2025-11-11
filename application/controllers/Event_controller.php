@@ -319,7 +319,7 @@ class Event_controller extends CI_Controller
         return $page_data;
     }
     
-    public function event_delete_view($selectedYears = '6', $deletePersons = FALSE)
+    public function event_delete_view($selectedYears = '3', $deletePersons = FALSE)
     {
         $data = $this->getCleanupSummaryData($selectedYears, $deletePersons);
         
@@ -402,13 +402,18 @@ class Event_controller extends CI_Controller
     }
     
     public function delete_events($selectedYears) {
-        // Hae nykyinen vuosi ja vähennä siitä $selectedYears
-        $year = date('Y') - $selectedYears;
+        // Hae nykyinen vuosi ja kuukausis
+        $currentYear = date('Y');
+        $currentMonth = date('n');
         
-        // Luo päivämäärä tammikuun 1. päivälle kyseisen vuoden alusta
-        $date = new DateTime("$year-01-01");
+        // Jos ollaan syyskuusta eteenpäin, otetaan yksi vuosi enemmän mukaan
+        if ($currentMonth >= 9) {
+            $year = $currentYear - $selectedYears + 1;
+        } else {
+            $year = $currentYear - $selectedYears;
+        }
         
-        $limit_date = $date->format('Y-m-d'); // Pvm muodossa "YYYY-MM-DD"
+        $limit_date = (new DateTime("$year-09-01"))->format('Y-m-d'); // Pvm muodossa "YYYY-MM-DD"
         
         $deleted_rows = $this->Event_model->delete_events($limit_date);
         

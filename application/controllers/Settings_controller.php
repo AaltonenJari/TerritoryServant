@@ -100,6 +100,9 @@ class Settings_controller extends CI_Controller
         
         //Tapahtumamerkinnät ajalta korkeintaan -valitsin
         $archiveYearsOptions = array(
+            '2'     => '2 vuotta',
+            '3'     => '3 vuotta',
+            '4'     => '4 vuotta',
             '5'     => '5 vuotta',
             '6'     => '6 vuotta',
             '7'     => '7 vuotta',
@@ -108,14 +111,6 @@ class Settings_controller extends CI_Controller
             '10'    => '10 vuotta',
             '11'    => '11 vuotta',
             '12'    => '12 vuotta',
-            '13'    => '13 vuotta',
-            '14'    => '14 vuotta',
-            '15'    => '15 vuotta',
-            '16'    => '16 vuotta',
-            '17'    => '17 vuotta',
-            '18'    => '18 vuotta',
-            '19'    => '19 vuotta',
-            '20'    => '20 vuotta',
             '99'    => 'kaikki'
         );
         $data['archiveYearsOptions'] = $archiveYearsOptions;

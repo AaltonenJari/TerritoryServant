@@ -416,8 +416,23 @@ class Event_model extends CI_Model
             return null; // palautetaan null virheen merkiksi
         }
         
-        // Palauta poistettujen rivien määrä
-        return $this->db->affected_rows();
+        // Poistettujen rivien määrä
+        $removed_count = $this->db->affected_rows();
+        
+        // Päivitetään alueiden lainassa-kenttä
+        $this->update_lainassa_status_after_delete();
+        
+        return $removed_count;
+    }
+    
+    private function update_lainassa_status_after_delete()
+    {
+        $this->db->query("
+            UPDATE alue a
+            LEFT JOIN alue_events e ON a.alue_id = e.event_alue
+            SET a.lainassa = 0
+            WHERE e.event_id IS NULL
+        ");
     }
     
     public function delete_persons_having_no_events()
