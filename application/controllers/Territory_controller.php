@@ -764,6 +764,7 @@ class Territory_controller extends CI_Controller
         $this->session->set_userdata($territory_view_state_data);
         
         $columns = array(
+            'alue_id',
             'alue_code',
             'alue_detail',
             'alue_location',
@@ -784,8 +785,17 @@ class Territory_controller extends CI_Controller
         $data['alue_location'] = $territory_row->alue_location;
         $data['lainassa'] = $territory_row->lainassa;
         $data['alue_lastdate'] = $territory_row->alue_lastdate;
-        $data['event_last_date'] = $territory_row->event_last_date;
-        $data['mark_date'] = $territory_row->mark_date;
+        
+        // Jos alueella ei ole tapahtumia, käytä alueeen viimeisintä käyntipäivää.
+        $event_count = $this->Territory_model->get_territory_event_count($territory_row->alue_id);
+        if ($event_count > 0) {
+            $data['event_last_date'] = $territory_row->event_last_date;
+            $data['mark_date'] = $territory_row->mark_date;
+        } else {
+            $data['event_last_date'] = $territory_row->alue_lastdate;
+            $data['mark_date'] = $territory_row->alue_lastdate;
+        }
+
         $data['return_type'] = $territory_row->return_type;
         $data['mark_type'] = $territory_row->mark_type;
         $data['name'] = $territory_row->name;

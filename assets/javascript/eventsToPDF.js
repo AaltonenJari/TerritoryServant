@@ -1,4 +1,4 @@
-function bookKeepongToPDF()
+function bookKeepingToPDF()
 {
 	var style = "<style>";
 	
@@ -19,7 +19,7 @@ function bookKeepongToPDF()
 	style = style + "</style>";
 
 
-	tableToPDF("Events", "Aluekorttiluettelo", style)
+	tableToPDF("Tapahtumat", "Aluekorttiluettelo", style)
 }
 
 function tableToPDF(filename, tableHeader, style)

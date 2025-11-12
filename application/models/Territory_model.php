@@ -340,6 +340,17 @@ class Territory_model extends CI_Model {
 	    return $terr_id;
 	}
 	
+	function get_territory_event_count($alue_id)
+	{
+	    //count query
+	    $query = $this->db->select('COUNT(*) as count', FALSE)
+	    ->from('alue_events')
+	    ->where('event_alue', $alue_id);
+	    
+	    $res = $query->get()->result();
+	    return ($res[0]->count);
+	}
+	
 	public function update($data, $old_terr_nbr) 
 	{
 	    $this->db->set($data);

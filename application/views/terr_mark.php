@@ -154,7 +154,7 @@
                 <?php 
                 $attributes = [
                     'id'       => 'djnimi',
-                    'onChange' => 'jsFunction();',
+                    'onChange' => 'onTerritoryMarkup();',
                     'class'    => 'fullwidth'
                 ];
                 echo form_dropdown('djnimi', $lenders, $name, $attributes);
@@ -254,7 +254,7 @@ $('input[type="checkbox"]').click(function() {
 
 });
 
-function jsFunction() {
+function onTerritoryMarkup() {
 	// Päivitä checkbox sen mukaan, onko nimi annettu vai ei
 	var myselect = document.getElementById("djnimi");
 	var chk_lainassa = document.getElementsByName("dlainassa")[0];
