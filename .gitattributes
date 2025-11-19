@@ -1,17 +1,27 @@
-# Auto detect text files and perform LF normalization
+# Auto detect text files and normalize to LF
 * text=auto
 
-# Custom for Visual Studio
-*.cs     diff=csharp
+# Treat common text files explicitly as text
+*.php   text
+*.html  text
+*.css   text
+*.js    text
+*.json  text
+*.xml   text
+*.txt   text
+*.md    text
 
-# Standard to msysgit
-*.doc	 diff=astextplain
-*.DOC	 diff=astextplain
-*.docx diff=astextplain
-*.DOCX diff=astextplain
-*.dot  diff=astextplain
-*.DOT  diff=astextplain
-*.pdf  diff=astextplain
-*.PDF	 diff=astextplain
-*.rtf	 diff=astextplain
-*.RTF	 diff=astextplain
+# Binary files
+*.png   binary
+*.jpg   binary
+*.jpeg  binary
+*.gif   binary
+*.ico   binary
+*.zip   binary
+*.pdf   binary
+
+# Eclipse/IDE metadata – no diff needed
+.settings/* -diff
+.svn/*      -diff
+.project    -diff
+.buildpath  -diff
