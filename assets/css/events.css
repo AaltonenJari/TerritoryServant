@@ -172,17 +172,23 @@ a slight movement of the header row */
 .selector-left {
   display: flex;
   align-items: center;
-  gap: 10px;
   flex-wrap: wrap;
+}
+.selector-left > *:not(:last-child) {
+  margin-right: 10px;
 }
 
 .selector-right {
   display: flex;
   align-items: center;
-  gap: 8px;
   text-align: right;
   padding-right: 10px;
 }
+
+.selector-right > *:not(:last-child) {
+  margin-right: 8px;
+}
+
 
 #terrCodeChkBoxChooser
 {

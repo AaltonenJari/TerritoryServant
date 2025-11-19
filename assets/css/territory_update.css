@@ -296,8 +296,11 @@ a slight movement of the header row */
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 160px;
 }
+.buttons-center > *:not(:last-child) {
+  margin-right: 160px;
+}
+
 
 /* Painikkeiden perusilme */
 .footer-area input[type="submit"],

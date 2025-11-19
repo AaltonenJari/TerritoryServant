@@ -381,14 +381,14 @@
               $js = ['onClick' => 'jsFunction_return(this);'];
               echo form_input($data, ' ', $js);
             ?>
-         </div>
-      </div>
+          </div>
+        </div>
 
-      <div class="form-error">
-        <?php echo $table_not_found; ?>
-        <?php echo $this->session->flashdata("error"); ?>
+        <div class="form-error">
+          <?php echo $table_not_found; ?>
+          <?php echo $this->session->flashdata("error"); ?>
+        </div>
       </div>
-     </div>
      
     <?php echo form_close(); ?>
     </div><!-- content -->

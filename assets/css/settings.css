@@ -67,7 +67,7 @@ form {
   font-family: 'Marcellus', serif;
   margin: 40px auto 0 auto; 
   position: relative;
-  min-height: 550px;
+  min-height: 480px;
   box-sizing: border-box;
 }
 
@@ -164,7 +164,10 @@ label {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 80px;
+}
+
+.button-center > *:not(:last-child) {
+  margin-right: 80px;
 }
 
 /* Painikkeiden perusilme */
