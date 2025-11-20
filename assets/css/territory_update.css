@@ -76,7 +76,7 @@ table {
 }
 
 #selectortable td {
-  padding-left: 15px;
+  padding: 5px 3px 5px 15px;	
   text-align: left;
 }
 
@@ -381,3 +381,69 @@ input.submit_btn_disabled {
   margin: 10px 0px 5px 0px;
   color: red;
 }
+
+.confirm-dialog {
+    display: none;
+    position: fixed;
+    left: 0; 
+    top: 0; 
+    width: 100%; 
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+}
+
+.confirm-dialog-container {
+    width: 300px;
+    padding:20px;
+    background: linear-gradient(#fff, #ABDBFF);
+    border: 1px solid #ccc;
+    box-shadow: 0 0 5px;
+    box-sizing: border-box;
+    margin:100px auto;
+    height: 240px;
+}
+
+.confirm-button-area {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end; /* Vie alalaitaan */
+    height: 130px;
+}
+
+.confirm-button-group {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+/* Vasemman ja oikean napin tyyli */
+.confirm-button-left,
+.confirm-button-right {
+    height: 40px;
+    padding: 3px 5px;
+    border: 1px solid #0F799E;
+    background: linear-gradient(#00cccc 5%, #36caf0 100%);
+    color: #fff;
+    font-size: 18px;
+    font-weight: 700;
+    text-shadow: 0 1px 0 #13506D;
+    box-shadow: 0 0 3px;
+    width: 75px;
+}
+
+.confirm-button-left:hover,
+.confirm-button-right:hover {
+  background: linear-gradient(#36caf0 5%, #22abe9 100%);
+}
+
+.confirm-text {
+  padding:8px 5px 5px 5px; 
+  font-family: "Arial", Times, serif;
+  font-size: 14px;
+}
+
+.bold-area {
+    font-weight: bold;
+}
+

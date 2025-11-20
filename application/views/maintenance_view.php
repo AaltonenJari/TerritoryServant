@@ -178,8 +178,10 @@
                                        </a>
                                        <?php
                                        if (empty($alue->$field_name)) {
-                                           $delete_url = base_url("index.php/Maintenance_controller/delete") . "/" . $alue->alue_code . "/" . $filter; ?>
-     		  	                          <a class="delete-link-row" id="<?php echo "del_" . $alue->alue_code; ?>" href="<?php echo $delete_url; ?>" onClick='jsFunction3("<?php echo $alue->alue_code; ?>")'>Poista pysyvästi</a>
+                                          $delete_url = base_url("index.php/Maintenance_controller/delete") . "/" . $alue->alue_code . "/" . $filter; ?>
+                                          <a href="#" class="delete-link-row" onclick="confirmDelete('<?php echo $alue->alue_code; ?>', '<?php echo $delete_url; ?>'); return false;">
+                                            Poista pysyvästi
+                                          </a>
                                        <?php } ?>
                                    <?php } ?>
                                    </div>
@@ -345,6 +347,23 @@
 
 
   </div><!-- wrapper -->
+  
+  <div id="confirmModal" class="confirm-dialog">
+    
+    <div class="confirm-dialog-container">
+        
+        <div class="confirm-text" id="confirmLine1"></div>
+		<div class="confirm-text" id="confirmLine2"></div>
+        
+        <div class="confirm-button-area">
+          <div class="confirm-button-group">
+            <button class="confirm-button-left" id="confirmYes">Kyllä</button>
+            <button class="confirm-button-right" onclick="closeConfirm()">Ei</button>
+          </div>
+        </div>
+    </div>
+  </div>
+  
 </body>
 
 <script>
@@ -437,13 +456,6 @@ function filter_table(searchText) {
 	  return rowCount;
 }
 
-function jsFunction3(alue_code) {
-    var newUrl = document.getElementById("base_delete_url").value;
-	newUrl = newUrl + "/" + alue_code + "/" + document.getElementById("filter_param").value;
-    var idIndex = "del_" + alue_code;
-	document.getElementById(idIndex).href = newUrl;
-}
-
 function territory_update_status(alue_code, action) {
     var baseUrl = document.getElementById("base_status_url").value;
     var filter = document.getElementById("filter_param").value;
@@ -484,6 +496,24 @@ document.addEventListener('DOMContentLoaded', function () {
 	    '<?php echo base_url('index.php/Territory_controller/save_height'); ?>'
 	  );
 	});
+
+function confirmDelete(areaCode, deleteUrl) {
+	document.getElementById('confirmLine1').innerHTML =
+	    'Olet poistamassa aluetta <span class="bold-area">' + areaCode + '</span>.';
+
+    document.getElementById('confirmLine2').textContent =
+        'Haluatko jatkaa?';
+        
+    document.getElementById('confirmYes').onclick = function() {
+        window.location.href = deleteUrl;  // Varsinainen poistokutsu
+    };
+
+    document.getElementById('confirmModal').style.display = 'block';
+}
+
+function closeConfirm() {
+    document.getElementById('confirmModal').style.display = 'none';
+}
 
 </script>
 </html>

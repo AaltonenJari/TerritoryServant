@@ -54,34 +54,28 @@
           Jatkossa ohjelmaa voidaan kehittää myös muihin vastaaviin tarpeisiin.	
         </div>
 
-        <div class="about-chapter">
-          <div class="about-sub-hdr">Toimintaympäristö</div>
-            <ul class="about-list">
-              <li>WAMP/LAMP web server version: <?php echo $_SERVER['SERVER_SOFTWARE']; ?></li>
-              <li>Ohjelmistokehys: CodeIgniter version: <?php echo CI_VERSION; ?></li>
-              <li>Tietokanta: MySQL version: <?php echo $mysql_version; ?></li>
-            </ul>
-        </div>
+        <div class="about-sub-hdr">Toimintaympäristö</div>
+        <ul class="about-list">
+          <li>WAMP/LAMP web server version: <?php echo $_SERVER['SERVER_SOFTWARE']; ?></li>
+          <li>Ohjelmistokehys: CodeIgniter version: <?php echo CI_VERSION; ?></li>
+          <li>Tietokanta: MySQL version: <?php echo $mysql_version; ?></li>
+        </ul>
       
-        <div class="about-chapter">
-          <div class="about-sub-hdr">Käyttöliittymä</div>
-            <ul class="about-list">
-              <li>javaScript version: <label id="javascript_version"></label></li>
-              <li>jQuery version: <label id="jquery_version"></label></li>
-              <li>jQuery UI version: <label id="jquery_ui_version"></label> (kalenteri on suomalainen)</li>
-              <li>HTML5, CSS3</li>
-            </ul>
-        </div>
+        <div class="about-sub-hdr">Käyttöliittymä</div>
+        <ul class="about-list">
+          <li>javaScript version: <label id="javascript_version"></label></li>
+          <li>jQuery version: <label id="jquery_version"></label></li>
+          <li>jQuery UI version: <label id="jquery_ui_version"></label> (kalenteri on suomalainen)</li>
+          <li>HTML5, CSS3</li>
+        </ul>
         
-        <div class="about-chapter">
-          <div class="about-sub-hdr">Uutta versiossa 2.0:</div>
-            <ul class="about-list">
-              <li>Uudistettu käyttöliittymä ja pienet bugikorjaukset parantavat yleisilmettä</li>
-              <li>Siistimpi PDF-raporttien ulkoasu</li>
-              <li>Mahdollisuus merkitä alue poistetuksi ilman pysyvää poistamista</li>
-              <li>Mahdollisuus poistaa vanhentuneita tapahtumia ja henkilötietoja</li>
-            </ul>
-        </div>
+        <div class="about-sub-hdr">Uutta versiossa 2.x:</div>
+        <ul class="about-list">
+          <li>Uudistettu käyttöliittymä ja pienet bugikorjaukset parantavat yleisilmettä</li>
+          <li>Siistimpi PDF-raporttien ulkoasu</li>
+          <li>Mahdollisuus merkitä alue poistetuksi ilman pysyvää poistamista</li>
+          <li>Mahdollisuus poistaa vanhentuneita tapahtumia ja henkilötietoja</li>
+        </ul>
 
       </div><!-- about_desc -->
 
