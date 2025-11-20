@@ -149,6 +149,29 @@ h2 {
   background: #cceeff !important;
 }
 
+#table2 tr.two-row-delete td input[type="text"] {
+    height: 40px;          /* esim. */
+    width: 100%
+    box-sizing: border-box;
+}
+
+.delete_link_container {
+  display: inline-block;  /* Tämä mahdollistaa keskityksen, mutta sisältö voi silti olla vasemmalla */
+  text-align: left;       /* Linkit vasemmalle */
+}
+
+.delete-link-row {
+    display: block;
+    margin-bottom: 4px;
+    color: #0077cc;        /* normaali väri */
+    text-decoration: none; /* jos et halua alleviivausta */
+}
+
+.delete-link-row:hover {
+    color: #cc0000;        /* hover-väri */
+    text-decoration: underline;  /* valinnainen */
+}
+
 #totalcount
 {
   font-size: 16px;

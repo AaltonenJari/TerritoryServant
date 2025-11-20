@@ -464,6 +464,63 @@ class Maintenance_controller extends CI_Controller
             $this->session->userdata('filter'));
     }
 
+    public function delete($terr_nbr, $action = 'delete', $filter = '')
+    {
+        //State variables of territory_view
+        $territory_view_state_data = array(
+            'filter'          => $filter
+        );
+        $this->session->set_userdata($territory_view_state_data);
+        
+        /** UNSERIALIZE **/
+        $undo_redo_stack = unserialize($_SESSION['undo_redo_terr_edit']);
+        
+        //Haetaan poistettavan alueen tiedot
+        $columns = array(
+            'alue_code',
+            'alue_detail',
+            'alue_location',
+            'alue_taloudet',
+            'alue_lastdate',
+            'alue_group',
+            'lainassa'
+        );
+        $resultrow = $this->Maintenance_model->get_row_by_key($columns, $terr_nbr);
+        
+        
+        //Tiedot undo/redo -toimintoa varten
+        $terr_data_old = array(
+            'alue_detail'	=> $resultrow['alue_detail'],
+            'alue_location'	=> $resultrow['alue_location'],
+            'alue_taloudet'	=> $resultrow['alue_taloudet'],
+            'alue_lastdate'	=> $resultrow['alue_lastdate'],
+            'alue_group'	=> $resultrow['alue_group'],
+            'lainassa'  	=> $resultrow['lainassa']
+        );
+        
+        $terr_edit_info = array(
+            'operation'	=> 'delete',
+            'key'		=> $terr_nbr,
+            'data_old'	=> $terr_data_old,
+            'data_new'	=> null
+        );
+        
+        
+        //Päivityksen tiedot muistiin
+        $undo_redo_stack->execute($terr_edit_info);
+        /** SERIALIZE **/
+        $_SESSION['undo_redo_terr_edit'] = serialize($undo_redo_stack);
+        
+        //Poista tietue
+        $this->Maintenance_model->delete($terr_nbr);
+        
+        //Palataan päänäytölle siinä tilassa, kuin se oli ennen päivitystä
+        $this->display($this->session->userdata('sort_by'),
+            $this->session->userdata('sort_order'),
+            $this->session->userdata('code_sel'),
+            $this->session->userdata('filter'));
+    }
+    
     public function undo() 
     {
         /** UNSERIALIZE **/
