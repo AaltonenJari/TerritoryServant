@@ -322,6 +322,7 @@ class Event_controller extends CI_Controller
     public function event_delete_view($selectedYears = '3', $deletePersons = FALSE)
     {
         $data = $this->getCleanupSummaryData($selectedYears, $deletePersons);
+        $data['deleted_event_count'] = null;
         
         $this->load->view('event_delete_dialog', $data);
     }
@@ -338,31 +339,60 @@ class Event_controller extends CI_Controller
                     unset($_SESSION['error']);
                 }
                 
-                $deleted_event_count = $this->delete_events($selectedYears);
-                if ($deleted_event_count === null) {
-                    echo "virhe";
-                    $data['error_title'] = 'Virhe tietojen poistossa';
-                    $data['error_message'] = 'Valitse alla olevasta painikkeesta palataksesi pääsivulle.';
-                    $data['base_url'] = 'event_controller/display';
-                    $this->load->view('common/territory_error_view', $data);
-                    return;
+                $limit_date = $this->get_limit_date($selectedYears);
+                
+                // avataan tässä varmisusdialogi
+                $this->confirm_delete($selectedYears, $limit_date, $deletePersons);
+                break;
+                
+            case "Paluu":
+                if(isset($_SESSION['error'])){
+                    unset($_SESSION['error']);
+                }
+                //Palataan päänäytölle
+                $this->display();
+                break;
+                
+            default:
+                $msg = "Tunnistamaton toiminto";
+                $this->session->set_flashdata('error', $msg);
+                $this->event_delete_view($selectedYears, $deletePersons);
+                break;
+        } // switch
+        
+        return;
+    }
+    
+    public function confirm_delete($selectedYears, $limit_date, $deletePersons = FALSE)
+    {
+        $data['selectedYears'] = $selectedYears;
+        $data['limit_date'] = $limit_date;
+        $data['deletePersons'] = $deletePersons;
+        $this->load->view('event_delete_confirm_dialog', $data);
+    }
+    
+    public function event_delete_confirm_options($selectedYears, $limit_date, $deletePersons = FALSE)
+    {
+        $action = $this->input->post('action');
+        switch ($action) {
+            case "Kyllä":
+                if(isset($_SESSION['error'])){
+                    unset($_SESSION['error']);
                 }
                 
-                $deleted_person_count = 0;
-                if ($deletePersons) {
-                    // Checkbox oli valittuna
-                    $deleted_person_count = $this->delete_persons_with_no_events();
-                }
+                $delete_results = $this->delete_events_and_persons($limit_date, $deletePersons);
                 
-                // 🔹 Kootaan data näkymälle
+                $deleted_event_count = $delete_results['deleted_event_count'];
+                $deleted_person_count = $delete_results['deleted_person_count'];
+                
+                // Kootaan data näkymälle
                 $data = $this->getCleanupSummaryData($selectedYears, $deletePersons, $deleted_event_count, $deleted_person_count);
                 
                 // Näytetään näkymä uudelleen palautteella
                 $this->load->view('event_delete_dialog', $data);
-                
                 break;
                 
-            case "Paluu":
+            case "Ei":
                 if(isset($_SESSION['error'])){
                     unset($_SESSION['error']);
                 }
@@ -401,8 +431,8 @@ class Event_controller extends CI_Controller
         ];
     }
     
-    public function delete_events($selectedYears) {
-        // Hae nykyinen vuosi ja kuukausis
+    private function get_limit_date($selectedYears) {
+        // Hae nykyinen vuosi ja kuukausi
         $currentYear = date('Y');
         $currentMonth = date('n');
         
@@ -415,6 +445,34 @@ class Event_controller extends CI_Controller
         
         $limit_date = (new DateTime("$year-09-01"))->format('Y-m-d'); // Pvm muodossa "YYYY-MM-DD"
         
+        return $limit_date;
+    }
+    
+    private function delete_events_and_persons($limit_date, $deletePersons) {
+        $deleted_event_count = $this->delete_events($limit_date);
+        if ($deleted_event_count === null) {
+            echo "virhe";
+            $result_data['error_title'] = 'Virhe tietojen poistossa';
+            $result_data['error_message'] = 'Valitse alla olevasta painikkeesta palataksesi pääsivulle.';
+            $result_data['base_url'] = 'event_controller/display';
+            $this->load->view('common/territory_error_view', $result_data);
+            return;
+        }
+        
+        $deleted_person_count = 0;
+        if ($deletePersons) {
+            // Checkbox oli valittuna
+            $deleted_person_count = $this->delete_persons_with_no_events();
+        }
+        
+        $result_data['deleted_event_count'] = $deleted_event_count;
+        $result_data['deleted_person_count'] = $deleted_person_count;
+        
+        return $result_data;
+    }
+    
+    private function delete_events($limit_date) {
+        
         $deleted_rows = $this->Event_model->delete_events($limit_date);
         
         if ($deleted_rows === null) {
@@ -424,7 +482,7 @@ class Event_controller extends CI_Controller
         return $deleted_rows;
     }
     
-    public function delete_persons_with_no_events() {
+    private function delete_persons_with_no_events() {
         $deleted_rows = $this->Event_model->delete_persons_having_no_events();
         
         if ($deleted_rows === null) {

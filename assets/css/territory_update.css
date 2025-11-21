@@ -382,6 +382,7 @@ input.submit_btn_disabled {
   color: red;
 }
 
+/* Varmistusdialogin tyylit */
 .confirm-dialog {
     display: none;
     position: fixed;

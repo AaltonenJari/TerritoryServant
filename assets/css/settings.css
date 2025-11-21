@@ -73,13 +73,14 @@ form {
 
 /* Test styling */
 .headerArea {
-  padding:0px 10px 0px 40px; 
+  padding:0px 10px 0px 10px; 
   text-align: left;
 }
 
 h1 {
   font-family: Verdana,Arial,Helvetica,sans-serif;
   font-size: 24px;
+  text-align: center;
 }
 
 h2 {

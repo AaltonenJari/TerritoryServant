@@ -317,7 +317,7 @@ class Settings_model extends CI_Model
             $session_initialized = array(
                 'eventSaveSwitchOld' => $this->session->userdata('eventSaveSwitch'),
                 'version' => 'V2.1',
-                'version_date' => '20.11.2025',
+                'version_date' => '21.11.2025',
                 'author' => 'Jari Aaltonen',
                 'initialized'     => 'K'
             );
@@ -348,9 +348,9 @@ class Settings_model extends CI_Model
             'eventOrder' => 'DESC',
             'archiveYears' => '4',
             'btSwitch' => '0',  //Liikealueet: 0 = ei näytetä (default), 1 = näytetään
-            'eventSaveSwitch' => '0', //Vain lainaukset ja palautukset
-            'circuitWeekStart' => '8.12.2020',
-            'circuitWeekEnd' => '13.12.2020',
+            'eventSaveSwitch' => '1', //Kaikki merkitsemiset
+            'circuitWeekStart' => '10.2.2026',
+            'circuitWeekEnd' => '15.2.2026',
             'terrCodePresentation' => 'X999',
             'useTerritoryDetaiTable' => '0', //Alue_detail-taulu ei käytössä
 

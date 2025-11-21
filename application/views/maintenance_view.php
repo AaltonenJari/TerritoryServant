@@ -178,7 +178,7 @@
                                        </a>
                                        <?php
                                        if (empty($alue->$field_name)) {
-                                          $delete_url = base_url("index.php/Maintenance_controller/delete") . "/" . $alue->alue_code . "/" . $filter; ?>
+                                          $delete_url = base_url("index.php/Maintenance_controller/delete") . "/" . $alue->alue_code . "/delete/" . $filter; ?>
                                           <a href="#" class="delete-link-row" onclick="confirmDelete('<?php echo $alue->alue_code; ?>', '<?php echo $delete_url; ?>'); return false;">
                                             Poista pysyvästi
                                           </a>
@@ -503,7 +503,7 @@ function confirmDelete(areaCode, deleteUrl) {
 
     document.getElementById('confirmLine2').textContent =
         'Haluatko jatkaa?';
-        
+
     document.getElementById('confirmYes').onclick = function() {
         window.location.href = deleteUrl;  // Varsinainen poistokutsu
     };
