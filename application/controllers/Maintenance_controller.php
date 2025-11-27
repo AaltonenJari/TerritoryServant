@@ -426,7 +426,8 @@ class Maintenance_controller extends CI_Controller
         );
         $resultrow = $this->Maintenance_model->get_row_by_key($columns, $terr_nbr);
         
-        
+        $new_group = $action == 'delete' ? '99' : $resultrow['alue_group'];
+            
         //Tiedot undo/redo -toimintoa varten
         $terr_data_old = array(
             'alue_detail'	=> $resultrow['alue_detail'],
@@ -437,11 +438,20 @@ class Maintenance_controller extends CI_Controller
             'lainassa'  	=> $resultrow['lainassa']
         );
         
+        $terr_data_new = array(
+            'alue_detail'	=> $resultrow['alue_detail'],
+            'alue_location'	=> $resultrow['alue_location'],
+            'alue_taloudet'	=> $resultrow['alue_taloudet'],
+            'alue_lastdate'	=> $resultrow['alue_lastdate'],
+            'alue_group'	=> $new_group,
+            'lainassa'  	=> $resultrow['lainassa']
+        );
+        
         $terr_edit_info = array(
             'operation'	=> 'edit',
             'key'		=> $terr_nbr,
             'data_old'	=> $terr_data_old,
-            'data_new'	=> null
+            'data_new'	=> $terr_data_new
         );
         
         

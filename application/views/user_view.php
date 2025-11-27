@@ -263,7 +263,8 @@
                   'name'  => 'action_btn',
                   'value' => 'Undo',
                   'class' => 'submit_undo',
-                  'src' => base_url("assets/images/Undo.jpg")
+                  'src' => base_url("assets/images/Undo.jpg"),
+                  'title' => 'Kumoa'
               ];
               
               $js = ['onClick' => 'jsFunction_undo(this);'];
@@ -289,7 +290,8 @@
                   'name'  => 'action_btn',
                   'value' => 'Redo',
                   'class' => 'submit_undo',
-                  'src' => base_url("assets/images/Redo.jpg")
+                  'src' => base_url("assets/images/Redo.jpg"),
+                  'title' => 'Tee uudelleen'
               ];
               
               $js = ['onClick' => 'jsFunction_redo(this);'];
