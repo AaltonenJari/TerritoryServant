@@ -254,7 +254,7 @@ class User_controller extends CI_Controller
         //Tarkista, onko käyttäjätunnus jo kannassa
         $found = $this->User_model->username_exists($this->input->post('user_username'));
         if ($found > 0)  {
-            //Tarkista vielä, yritetäänkö muuttaa toiseksi, olemassaolevaksi käyttäjätunnukseksi
+            //Tarkista vielä, yritetäänkö muuttaa toiseksi, olemass aolevaksi käyttäjätunnukseksi
 			$columns = array(
                 'user_username'
             );
