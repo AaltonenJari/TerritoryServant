@@ -22,7 +22,7 @@
     
     <div class="confirm-dialog-container">
         <div class="confirm-text-header">Haluatko poistaa tapahtumia?</div>
-        <div class="confirm-text">Poistetaan tapahtumat, joiden päiväys on vanhenpi kuin <span class="bold-area"><?php echo $limit_date ?></span>.</div>
+        <div class="confirm-text">Poistetaan tapahtumat, joiden päiväys on vanhempi kuin <span class="bold-area"><?php echo $limit_date ?></span>.</div>
         <?php if (!empty($deletePersons)) { ?>
            <div class="confirm-text">Poistetaan henkilöitä, joilla ei ole tapahtumia.</div>
         <?php } ?>

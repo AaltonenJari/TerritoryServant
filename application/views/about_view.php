@@ -49,7 +49,7 @@
         </div>
 
         <div class="about-chapter">
-          Ohjelma on kehitetty Kankaanpäässä. Se käyttää olemassaolevaa tietokantaa,
+          Ohjelma on kehitetty Kankaanpäässä. Se käyttää olemassa olevaa tietokantaa,
           jota voi käyttää rinnakkain myös aikaisemman alueidenhoito-ohjelman kanssa.
           Jatkossa ohjelmaa voidaan kehittää myös muihin vastaaviin tarpeisiin.	
         </div>

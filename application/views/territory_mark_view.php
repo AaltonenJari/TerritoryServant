@@ -35,7 +35,7 @@
     <?php 
       if ($exhort == "RETURN") {
         $hdr_string = "TerritoryServant - Palautuskehotukset";
-        $explainer = "Alue saa olla lainassa samalla julistajalla korkeintaan vuoden.";
+        $explainer = "Alue tulisi olla lainassa samalla julistajalla korkeintaan vuoden.";
         $terr_url = base_url("index.php/territory_controller/display/name/asc/2/4/0");
         
       } else {
