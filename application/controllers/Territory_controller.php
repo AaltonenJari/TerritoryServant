@@ -49,7 +49,7 @@ class Territory_controller extends CI_Controller
         $code_sel    = $this->input->get('code') ?? $code_sel;
         $chkbox_sel  = $this->input->get('chk') ?? $chkbox_sel;
         $date_sel    = $this->input->get('date') ?? $date_sel;
-        $filter      = $this->input->get('filter') ?? '';
+        $filter      = $this->input->get('filter') ?? $filter;
         $filter = urldecode($filter);
         
         //Jos parametreja ei ole annettu, älä käytä kv-viikon alkupäivää rajauksessa
@@ -130,28 +130,10 @@ class Territory_controller extends CI_Controller
     public function display_control($sort_by = 'alue_code', $sort_order = 'asc', $chkbox_sel = '0', $date_sel = '0', $code_sel = '0', $bt_switch = '0', $filter = '') 
     {
         //Hakuparametrit näytölle
-        $data['display_fields'] = array(
-            'alue_code'		=> 'numero',
-            'alue_detail'	=> 'alue_nimi',
-            'alue_location'	=> 'lisätieto',
-            'lainassa'		=> 'lainassa',
-            'event_last_date_returned'	=> 'palautettu',
-            'event_last_date_lent'	=> 'lainattu',
-            'name'	        => 'kenellä'
-        );
+        $data['display_fields'] = $this->get_display_fields();
         
         //Hakuparametrit kantaan
-        $data['database_fields'] = array(
-            'alue_code' => 'alue_koodi',
-            'alue_detail' => 'alue_nimi',
-            'alue_location' => 'alue_tietoja',
-            'lainassa' => 'alue_lainassa',
-            'alue_lastdate'	    => 'merkitty',
-            'e2.event_date AS event_last_date_returned' => 'palautettu',
-            'e.event_date AS event_last_date_lent' => 'lainattu',
-            'person_name' => 'etunimi',
-            'person_lastname' => 'sukunimi'
-        );
+        $data['database_fields'] = $this->get_database_fields();
         
         //Korjaa ääkköset takaisin
         $filter = urldecode($filter);
@@ -214,28 +196,10 @@ class Territory_controller extends CI_Controller
         }
         
         //Hakuparametrit näytölle
-        $data['display_fields'] = array(
-            'alue_code'		=> 'numero',
-            'alue_detail'	=> 'alue_nimi',
-            'alue_location'	=> 'lisätieto',
-            'lainassa'		=> 'lainassa',
-            'event_last_date_returned'	=> 'palautettu',
-            'event_last_date_lent'	=> 'lainattu',
-            'name'	        => 'kenellä'
-        );
+        $data['display_fields'] = $this->get_display_fields();
         
         //Hakuparametrit kantaan
-        $data['database_fields'] = array(
-            'alue_code' => 'alue_koodi',
-            'alue_detail' => 'alue_nimi',
-            'alue_location' => 'alue_tietoja',
-            'lainassa' => 'alue_lainassa',
-            'alue_lastdate'	    => 'merkitty',
-            'e2.event_date AS event_last_date_returned' => 'palautettu',
-            'e.event_date AS event_last_date_lent' => 'lainattu',
-            'person_name' => 'etunimi',
-            'person_lastname' => 'sukunimi'
-        );
+        $data['database_fields'] = $this->get_database_fields();
         
         //Korjaa ääkköset takaisin
         $filter = urldecode($filter);
@@ -292,17 +256,7 @@ class Territory_controller extends CI_Controller
         $this->session->set_userdata($territory_view_state_data);
         
         //Hakuparametrit kantaan
-        $data['database_fields'] = array(
-            'alue_code' => 'alue_koodi',
-            'alue_detail' => 'alue_nimi',
-            'alue_location' => 'alue_tietoja',
-            'lainassa' => 'alue_lainassa',
-            'alue_lastdate'	    => 'merkitty',
-            'e2.event_date AS event_last_date_returned' => 'palautettu',
-            'e.event_date AS event_last_date_lent' => 'lainattu',
-            'person_name' => 'etunimi',
-            'person_lastname' => 'sukunimi'
-        );
+        $data['database_fields'] = $this->get_database_fields();
         
         //Käytetäänkö rajauspäivämääränä kuluvaa päivää vai kierrosviikon alkupäivää
         $limit_date_sw = $this->session->userdata('limit_date_sw');
@@ -342,17 +296,7 @@ class Territory_controller extends CI_Controller
         $this->session->set_userdata($territory_view_state_data);
         
         //Hakuparametrit kantaan
-        $data['database_fields'] = array(
-            'alue_code' => 'alue_koodi',
-            'alue_detail' => 'alue_nimi',
-            'alue_location' => 'alue_tietoja',
-            'lainassa' => 'alue_lainassa',
-            'alue_lastdate'	    => 'merkitty',
-            'e2.event_date AS event_last_date_returned' => 'palautettu',
-            'e.event_date AS event_last_date_lent' => 'lainattu',
-            'person_name' => 'etunimi',
-            'person_lastname' => 'sukunimi'
-        );
+        $data['database_fields'] = $this->get_database_fields();
         
         //Käytetäänkö rajauspäivämääränä kuluvaa päivää vai kierrosviikon alkupäivää
         $limit_date_sw = $this->session->userdata('limit_date_sw');
@@ -574,6 +518,36 @@ class Territory_controller extends CI_Controller
         }
         
         return $row;
+    }
+    
+    private function get_database_fields() {
+        $database_fields = array(
+            'alue_code' => 'alue_koodi',
+            'alue_detail' => 'alue_nimi',
+            'alue_location' => 'alue_tietoja',
+            'lainassa' => 'alue_lainassa',
+            'alue_lastdate'	    => 'merkitty',
+            'e2.event_date AS event_last_date_returned' => 'palautettu',
+            'e.event_date AS event_last_date_lent' => 'lainattu',
+            'person_name' => 'etunimi',
+            'person_lastname' => 'sukunimi'
+        );
+        
+        return $database_fields;
+    }
+    
+    private function get_display_fields() {
+        $display_fields = array(
+            'alue_code'		=> 'numero',
+            'alue_detail'	=> 'alue_nimi',
+            'alue_location'	=> 'lisätieto',
+            'lainassa'		=> 'lainassa',
+            'event_last_date_returned'	=> 'palautettu',
+            'event_last_date_lent'	=> 'lainattu',
+            'name'	        => 'kenellä'
+        );
+        
+        return $display_fields;
     }
     
     public function create_terr_mark_rows($results)

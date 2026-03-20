@@ -240,14 +240,8 @@ function sortBy(field, currentOrder) {
 
     const url = new URL(buildUrl(), window.location.origin);
 
-    // toggle sort order
-    let order = 'asc';
-    if (url.searchParams.get("sort_by") === field) {
-        order = (currentOrder === 'asc') ? 'desc' : 'asc';
-    }
-
     url.searchParams.set("sort_by", field);
-    url.searchParams.set("sort_order", order);
+    url.searchParams.set("sort_order", currentOrder);
 
     window.location.href = url.toString();
 
