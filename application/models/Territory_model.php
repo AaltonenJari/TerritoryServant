@@ -12,12 +12,19 @@ class Territory_model extends CI_Model {
         
         $sort_columns = array();
         foreach ($fields as $field_name => $field_display) {
-            if ($field_display == "sukunimi") {
+            if (stripos($field_name, ' AS ') !== false) {
+                $parts = preg_split('/\s+AS\s+/i', $field_name);
+                $alias = trim($parts[1]);
+                $sort_columns[] = $alias;
+            }
+            else if ($field_display == "sukunimi") {
                 $sort_columns[] = "name";
-            } else {
+            }
+            else {
                 $sort_columns[] = $field_name;
             }
         }
+
         $sort_columns[] = "terr_group"; //Lisätään viela lajittelu aluekoodin mukaan
         $sort_by = (in_array($sort_by, $sort_columns)) ? $sort_by : 'alue_code';
         
@@ -27,12 +34,34 @@ class Territory_model extends CI_Model {
         }
         
         // Results query
-        $query = $this->db->select($fetch_columns)
-            ->from('alue');
+        // viimeisin lainaustapahtuma per alue
+        $lastLoan = $this->db
+        ->select('event_alue, MAX(event_id) AS max_event_id')
+        ->from('alue_events')
+        ->where('event_type', 1)
+        ->group_by('event_alue')
+        ->get_compiled_select();
         
-        $this->db->join('(SELECT ee2.event_alue, event_user, ee2.event_date as mark_date FROM alue_events ee2 JOIN (SELECT event_alue, MAX(event_id) AS max_event_id FROM alue_events WHERE event_type = "2" GROUP BY event_alue) groupedee2 ON ee2.event_alue = groupedee2.event_alue AND ee2.event_id = groupedee2.max_event_id) e2', 'alue.alue_id = e2.event_alue','left'); 
-        $this->db->join('(SELECT ee.event_alue, event_user, ee.event_date as event_last_date FROM alue_events ee JOIN (SELECT event_alue, MAX(event_id) AS max_event_id FROM alue_events WHERE event_type = "1" GROUP BY event_alue) groupedee ON ee.event_alue = groupedee.event_alue AND ee.event_id = groupedee.max_event_id) e', 'alue.alue_id = e.event_alue','left');
-        $this->db->join('person', 'e.event_user = person.person_id','left');
+        // viimeisin palautustapahtuma per alue
+        $lastReturn = $this->db
+        ->select('event_alue, MAX(event_id) AS max_event_id')
+        ->from('alue_events')
+        ->where('event_type', 2)
+        ->where('visit_method', 0)
+        ->group_by('event_alue')
+        ->get_compiled_select();
+
+        $query = $this->db
+        ->select($fetch_columns)
+        ->from('alue')
+        
+        ->join("($lastLoan) ll", 'll.event_alue = alue.alue_id', 'left')
+        ->join('alue_events e', 'e.event_id = ll.max_event_id', 'left')
+        
+        ->join("($lastReturn) lr", 'lr.event_alue = alue.alue_id', 'left')
+        ->join('alue_events e2', 'e2.event_id = lr.max_event_id AND e2.visit_method = 0', 'left')
+            
+        ->join('person', 'person.person_id = e.event_user', 'left');
         
         // lainassa = false
         if ($chkbox_sel == '1') {
@@ -60,32 +89,32 @@ class Territory_model extends CI_Model {
             case 6: //Circuot overseer's report
                 $date_12_months = strtotime($srchDate ." -12 months");
                 $limit_date = date ('Y-m-d' , $date_12_months);
-                $this->db->where('alue_lastdate <=', $limit_date);
+                $this->db->where('e2.event_date <=', $limit_date);
                 break;
                 
             case 2: // alue_lastdate < 4 monhts
                 $date_4_months = strtotime($srchDate ." -4 months");
                 $limit_date = date ('Y-m-d' , $date_4_months);
-                $this->db->where('alue_lastdate <=', $limit_date);
+                $this->db->where('e2.event_date <=', $limit_date);
                 break;
         
             case 3: //alue_lastdate < 6 monhts
                 $date_6_months = strtotime($srchDate ." -6 months");
                 $limit_date = date ('Y-m-d' , $date_6_months);
-                $this->db->where('alue_lastdate <=', $limit_date);
+                $this->db->where('e2.event_date <=', $limit_date);
                 break;
 
             case 4: // event_last_date < 12 monhts
                 $date_12_months = strtotime($srchDate ." -12 months");
                 $limit_date = date ('Y-m-d' , $date_12_months);
-                $this->db->where('event_last_date <=', $limit_date);
+                $this->db->where('e.event_date <=', $limit_date);
                 break;
         
             case 5: // event_last_date < 4 monhts && alue_lastdate < 4 monhts
                 $date_4_months = strtotime($srchDate ." -4 months");
                 $limit_date = date ('Y-m-d' , $date_4_months);
-                $this->db->where('event_last_date <=', $limit_date);
-                $this->db->where('alue_lastdate <=', $limit_date);
+                $this->db->where('e.event_date <=', $limit_date);
+                $this->db->where('e2.event_date <=', $limit_date);
                 break;
 
             default: //Ei rajausta
@@ -141,13 +170,13 @@ class Territory_model extends CI_Model {
                 }
                 break;
                 
-            case "alue_lastdate":
+            case "event_last_date_returned":
                 $query = $this->db->order_by($sort_by, $sort_order);
                 $query = $this->db->order_by("SUBSTR(alue_code FROM 1 FOR 1)", "ASC");
                 $query = $this->db->order_by("CAST(SUBSTR(alue_code FROM 2) AS UNSIGNED)", "ASC");
                 break;
                 
-            case "event_last_date":
+            case "event_last_date_lent":
                 $query = $this->db->order_by("lainassa", "DESC");
                 $query = $this->db->order_by($sort_by, $sort_order);
                 $query = $this->db->order_by("SUBSTR(alue_code FROM 1 FOR 1)", "ASC");

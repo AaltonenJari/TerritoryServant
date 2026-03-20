@@ -303,7 +303,7 @@ a slight movement of the header row */
   width: 50%;
 }
 
-.alue_lastdate, .event_last_date {
+.alue_lastdate, .event_last_date_lent {
   text-align: right;
   padding-right: 15px;	
   width: 20%;
