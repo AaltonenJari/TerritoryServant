@@ -62,11 +62,7 @@
             <td>
           
               <?php 
-                if ($lainassa == 1) {
-                    echo form_checkbox('dlainassa', set_value('dlainassa', '1'), TRUE);
-                } else {
-                    echo form_checkbox('dlainassa', set_value('dlainassa', '0'), FALSE);
-                }
+                echo form_checkbox('dlainassa', set_value('dlainassa', '1'), $lainassa == 1, ['id' => 'dlainassa']);
               ?>
               <?php echo form_hidden('lainassa_old', $lainassa);  ?>
             </td>
@@ -182,6 +178,16 @@
                 ?>
             </td>
           </tr>
+          
+          <tr>
+            <td>
+              <?php echo form_label('Käyty pelkästään luukuttamalla:'); ?>
+            </td>
+            <td>
+              <?php echo form_checkbox('dluukutus', set_value('dluukutus', '1'), $luukutus == 1, ['id' => 'dluukutus']); ?>
+            </td>
+          </tr>
+
 
           <tr>
             <td colspan="2">
@@ -241,7 +247,7 @@ $("#dmerk").datepicker(
     }
 );
 
-$('input[type="checkbox"]').click(function() {
+$('#dlainassa').on('change', function() {
     if (!this.checked) {
         $('#djnimi').val('');
         $("#dmark_text_id").html('Palautuspvm:');
@@ -250,8 +256,7 @@ $('input[type="checkbox"]').click(function() {
             $("#dmark_text_id").html('Merkintäpvm:');
         }
         $('#djnimi').val($('#hidden_jnimi_old').val());
-     }
-
+    }
 });
 
 function onTerritoryMarkup() {
