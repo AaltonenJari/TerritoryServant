@@ -98,7 +98,7 @@ class Territory_controller extends CI_Controller
             $this->Settings_model->checkInitializeSettings();
         }
             
-        $sort_by = 'alue_lastdate';
+        $sort_by = 'event_last_date_returned';
         $sort_order = 'asc';
         $chkbox_sel = '1'; //Aluepöydässä
         $date_sel = '2'; //yli 4 kk käymättä
@@ -141,8 +141,11 @@ class Territory_controller extends CI_Controller
         //Käytetäänkö rajauspäivämääränä kuluvaa päivää vai kierrosviikon alkupäivää
         $limit_date_sw = $this->session->userdata('limit_date_sw');
 
+        //Piilotetaanko alueella luukutustapahtuma?
+        $hide_visit_method_sw = $this->session->userdata('hideVisitMethodSwitch');
+        
         //Hae tiedot
-        $results = $this->Territory_model->search($data['database_fields'], $sort_by, $sort_order, $chkbox_sel, $date_sel, $code_sel, $bt_switch, $limit_date_sw);
+        $results = $this->Territory_model->search($data['database_fields'], $sort_by, $sort_order, $chkbox_sel, $date_sel, $code_sel, $bt_switch, $limit_date_sw, $hide_visit_method_sw);
         //Tiedot näytölle sopiviksi
         $data['alueet'] = $this->create_terr_displayrows($results);
         
@@ -206,9 +209,12 @@ class Territory_controller extends CI_Controller
         
         //Käytetäänkö rajauspäivämääränä kuluvaa päivää vai kierrosviikon alkupäivää
         $limit_date_sw = $this->session->userdata('limit_date_sw');
+
+        //Piilotetaanko alueella luukutustapahtuma?
+        $hide_visit_method_sw = $this->session->userdata('hideVisitMethodSwitch');
         
         //Hae tiedot
-        $results = $this->Territory_model->search($data['database_fields'], $sort_by, $sort_order, $chkbox_sel, $date_sel, $code_sel, $bt_switch, $limit_date_sw);
+        $results = $this->Territory_model->search($data['database_fields'], $sort_by, $sort_order, $chkbox_sel, $date_sel, $code_sel, $bt_switch, $limit_date_sw, $hide_visit_method_sw);
         //Tiedot näytölle sopiviksi
         $data['alueet'] = $this->create_terr_displayrows($results);
         
@@ -392,25 +398,7 @@ class Territory_controller extends CI_Controller
         $data['saved_height'] = $this->session->userdata('table_height');
         $this->load->view('circuit_report_view', $data);
     }
-    
-    public function vertaaPvm() 
-    {
-        $isFuture = true;
-      
-        $today = date("Y-m-d");
-        $cwStart = $this->session->userdata('circuitWeekEnd');
-        
-        $today_time = strtotime($today);
-        $expire_time = strtotime($cwStart);
-        
-        if ($expire_time < $today_time) 
-        { 
-            $isFuture = false;
-        }
-        
-        return $isFuture;
-    }
-    
+
     public function kierrosviikon_alusta($param_checked) 
     {
       
@@ -686,6 +674,7 @@ class Territory_controller extends CI_Controller
             'lainassa',
             'alue_lastdate',
             'e.last_event_date',
+            'e.event_type',
             'e.visit_method',
             'person_name',
             'person_lastname'
@@ -744,8 +733,8 @@ class Territory_controller extends CI_Controller
         $result->mark_date       = $this->formatDate($row['last_event_date'] ?? null);
         
         // Tyypit
-        $result->return_type = $row['return_type'] ?? null;
-        $result->mark_type   = $row['mark_type'] ?? null;
+        $result->return_type = ($row['event_type'] == 2 || $row['event_type'] == 4) ? $row['event_type'] : null;
+        $result->mark_type   = ($row['event_type'] == 1 || $row['event_type'] == 3) ? $row['event_type'] : null;
         
         // UUSI: visit_method
         $result->visit_method = $row['visit_method'] ?? null;
@@ -1336,7 +1325,16 @@ class Territory_controller extends CI_Controller
         //Hae alueen tietoja
         $columns = array(
             'alue_id',
-            'alue_lastdate'
+            'alue_code',
+            'alue_detail',
+            'alue_location',
+            'lainassa',
+            'alue_lastdate',
+            'e.last_event_date',
+            'e.event_type',
+            'e.visit_method',
+            'person_name',
+            'person_lastname'
         );
         
         $territory_row = $this->get_latest_territory_row($columns, $terr_nbr);
@@ -1352,6 +1350,7 @@ class Territory_controller extends CI_Controller
             'event_date',
             'event_user',
             'event_alue',
+            'event_type',
             'visit_method'
         );
 

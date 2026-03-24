@@ -76,17 +76,6 @@ class Settings_model extends CI_Model
         $setting_row->setting_admin = '0';
         $settings_rows[] = $setting_row;
         
-        //Kirjautuminen käytössä:
-        $setting_row = new stdClass;
-        $setting_row->setting_id = '3';
-        $setting_row->setting_order_id = '3';
-        $setting_row->setting_input_type = 'checkbox';
-        $setting_row->setting_input_id = 'useSignIn';
-        $setting_row->setting_desc = 'Kirjautuminen käytössä:';
-        $setting_row->setting_value = $this->session->userdata('useSignIn');
-        $setting_row->setting_admin = '0';
-        $settings_rows[] = $setting_row;
-        
         //Nimen esitysmuoto:
         $setting_row = new stdClass;
         $setting_row->setting_id = '4';
@@ -142,10 +131,21 @@ class Settings_model extends CI_Model
         $setting_row->setting_admin = '0';
         $settings_rows[] = $setting_row;
         
-        //Kierrosviikko alkaa:
+        //Piilotetaanko luukutustapahtumat:
         $setting_row = new stdClass;
         $setting_row->setting_id = '9';
         $setting_row->setting_order_id = '16';
+        $setting_row->setting_input_type = 'dropbox';
+        $setting_row->setting_input_id = 'hideVisitMethodSwitch';
+        $setting_row->setting_desc = 'Piilotetaanko luukutustapahtumat:';
+        $setting_row->setting_value = $this->session->userdata('hideVisitMethodSwitch');
+        $setting_row->setting_admin = '0';
+        $settings_rows[] = $setting_row;
+        
+        //Kierrosviikko alkaa:
+        $setting_row = new stdClass;
+        $setting_row->setting_id = '10';
+        $setting_row->setting_order_id = '20';
         $setting_row->setting_input_type = 'date';
         $setting_row->setting_input_id = 'circuitWeekStart';
         $setting_row->setting_desc = 'Kierrosviikko alkaa:';
@@ -155,48 +155,14 @@ class Settings_model extends CI_Model
         
         //Kierrosviikko päättyy:
         $setting_row = new stdClass;
-        $setting_row->setting_id = '10';
-        $setting_row->setting_order_id = '17';
+        $setting_row->setting_id = '11';
+        $setting_row->setting_order_id = '21';
         $setting_row->setting_input_type = 'datereadonly';
         $setting_row->setting_input_id = 'circuitWeekEnd';
         $setting_row->setting_desc = 'Kierrosviikko päättyy:';
         $setting_row->setting_value = $this->session->userdata('circuitWeekEnd');
         $setting_row->setting_admin = '0';
         $settings_rows[] = $setting_row;
-        
-        //Aluekoodin editystapa:
-        $setting_row = new stdClass;
-        $setting_row->setting_id = '11';
-        $setting_row->setting_order_id = '22';
-        $setting_row->setting_input_type = 'dropbox';
-        $setting_row->setting_input_id = 'terrCodePresentation';
-        $setting_row->setting_desc = 'Aluekoodin editystapa:';
-        $setting_row->setting_value = $this->session->userdata('terrCodePresentation');
-        $setting_row->setting_admin = '1';
-        $settings_rows[] = $setting_row;
-        
-        //Alue_detail-taulu käytössä:
-        $setting_row = new stdClass;
-        $setting_row->setting_id = '12';
-        $setting_row->setting_order_id = '23';
-        $setting_row->setting_input_type = 'checkbox';
-        $setting_row->setting_input_id = 'useTerritoryDetaiTable';
-        $setting_row->setting_desc = 'Alue_detail-taulu käytössä:';
-        $setting_row->setting_value = $this->session->userdata('useTerritoryDetaiTable');
-        $setting_row->setting_admin = '1';
-        $settings_rows[] = $setting_row;
-        
-        //Lokitus käytössä:
-        $setting_row = new stdClass;
-        $setting_row->setting_id = '13';
-        $setting_row->setting_order_id = '21';
-        $setting_row->setting_input_type = 'checkbox';
-        $setting_row->setting_input_id = 'logging';
-        $setting_row->setting_desc = 'Lokiin kirjoitus käytössä:';
-        $setting_row->setting_value = $this->session->userdata('logging');
-        $setting_row->setting_admin = '1';
-        $settings_rows[] = $setting_row;
-        
         
         $ret['rows'] = $settings_rows;
          
@@ -349,8 +315,9 @@ class Settings_model extends CI_Model
             'archiveYears' => '4',
             'btSwitch' => '0',  //Liikealueet: 0 = ei näytetä (default), 1 = näytetään
             'eventSaveSwitch' => '1', //Kaikki merkitsemiset
-            'circuitWeekStart' => '10.2.2026',
-            'circuitWeekEnd' => '15.2.2026',
+            'hideVisitMethodSwitch' => '1',
+            'circuitWeekStart' => '15.9.2026',
+            'circuitWeekEnd' => '20.9.2026',
             'terrCodePresentation' => 'X999',
             'useTerritoryDetaiTable' => '0', //Alue_detail-taulu ei käytössä
 

@@ -19,11 +19,11 @@ class Settings_controller extends CI_Controller
         if (($sort_by != $this->session->userdata('sort_by')) ||
             ($sort_order != $this->session->userdata('sort_order'))) {
                 
-                //Jos jokin tilamuuttuja muuttuu, poistetaan virheteksti näkyvistä
-                if(isset($_SESSION['error'])){
-                    unset($_SESSION['error']);
-                }
+            //Jos jokin tilamuuttuja muuttuu, poistetaan virheteksti näkyvistä
+            if(isset($_SESSION['error'])){
+                unset($_SESSION['error']);
             }
+        }
   
         //Tallenna näytön uusi tila
         $territory_view_state_data = array(
@@ -129,6 +129,12 @@ class Settings_controller extends CI_Controller
         );
         $data['eventSaveSwitchOptions'] = $eventSaveSwitchOptions;
         
+        //Piilotetaanko luukutustapahtumat -valitsin
+        $hideVisitMethodSwitchOptions = array(
+            '0'     => 'Näytä kaikki',
+            '1'     => 'Piilota luukutustapahtumat'
+        );
+        $data['hideVisitMethodSwitchOptions'] = $hideVisitMethodSwitchOptions;
         
         //Alusta tietorakenne undo/redo - toimintoa varten
         //Jos parametreja ei ole annettu, alusta tietorakenne
@@ -286,25 +292,9 @@ class Settings_controller extends CI_Controller
                 
             case "Paluu":
             case "Return":
-                $eventSaveSwitchOld = $this->session->userdata('eventSaveSwitchOld');
-                $eventSaveSwitch = $this->session->userdata('eventSaveSwitch');
-                
-                if ($eventSaveSwitch == 1) {
-                    
-                    //Merkitään asetukset alustetuksi
-                    $session_data = array(
-                        'eventSaveSwitchOld' => $this->session->userdata('eventSaveSwitch')
-                    );
-                    $this->session->set_userdata($session_data);
-
-                    //Lisätään merkkaustapahtumat tarvittaessa
-                    $main_url = 'Location: ' . base_url("index.php/Territory_controller/add_mark_events");
-                    header($main_url);
-                 } else {
-                    //Palataan päänäytölle
-                    $main_url = 'Location: ' . base_url("index.php/Territory_controller/display");
-                    header($main_url);
-                }
+                //Palataan päänäytölle
+                $main_url = 'Location: ' . base_url("index.php/Territory_controller/display");
+                header($main_url);
                 break;
             
             default:

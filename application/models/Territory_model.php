@@ -6,7 +6,7 @@ class Territory_model extends CI_Model {
         parent::__construct();
     }
     
-    function search($fields, $sort_by, $sort_order, $chkbox_sel, $date_sel, $code_sel = '0', $bt_switch = '0', $date_switch = '0') 
+    function search($fields, $sort_by, $sort_order, $chkbox_sel, $date_sel, $code_sel = '0', $bt_switch = '0', $date_switch = '0', $hide_visit_method_event = false) 
     {
         $sort_order = ($sort_order == 'desc') ? 'desc' : 'asc';
         
@@ -35,22 +35,13 @@ class Territory_model extends CI_Model {
         
         // Results query
         // viimeisin lainaustapahtuma per alue
-        $lastLoan = $this->db
-        ->select('event_alue, MAX(event_id) AS max_event_id')
-        ->from('alue_events')
-        ->where('event_type IN ("1","3")')
-        ->group_by('event_alue')
-        ->get_compiled_select();
+        $lastLoan = $this->buildLastEventSubquery(["1","3"]);
         
-        // viimeisin palautustapahtuma per alue
-        $lastReturn = $this->db
-        ->select('event_alue, MAX(event_id) AS max_event_id')
-        ->from('alue_events')
-        ->where('event_type IN ("2","4")')
-        ->where('visit_method', 0)
-        ->group_by('event_alue')
-        ->get_compiled_select();
-
+        $lastReturn = $this->buildLastEventSubquery(
+            ["2","4"],
+            $hide_visit_method_event ? 0 : null
+            );
+        
         $query = $this->db
         ->select($fetch_columns)
         ->from('alue')
@@ -59,7 +50,7 @@ class Territory_model extends CI_Model {
         ->join('alue_events e', 'e.event_id = ll.max_event_id', 'left')
         
         ->join("($lastReturn) lr", 'lr.event_alue = alue.alue_id', 'left')
-        ->join('alue_events e2', 'e2.event_id = lr.max_event_id AND e2.visit_method = 0', 'left')
+        ->join('alue_events e2', 'e2.event_id = lr.max_event_id', 'left')
             
         ->join('person', 'person.person_id = e.event_user', 'left');
         
@@ -211,14 +202,38 @@ class Territory_model extends CI_Model {
         return $ret;
     }
     
+    private function buildLastEventSubquery($types, $visitMethodFilter = null)
+    {
+        $this->db->select('event_alue, MAX(event_id) AS max_event_id')
+        ->from('alue_events')
+        ->where_in('event_type', $types);
+        
+        if ($visitMethodFilter !== null) {
+            $this->db->where('visit_method', $visitMethodFilter);
+        }
+        
+        return $this->db->group_by('event_alue')
+        ->get_compiled_select();
+    }
+    
     function getTerritoryCount($chkbox_sel, $date_sel, $code_sel = '0', $bt_switch = '0', $date_switch = '0') 
 	{
-		$query = $this->db->select('COUNT(*) as count', FALSE)
-            ->from('alue');
-
-        $this->db->join('(SELECT ee2.event_alue, event_user, ee2.event_date as mark_date FROM alue_events ee2 JOIN (SELECT event_alue, MAX(event_id) AS max_event_id FROM alue_events WHERE event_type = "2" GROUP BY event_alue) groupedee2 ON ee2.event_alue = groupedee2.event_alue AND ee2.event_id = groupedee2.max_event_id) e2', 'alue.alue_id = e2.event_alue','left');
-        $this->db->join('(SELECT ee.event_alue, event_user, ee.event_date as event_last_date FROM alue_events ee JOIN (SELECT event_alue, MAX(event_id) AS max_event_id FROM alue_events GROUP BY event_alue) groupedee ON ee.event_alue = groupedee.event_alue AND ee.event_id = groupedee.max_event_id) e', 'alue.alue_id = e.event_alue','left');
-        $this->db->join('person', 'e.event_user = person.person_id','left');
+        // viimeisin lainaustapahtuma per alue
+        $lastLoan = $this->buildLastEventSubquery(["1","3"]);
+            
+        $lastReturn = $this->buildLastEventSubquery(["2","4"]);
+            
+        $query = $this
+            ->db->select('COUNT(*) as count', FALSE)
+            ->from('alue')
+           
+        ->join("($lastLoan) ll", 'll.event_alue = alue.alue_id', 'left')
+        ->join('alue_events e', 'e.event_id = ll.max_event_id', 'left')
+            
+        ->join("($lastReturn) lr", 'lr.event_alue = alue.alue_id', 'left')
+        ->join('alue_events e2', 'e2.event_id = lr.max_event_id', 'left')
+            
+        ->join('person', 'person.person_id = e.event_user', 'left');
             
         // lainassa = false
 		if ($chkbox_sel == '1') {
@@ -350,6 +365,7 @@ class Territory_model extends CI_Model {
 	    return "(SELECT ee.event_alue,
                     ee.event_user,
                     ee.event_date AS last_event_date,
+                    ee.event_type,
                     ee.visit_method
             FROM alue_events ee
             JOIN (
