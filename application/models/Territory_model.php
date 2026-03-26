@@ -76,36 +76,43 @@ class Territory_model extends CI_Model {
                 $limit_date = "";
                 break;
             
-            case 1: // alue_lastdate < 12 monhts
+            case 1: // event_last_date < 12 monhts
+            case 4: // event_last_date < 12 monhts
             case 6: //Circuot overseer's report
-                $date_12_months = strtotime($srchDate ." -12 months");
-                $limit_date = date ('Y-m-d' , $date_12_months);
-                $this->db->where('e2.event_date <=', $limit_date);
+                $date_12_months_ago = strtotime($srchDate ." -12 months");
+                $limit_date = date ('Y-m-d' , $date_12_months_ago);
+                $this->db->group_start()
+                ->where('e2.event_date <=', $limit_date)
+                ->or_where('e2.event_date IS NULL', null, false)
+                ->group_end();
                 break;
                 
             case 2: // alue_lastdate < 4 monhts
-                $date_4_months = strtotime($srchDate ." -4 months");
-                $limit_date = date ('Y-m-d' , $date_4_months);
-                $this->db->where('e2.event_date <=', $limit_date);
+                $date_4_months_ago = strtotime($srchDate ." -4 months");
+                $limit_date = date ('Y-m-d' , $date_4_months_ago);
+                $this->db->group_start()
+                ->where('e2.event_date <=', $limit_date)
+                ->or_where('e2.event_date IS NULL', null, false)
+                ->group_end();
                 break;
         
             case 3: //alue_lastdate < 6 monhts
-                $date_6_months = strtotime($srchDate ." -6 months");
-                $limit_date = date ('Y-m-d' , $date_6_months);
-                $this->db->where('e2.event_date <=', $limit_date);
+                $date_6_months_ago = strtotime($srchDate ." -6 months");
+                $limit_date = date ('Y-m-d' , $date_6_months_ago);
+                $this->db->group_start()
+                ->where('e2.event_date <=', $limit_date)
+                ->or_where('e2.event_date IS NULL', null, false)
+                ->group_end();
                 break;
 
-            case 4: // event_last_date < 12 monhts
-                $date_12_months = strtotime($srchDate ." -12 months");
-                $limit_date = date ('Y-m-d' , $date_12_months);
-                $this->db->where('e.event_date <=', $limit_date);
-                break;
-        
             case 5: // event_last_date < 4 monhts && alue_lastdate < 4 monhts
-                $date_4_months = strtotime($srchDate ." -4 months");
-                $limit_date = date ('Y-m-d' , $date_4_months);
+                $date_4_months_ago = strtotime($srchDate ." -4 months");
+                $limit_date = date ('Y-m-d' , $date_4_months_ago);
                 $this->db->where('e.event_date <=', $limit_date);
-                $this->db->where('e2.event_date <=', $limit_date);
+                $this->db->group_start()
+                ->where('e2.event_date <=', $limit_date)
+                ->or_where('e2.event_date IS NULL', null, false)
+                ->group_end();
                 break;
 
             default: //Ei rajausta
@@ -378,7 +385,7 @@ class Territory_model extends CI_Model {
            ) {$alias}";
 	}
 	
-	function get_terr_id($terr_code)
+	public function get_terr_id($terr_code)
 	{
 	    $terr_id = -1;
 	    // Results query
@@ -396,7 +403,7 @@ class Territory_model extends CI_Model {
 	    return $terr_id;
 	}
 	
-	function get_territory_event_count($alue_id)
+	public function get_territory_event_count($alue_id)
 	{
 	    //count query
 	    $query = $this->db->select('COUNT(*) as count', FALSE)

@@ -51,7 +51,6 @@
         <div class="about-chapter">
           Ohjelma on kehitetty Kankaanpäässä. Se käyttää olemassa olevaa tietokantaa,
           jota voi käyttää rinnakkain myös aikaisemman alueidenhoito-ohjelman kanssa.
-          Jatkossa ohjelmaa voidaan kehittää myös muihin vastaaviin tarpeisiin.	
         </div>
 
         <div class="about-sub-hdr">Toimintaympäristö</div>
@@ -75,6 +74,7 @@
           <li>Siistimpi PDF-raporttien ulkoasu</li>
           <li>Mahdollisuus merkitä alue poistetuksi ilman pysyvää poistamista</li>
           <li>Mahdollisuus poistaa vanhentuneita tapahtumia ja henkilötietoja</li>
+          <li>Erillistoiminta luukutustapahtumille</li>
         </ul>
 
       </div><!-- about_desc -->
@@ -89,34 +89,6 @@
 <script type="text/javascript">
   var jsver = 1.0;
 </script>
-<script language="Javascript1.1">
-  jsver = 1.1;
-</script>
-<script language="Javascript1.2">
-  jsver = 1.2;
-</script>
-<script language="Javascript1.3">
-  jsver = 1.3;
-</script>
-<script language="Javascript1.4">
-  jsver = 1.4;
-</script>
-<script language="Javascript1.5">
-  jsver = 1.5;
-</script>
-<script language="Javascript1.6">
-  jsver = 1.6;
-</script>
-<script language="Javascript1.7">
-  jsver = 1.7;
-</script>
-<script language="Javascript1.8">
-  jsver = 1.8;
-</script>
-<script language="Javascript1.9">
-  jsver = 1.9;
-</script>
-
 
 <script type="text/javascript">
 document.getElementById("javascript_version").innerHTML = jsver; 
