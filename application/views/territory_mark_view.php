@@ -100,6 +100,7 @@
     		                <td class="otsikko_nimi">Nimi</td>
     		                <?php if ($exhort == "RETURN") { ?>
      		                  <td class="otsikko_otettu">Lainattu</td>
+    		                  <td class="otsikko_kayty">Käyty viimeksi</td>
     		                <?php } else { ?>
     		                  <td class="otsikko_otettu">Otettu</td>
     		                  <td class="otsikko_kayty">Käyty viimeksi</td>
@@ -111,7 +112,7 @@
    		                        switch ($key1) {
    		                            case "alue_number": 
    		                            case "alue_name":
-   		                            case "event_last_date":
+   		                            case "event_last_date_lent":
    		                            case "alue_lastdate": ?>
    		                              <td class="<?php echo $key1; ?>">
    		                                <?php echo $value1;  ?>

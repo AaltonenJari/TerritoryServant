@@ -51,9 +51,10 @@ INSERT INTO `settings` (`setting_id`, `setting_order_id`, `setting_input_type`, 
 (5, 12, 'dropbox', 'eventOrder', 'Tapahtumamerkintöjen järjestys:', 'DESC', 0),
 (6, 13, 'dropbox', 'archiveYears', 'Tapahtumamerkinnät ajalta korkeintaan:', '4', 0),
 (7, 14, 'dropbox', 'btSwitch', 'Liikealueiden näyttäminen:', '0', 0),
-(8, 15, 'dropbox', 'eventSaveSwitch', 'Tapahtumamerkintöjen tallennustapa:', '0', 0),
-(9, 16, 'date', 'circuitWeekStart', 'Kierrosviikko alkaa:', '8.12.2020', 0),
-(10, 17, 'datereadonly', 'circuitWeekEnd', 'Kierrosviikko päättyy:', '13.12.2020', 0);
+(8, 15, 'dropbox', 'eventSaveSwitch', 'Tapahtumamerkintöjen tallennustapa:', '1', 0),
+(9, 16, 'dropbox', 'hideVisitMethodSwitch', 'Piilotetaanko luukutustapahtumat:', '1', 0),
+(10, 20, 'date', 'circuitWeekStart', 'Kierrosviikko alkaa:', '15.9.2026', 0),
+(11, 21, 'datereadonly', 'circuitWeekEnd', 'Kierrosviikko päättyy:', '20.9.2026', 0);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

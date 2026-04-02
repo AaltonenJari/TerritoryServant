@@ -62,7 +62,7 @@
           <td>
  		    <input type="search" id="filterString" class="light-table-filter" data-table="order-table" placeholder="Filter">
 
-	  		<?php $display_baseurl = base_url("index.php/territory_controller/display") . "/" . $sort_by . "/" . $sort_order; ?>
+	  		<?php $display_baseurl = base_url("index.php/territory_controller/display") . "?sort_by=" . $sort_by . "&sort_order=" . $sort_order; ?>
       		<input type="hidden" id="displayBaseUrl" value="<?php echo $display_baseurl; ?>" />
 
 	        <input type="hidden" id="filter_param" value="<?php echo $filter; ?>"/>
@@ -113,11 +113,25 @@
               <tr>
     			<?php foreach ($display_fields as $field_name => $field_display) { ?>
     			    <th <?php if ($sort_by == $field_name) echo "class=\"sort_" . $sort_order . "\"" ?>><span>
-						<?php $hdrurl = base_url("index.php/territory_controller/display") . "/" . $field_name . "/" .
-    			    	    (($sort_order == 'asc' && $sort_by == $field_name) ? 'desc' : 'asc'); ?>
-	   			    	<a id="<?php echo $field_display; ?>"
-   				    	   href="<?php echo $hdrurl; ?>"><?php echo $field_display; ?></a>
-						   <?php $field_name_old = $field_display ."old" ?>
+						<?php $hdrurl = base_url("index.php/territory_controller/display")
+                                  . "?sort_by=" . $field_name
+                                  . "&sort_order=" . (($sort_order == 'asc' && $sort_by == $field_name) ? 'desc' : 'asc')
+                                  . "&code=" . $code_sel
+                                  . "&chk=" . $chkbox_sel
+                                  . "&date=" . $date_sel
+                                  . "&filter=" . urlencode($filter);
+						?>
+						<?php 
+                        $field_name_old = $field_display . "old";
+                        $new_order = ($sort_order == 'asc' && $sort_by == $field_name) ? 'desc' : 'asc';
+                        ?>
+
+						<a id="<?php echo $field_display; ?>"
+						   href="#"
+						   onclick="return sortBy('<?php echo $field_name; ?>', '<?php echo $new_order; ?>')">
+						   <?php echo $field_display; ?>
+						</a>
+
 						<input type="hidden" id="<?php echo $field_name_old; ?>" value="<?php echo $hdrurl; ?>" />
     			    </span></th>
     			<?php } ?>
@@ -138,11 +152,12 @@
 	    				    >
      			    	  </td>
  	    				<?php } else if ($field_name == "alue_code") { ?>
- 	    				  <?php $terr_url = base_url("index.php/Territory_controller/update") . "/" . $alue->$field_name . "/" . $filter; ?>
+    			    	  <?php $terr_url = base_url("index.php/Territory_controller/update") . "?terr=" . $alue->$field_name . "&filter=" . urlencode($filter); ?>
     			    	  <td id="<?php echo $field_name_data; ?>"> 
-    			    	    <a id="<?php echo $alue->$field_name; ?>" href="<?php echo $terr_url; ?>" onClick='updateTerritoryLink"<?php echo $alue->$field_name; ?>")'>
-    			    	      <?php echo $alue->$field_name; ?> 
-   				     	    </a>
+    			    	    <a href="#"
+   							  onclick="return openTerritory('<?php echo $alue->$field_name; ?>')">
+   							  <?php echo $alue->$field_name; ?>
+							</a>
     			    	  </td>
  	    				<?php } else { ?>
     			    	  <td id="<?php echo $field_name_data; ?>"> <?php echo $alue->$field_name; ?> </td>
@@ -180,64 +195,39 @@
 </body>
 <script>
 
+function buildUrl() {
+    const code = document.getElementById("terrCodeChkBoxChooser").value;
+    const chk  = document.getElementById("borrowChkBoxChooser").value;
+    const date = document.getElementById("borrowDateChooser").value;
+    const filter = document.getElementById("filterString").value;
+
+    const base = document.getElementById("displayBaseUrl").value;
+
+    const url = new URL(base, window.location.origin);
+
+    url.searchParams.set("code", code);
+    url.searchParams.set("chk", chk);
+    url.searchParams.set("date", date);
+
+    if (filter) {
+        url.searchParams.set("filter", filter);
+    } else {
+        url.searchParams.delete("filter");
+    }
+
+    return url.toString();
+}
+
 function onBorrowOptionChange() {
-	  var myselect = document.getElementById("borrowChkBoxChooser");
-
-	  // Tyhjennetään suodatuskenttä ja siihen liittyvä hidden-parametri
-	  var myFilter = document.getElementById("filterString");
-	  var myFilterParam = document.getElementById("filter_param");
-	  myFilter.value = "";
-	  myFilterParam.value = "";
-
-	  document.getElementById("selChkBoxOld").value = myselect.options[myselect.selectedIndex].value;
-      var newUrl = document.getElementById("displayBaseUrl").value;
-      newUrl = newUrl + "\\" + document.getElementById("selChkBoxOld").value;
-      newUrl = newUrl + "\\" + document.getElementById("selDateOld").value;
-      newUrl = newUrl + "\\" + document.getElementById("selCodeOld").value;
-      newUrl = newUrl + "\\" + document.getElementById("filter_param").value;
-	  location.replace(newUrl);
+    window.location.href = buildUrl();
 }
-	
+
 function onBorrowRangeOptionChange() {
-	  var myselect = document.getElementById("borrowDateChooser");
-
-	  // Tyhjennetään suodatuskenttä ja siihen liittyvä hidden-parametri
-	  var myFilter = document.getElementById("filterString");
-	  var myFilterParam = document.getElementById("filter_param");
-	  myFilter.value = "";
-	  myFilterParam.value = "";
-
-	  document.getElementById("selDateOld").value = myselect.options[myselect.selectedIndex].value;
-      var newUrl = document.getElementById("displayBaseUrl").value;
-      newUrl = newUrl + "\\" + document.getElementById("selChkBoxOld").value;
-      newUrl = newUrl + "\\" + document.getElementById("selDateOld").value;
-      newUrl = newUrl + "\\" + document.getElementById("selCodeOld").value;
-      newUrl = newUrl + "\\" + document.getElementById("filter_param").value;
-	  location.replace(newUrl);
-}
-
-function updateTerritoryLink(territory_code) {
-    var newUrl = document.getElementById("base_update_url").value;
-	var newUrl = newUrl + "/" + territory_code + "/" + document.getElementById("filter_param").value;
-	document.getElementById(territory_code).href = newUrl;
+    window.location.href = buildUrl();
 }
 
 function onTerritoryCodeChange() {
-	var myselect = document.getElementById("terrCodeChkBoxChooser");
-
-	// Tyhjennetään suodatuskenttä ja siihen liittyvä hidden-parametri
-	var myFilter = document.getElementById("filterString");
-	var myFilterParam = document.getElementById("filter_param");
-    myFilter.value = "";
-    myFilterParam.value = "";
-    
-	document.getElementById("selCodeOld").value = myselect.options[myselect.selectedIndex].value;
-    var newUrl = document.getElementById("displayBaseUrl").value;
-    newUrl = newUrl + "\\" + document.getElementById("selChkBoxOld").value;
-    newUrl = newUrl + "\\" + document.getElementById("selDateOld").value;
-    newUrl = newUrl + "\\" + document.getElementById("selCodeOld").value;
-    newUrl = newUrl + "\\" + document.getElementById("filter_param").value;
-	location.replace(newUrl);
+    window.location.href = buildUrl();
 }
 
 function clearAndReset() {
@@ -246,13 +236,44 @@ function clearAndReset() {
     window.location.href = "<?php echo base_url('index.php/territory_controller/display'); ?>";
 }
 
+function sortBy(field, currentOrder) {
+
+    const url = new URL(buildUrl(), window.location.origin);
+
+    url.searchParams.set("sort_by", field);
+    url.searchParams.set("sort_order", currentOrder);
+
+    window.location.href = url.toString();
+
+    return false;
+}
+
+function openTerritory(code) {
+
+    const filter = document.getElementById("filterString").value;
+
+    const base = document.getElementById("base_update_url").value;
+
+    let url = new URL(base, window.location.origin);
+
+    url.searchParams.set("terr", code);
+
+    if (filter) {
+        url.searchParams.set("filter", filter);
+    }
+
+    window.location.href = url.toString();
+
+    return false;
+}
 
 document.addEventListener('DOMContentLoaded', function () {
-  enableResizableSave(
-    '.contentResizable',
-    '<?php echo base_url('index.php/Territory_controller/save_height'); ?>'
-  );
-});
+	  enableResizableSave(
+	    '.contentResizable',
+	    '<?php echo base_url('index.php/Territory_controller/save_height'); ?>'
+	  );
+	});
+
 
 </script>
 </html>

@@ -6,117 +6,38 @@
         var _input;
 		
         function _onInputEvent(e) {
-            _input = e.target;
-            document.getElementById("numero").href = document.getElementById("numeroold").value +
-         	    "\\" + document.getElementById("selChkBoxOld").value + 
-           	    "\\" + document.getElementById("selDateOld").value +
-           	    "\\" + document.getElementById("selCodeOld").value;
+            const input = e.target;
+            const val = input.value.toLowerCase();
 
-            document.getElementById("alue_nimi").href = document.getElementById("alue_nimiold").value +
-        	    "\\" + document.getElementById("selChkBoxOld").value + 
-           	    "\\" + document.getElementById("selDateOld").value +
-           	    "\\" + document.getElementById("selCodeOld").value;
+            const tables = document.getElementsByClassName(input.getAttribute('data-table'));
 
-           	document.getElementById("lisätieto").href = document.getElementById("lisätietoold").value +
-          	    "\\" + document.getElementById("selChkBoxOld").value + 
-           	    "\\" + document.getElementById("selDateOld").value +
-           	    "\\" + document.getElementById("selCodeOld").value;
-            
-           	document.getElementById("lainassa").href = document.getElementById("lainassaold").value +
-        	    "\\" + document.getElementById("selChkBoxOld").value + 
-           	    "\\" + document.getElementById("selDateOld").value +
-           	    "\\" + document.getElementById("selCodeOld").value;
+            let rowCount = 0;
 
-           	document.getElementById("käyty").href = document.getElementById("käytyold").value +
-        	    "\\" + document.getElementById("selChkBoxOld").value + 
-           	    "\\" + document.getElementById("selDateOld").value +
-           	    "\\" + document.getElementById("selCodeOld").value;
+            Array.prototype.forEach.call(tables, function(table) {
+                const rows = table.tBodies[0].rows;
 
-           	document.getElementById("otettu").href = document.getElementById("otettuold").value +
-        	    "\\" + document.getElementById("selChkBoxOld").value + 
-           	    "\\" + document.getElementById("selDateOld").value +
-           	    "\\" + document.getElementById("selCodeOld").value;
+                Array.prototype.forEach.call(rows, function(row) {
+                    const text = row.textContent.toLowerCase();
+                    const match = text.indexOf(val) !== -1;
 
-           	document.getElementById("kenellä").href = document.getElementById("kenelläold").value +
-    	       "\\" + document.getElementById("selChkBoxOld").value + 
-           	    "\\" + document.getElementById("selDateOld").value +
-           	    "\\" + document.getElementById("selCodeOld").value;
-            
-            if (_input.value != "") {
-                document.getElementById("numero").href =
-                	document.getElementById("numero").href + 
-                   	"\\" + _input.value;
-                document.getElementById("alue_nimi").href =
-                	document.getElementById("alue_nimi").href + 
-                	"\\" + _input.value;
-                document.getElementById("lisätieto").href =
-                	document.getElementById("lisätieto").href + 
-                	"\\" + _input.value;
-                document.getElementById("lainassa").href =
-                    document.getElementById("lainassa").href + 
-                    "\\" + _input.value;
-                document.getElementById("käyty").href =
-                    document.getElementById("käyty").href + 
-                    "\\" + _input.value;
-                document.getElementById("otettu").href =
-                    document.getElementById("otettu").href + 
-                    "\\" + _input.value;
-                document.getElementById("kenellä").href =
-                    document.getElementById("kenellä").href + 
-                    "\\" + _input.value;
+                    row.style.display = match ? '' : 'none';
 
-                document.getElementById("filter_param").value = _input.value;
-            }
-            var tables = document.getElementsByClassName(_input.getAttribute('data-table'));
-            Arr.forEach.call(tables, function(table) {
-                Arr.forEach.call(table.tBodies, function(tbody) {
-                    Arr.forEach.call(tbody.rows, _filter);
-                    rows++;
+                    if (match) rowCount++;
                 });
             });
-            
-            //Get the row count of the fitered table
-            var rowCount = 0;
-            var rows = document.getElementById("table2").getElementsByTagName("tr");
-            for (var i = 0; i < rows.length; i++) {
-                if (rows[i].style.display == 'none') {
-                	continue;
-                }
-                if (rows[i].getElementsByTagName("td").length > 0) {
-                    rowCount++;
-                }
-            }         
+
             document.getElementById("tableRowCount").innerHTML = rowCount;
-            
-            //Zebra stripe the table
-            var k = 0;
-            var table = document.getElementById("table2");
-            for (var i = 0, row; row = table.rows[i]; i++) {
-            	row = table.rows[i];
-                if (!(row.style.display === 'none')) {
-                	if (k % 2) {
-                   		row.style.backgroundColor = "#eee";
-                     } else  {
-                   		row.style.backgroundColor = "white";
-                    }
-                    k++;
-                }
-            }         
-  
-        }
 
-        function _filter(row) {
-            var text = row.textContent.toLowerCase(), val = _input.value.toLowerCase();
-            row.style.display = text.indexOf(val) === -1 ? 'none' : 'table-row';
+            zebraStripe();
         }
-
+        
         return {
-            init: function() {
-                var inputs = document.getElementsByClassName('light-table-filter');
-                Arr.forEach.call(inputs, function(input) {
-                    input.oninput = _onInputEvent;
-                });
-            }
+        	init: function() {
+        	    var inputs = document.getElementsByClassName('light-table-filter');
+        	    Arr.forEach.call(inputs, function(input) {
+        	        input.oninput = _onInputEvent;
+        	    });
+        	}
         };
     })(Array.prototype);
 
@@ -143,4 +64,17 @@
     });
 
 })(document);
+
+function zebraStripe() {
+    let k = 0;
+
+    const rows = document.querySelectorAll('#table2 tbody tr');
+
+    rows.forEach(row => {
+        if (row.style.display === 'none') return;
+
+        row.style.backgroundColor = (k % 2) ? "#eee" : "white";
+        k++;
+    });
+}
 

@@ -6,18 +6,25 @@ class Territory_model extends CI_Model {
         parent::__construct();
     }
     
-    function search($fields, $sort_by, $sort_order, $chkbox_sel, $date_sel, $code_sel = '0', $bt_switch = '0', $date_switch = '0') 
+    function search($fields, $sort_by, $sort_order, $chkbox_sel, $date_sel, $code_sel = '0', $bt_switch = '0', $date_switch = '0', $hide_visit_method_event = false) 
     {
         $sort_order = ($sort_order == 'desc') ? 'desc' : 'asc';
         
         $sort_columns = array();
         foreach ($fields as $field_name => $field_display) {
-            if ($field_display == "sukunimi") {
+            if (stripos($field_name, ' AS ') !== false) {
+                $parts = preg_split('/\s+AS\s+/i', $field_name);
+                $alias = trim($parts[1]);
+                $sort_columns[] = $alias;
+            }
+            else if ($field_display == "sukunimi") {
                 $sort_columns[] = "name";
-            } else {
+            }
+            else {
                 $sort_columns[] = $field_name;
             }
         }
+
         $sort_columns[] = "terr_group"; //Lisätään viela lajittelu aluekoodin mukaan
         $sort_by = (in_array($sort_by, $sort_columns)) ? $sort_by : 'alue_code';
         
@@ -27,12 +34,25 @@ class Territory_model extends CI_Model {
         }
         
         // Results query
-        $query = $this->db->select($fetch_columns)
-            ->from('alue');
+        // viimeisin lainaustapahtuma per alue
+        $lastLoan = $this->buildLastEventSubquery(["1","3"]);
         
-        $this->db->join('(SELECT ee2.event_alue, event_user, ee2.event_date as mark_date FROM alue_events ee2 JOIN (SELECT event_alue, MAX(event_id) AS max_event_id FROM alue_events WHERE event_type = "2" GROUP BY event_alue) groupedee2 ON ee2.event_alue = groupedee2.event_alue AND ee2.event_id = groupedee2.max_event_id) e2', 'alue.alue_id = e2.event_alue','left'); 
-        $this->db->join('(SELECT ee.event_alue, event_user, ee.event_date as event_last_date FROM alue_events ee JOIN (SELECT event_alue, MAX(event_id) AS max_event_id FROM alue_events WHERE event_type = "1" GROUP BY event_alue) groupedee ON ee.event_alue = groupedee.event_alue AND ee.event_id = groupedee.max_event_id) e', 'alue.alue_id = e.event_alue','left');
-        $this->db->join('person', 'e.event_user = person.person_id','left');
+        $lastReturn = $this->buildLastEventSubquery(
+            ["2","4"],
+            $hide_visit_method_event ? 0 : null
+            );
+        
+        $query = $this->db
+        ->select($fetch_columns)
+        ->from('alue')
+        
+        ->join("($lastLoan) ll", 'll.event_alue = alue.alue_id', 'left')
+        ->join('alue_events e', 'e.event_id = ll.max_event_id', 'left')
+        
+        ->join("($lastReturn) lr", 'lr.event_alue = alue.alue_id', 'left')
+        ->join('alue_events e2', 'e2.event_id = lr.max_event_id', 'left')
+            
+        ->join('person', 'person.person_id = e.event_user', 'left');
         
         // lainassa = false
         if ($chkbox_sel == '1') {
@@ -56,36 +76,43 @@ class Territory_model extends CI_Model {
                 $limit_date = "";
                 break;
             
-            case 1: // alue_lastdate < 12 monhts
+            case 1: // event_last_date < 12 monhts
+            case 4: // event_last_date < 12 monhts
             case 6: //Circuot overseer's report
-                $date_12_months = strtotime($srchDate ." -12 months");
-                $limit_date = date ('Y-m-d' , $date_12_months);
-                $this->db->where('alue_lastdate <=', $limit_date);
+                $date_12_months_ago = strtotime($srchDate ." -12 months");
+                $limit_date = date ('Y-m-d' , $date_12_months_ago);
+                $this->db->group_start()
+                ->where('e2.event_date <=', $limit_date)
+                ->or_where('e2.event_date IS NULL', null, false)
+                ->group_end();
                 break;
                 
             case 2: // alue_lastdate < 4 monhts
-                $date_4_months = strtotime($srchDate ." -4 months");
-                $limit_date = date ('Y-m-d' , $date_4_months);
-                $this->db->where('alue_lastdate <=', $limit_date);
+                $date_4_months_ago = strtotime($srchDate ." -4 months");
+                $limit_date = date ('Y-m-d' , $date_4_months_ago);
+                $this->db->group_start()
+                ->where('e2.event_date <=', $limit_date)
+                ->or_where('e2.event_date IS NULL', null, false)
+                ->group_end();
                 break;
         
             case 3: //alue_lastdate < 6 monhts
-                $date_6_months = strtotime($srchDate ." -6 months");
-                $limit_date = date ('Y-m-d' , $date_6_months);
-                $this->db->where('alue_lastdate <=', $limit_date);
+                $date_6_months_ago = strtotime($srchDate ." -6 months");
+                $limit_date = date ('Y-m-d' , $date_6_months_ago);
+                $this->db->group_start()
+                ->where('e2.event_date <=', $limit_date)
+                ->or_where('e2.event_date IS NULL', null, false)
+                ->group_end();
                 break;
 
-            case 4: // event_last_date < 12 monhts
-                $date_12_months = strtotime($srchDate ." -12 months");
-                $limit_date = date ('Y-m-d' , $date_12_months);
-                $this->db->where('event_last_date <=', $limit_date);
-                break;
-        
             case 5: // event_last_date < 4 monhts && alue_lastdate < 4 monhts
-                $date_4_months = strtotime($srchDate ." -4 months");
-                $limit_date = date ('Y-m-d' , $date_4_months);
-                $this->db->where('event_last_date <=', $limit_date);
-                $this->db->where('alue_lastdate <=', $limit_date);
+                $date_4_months_ago = strtotime($srchDate ." -4 months");
+                $limit_date = date ('Y-m-d' , $date_4_months_ago);
+                $this->db->where('e.event_date <=', $limit_date);
+                $this->db->group_start()
+                ->where('e2.event_date <=', $limit_date)
+                ->or_where('e2.event_date IS NULL', null, false)
+                ->group_end();
                 break;
 
             default: //Ei rajausta
@@ -141,13 +168,13 @@ class Territory_model extends CI_Model {
                 }
                 break;
                 
-            case "alue_lastdate":
+            case "event_last_date_returned":
                 $query = $this->db->order_by($sort_by, $sort_order);
                 $query = $this->db->order_by("SUBSTR(alue_code FROM 1 FOR 1)", "ASC");
                 $query = $this->db->order_by("CAST(SUBSTR(alue_code FROM 2) AS UNSIGNED)", "ASC");
                 break;
                 
-            case "event_last_date":
+            case "event_last_date_lent":
                 $query = $this->db->order_by("lainassa", "DESC");
                 $query = $this->db->order_by($sort_by, $sort_order);
                 $query = $this->db->order_by("SUBSTR(alue_code FROM 1 FOR 1)", "ASC");
@@ -182,14 +209,38 @@ class Territory_model extends CI_Model {
         return $ret;
     }
     
+    private function buildLastEventSubquery($types, $visitMethodFilter = null)
+    {
+        $this->db->select('event_alue, MAX(event_id) AS max_event_id')
+        ->from('alue_events')
+        ->where_in('event_type', $types);
+        
+        if ($visitMethodFilter !== null) {
+            $this->db->where('visit_method', $visitMethodFilter);
+        }
+        
+        return $this->db->group_by('event_alue')
+        ->get_compiled_select();
+    }
+    
     function getTerritoryCount($chkbox_sel, $date_sel, $code_sel = '0', $bt_switch = '0', $date_switch = '0') 
 	{
-		$query = $this->db->select('COUNT(*) as count', FALSE)
-            ->from('alue');
-
-        $this->db->join('(SELECT ee2.event_alue, event_user, ee2.event_date as mark_date FROM alue_events ee2 JOIN (SELECT event_alue, MAX(event_id) AS max_event_id FROM alue_events WHERE event_type = "2" GROUP BY event_alue) groupedee2 ON ee2.event_alue = groupedee2.event_alue AND ee2.event_id = groupedee2.max_event_id) e2', 'alue.alue_id = e2.event_alue','left');
-        $this->db->join('(SELECT ee.event_alue, event_user, ee.event_date as event_last_date FROM alue_events ee JOIN (SELECT event_alue, MAX(event_id) AS max_event_id FROM alue_events GROUP BY event_alue) groupedee ON ee.event_alue = groupedee.event_alue AND ee.event_id = groupedee.max_event_id) e', 'alue.alue_id = e.event_alue','left');
-        $this->db->join('person', 'e.event_user = person.person_id','left');
+        // viimeisin lainaustapahtuma per alue
+        $lastLoan = $this->buildLastEventSubquery(["1","3"]);
+            
+        $lastReturn = $this->buildLastEventSubquery(["2","4"]);
+            
+        $query = $this
+            ->db->select('COUNT(*) as count', FALSE)
+            ->from('alue')
+           
+        ->join("($lastLoan) ll", 'll.event_alue = alue.alue_id', 'left')
+        ->join('alue_events e', 'e.event_id = ll.max_event_id', 'left')
+            
+        ->join("($lastReturn) lr", 'lr.event_alue = alue.alue_id', 'left')
+        ->join('alue_events e2', 'e2.event_id = lr.max_event_id', 'left')
+            
+        ->join('person', 'person.person_id = e.event_user', 'left');
             
         // lainassa = false
 		if ($chkbox_sel == '1') {
@@ -298,31 +349,43 @@ class Territory_model extends CI_Model {
 	}
 	
 	
-	function get_alue_row($columns, $alue_numero, $event_save_switch) 
+	function get_alue_row($columns, $alue_numero)
 	{
-	    // Results query
-	    $query = $this->db->select($columns)
+	    $this->db->select($columns)
 	    ->from('alue');
 	    
-	    if ($event_save_switch > 0) {
-	        //Hae myös merkkaustapahtumat
-	        $this->db->join('(SELECT ee2.event_alue, event_user, ee2.event_date as mark_date, ee2.event_type as return_type FROM alue_events ee2 JOIN (SELECT event_alue, event_type, MAX(event_id) AS max_event_id FROM alue_events WHERE event_type IN ("2","4") GROUP BY event_alue) groupedee2 ON ee2.event_alue = groupedee2.event_alue AND ee2.event_id = groupedee2.max_event_id) e2', 'alue.alue_id = e2.event_alue','left');
-	        $this->db->join('(SELECT ee.event_alue, event_user, ee.event_date as event_last_date, ee.event_type as mark_type FROM alue_events ee JOIN (SELECT event_alue, event_type, MAX(event_id) AS max_event_id FROM alue_events WHERE event_type IN ("1","3") GROUP BY event_alue) groupedee ON ee.event_alue = groupedee.event_alue AND ee.event_id = groupedee.max_event_id) e', 'alue.alue_id = e.event_alue','left');
-	    } else {
-	        //Hae vain lainaukset ja palautukset
-	        $this->db->join('(SELECT ee2.event_alue, event_user, ee2.event_date as mark_date, ee2.event_type as return_type FROM alue_events ee2 JOIN (SELECT event_alue, event_type, MAX(event_id) AS max_event_id FROM alue_events WHERE event_type = "2" GROUP BY event_alue) groupedee2 ON ee2.event_alue = groupedee2.event_alue AND ee2.event_id = groupedee2.max_event_id) e2', 'alue.alue_id = e2.event_alue','left');
-	        $this->db->join('(SELECT ee.event_alue, event_user, ee.event_date as event_last_date, ee.event_type as mark_type FROM alue_events ee JOIN (SELECT event_alue, event_type, MAX(event_id) AS max_event_id FROM alue_events WHERE event_type = "1" GROUP BY event_alue) groupedee ON ee.event_alue = groupedee.event_alue AND ee.event_id = groupedee.max_event_id) e', 'alue.alue_id = e.event_alue','left');
-	    }
-	    $this->db->join('person', 'e.event_user = person.person_id','left');
+	    $this->db->join(
+	        $this->latestEventSubquery('e'),
+	        'alue.alue_id = e.event_alue',
+	        'left'
+	        );
+	    
+	    $this->db->join('person', 'e.event_user = person.person_id', 'left');
 	    
 	    $this->db->where('alue_code', $alue_numero);
-	        
-	    $result_array = $this->db->get()->result_array();
 	    
-	    return $result_array[0];
+	    return $this->db->get()->row_array();
 	}
 	
-	function get_terr_id($terr_code)
+	private function latestEventSubquery($alias)
+	{
+	    return "(SELECT ee.event_alue,
+                    ee.event_user,
+                    ee.event_date AS last_event_date,
+                    ee.event_type,
+                    ee.visit_method
+            FROM alue_events ee
+            JOIN (
+                SELECT event_alue, MAX(event_id) AS max_event_id
+                FROM alue_events
+                GROUP BY event_alue
+            ) grouped
+            ON ee.event_alue = grouped.event_alue
+            AND ee.event_id = grouped.max_event_id
+           ) {$alias}";
+	}
+	
+	public function get_terr_id($terr_code)
 	{
 	    $terr_id = -1;
 	    // Results query
@@ -340,7 +403,7 @@ class Territory_model extends CI_Model {
 	    return $terr_id;
 	}
 	
-	function get_territory_event_count($alue_id)
+	public function get_territory_event_count($alue_id)
 	{
 	    //count query
 	    $query = $this->db->select('COUNT(*) as count', FALSE)

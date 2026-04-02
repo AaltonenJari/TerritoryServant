@@ -51,7 +51,6 @@
         <div class="about-chapter">
           Ohjelma on kehitetty Kankaanpäässä. Se käyttää olemassa olevaa tietokantaa,
           jota voi käyttää rinnakkain myös aikaisemman alueidenhoito-ohjelman kanssa.
-          Jatkossa ohjelmaa voidaan kehittää myös muihin vastaaviin tarpeisiin.	
         </div>
 
         <div class="about-sub-hdr">Toimintaympäristö</div>
@@ -63,10 +62,10 @@
       
         <div class="about-sub-hdr">Käyttöliittymä</div>
         <ul class="about-list">
+          <li>Browser: <label id="browser_info"></label></li>
           <li>javaScript version: <label id="javascript_version"></label></li>
           <li>jQuery version: <label id="jquery_version"></label></li>
           <li>jQuery UI version: <label id="jquery_ui_version"></label> (kalenteri on suomalainen)</li>
-          <li>HTML5, CSS3</li>
         </ul>
         
         <div class="about-sub-hdr">Uutta versiossa 2.x:</div>
@@ -75,6 +74,7 @@
           <li>Siistimpi PDF-raporttien ulkoasu</li>
           <li>Mahdollisuus merkitä alue poistetuksi ilman pysyvää poistamista</li>
           <li>Mahdollisuus poistaa vanhentuneita tapahtumia ja henkilötietoja</li>
+          <li>Erillistoiminta luukutustapahtumille</li>
         </ul>
 
       </div><!-- about_desc -->
@@ -87,47 +87,68 @@
 </body>
 
 <script type="text/javascript">
-  var jsver = 1.0;
-</script>
-<script language="Javascript1.1">
-  jsver = 1.1;
-</script>
-<script language="Javascript1.2">
-  jsver = 1.2;
-</script>
-<script language="Javascript1.3">
-  jsver = 1.3;
-</script>
-<script language="Javascript1.4">
-  jsver = 1.4;
-</script>
-<script language="Javascript1.5">
-  jsver = 1.5;
-</script>
-<script language="Javascript1.6">
-  jsver = 1.6;
-</script>
-<script language="Javascript1.7">
-  jsver = 1.7;
-</script>
-<script language="Javascript1.8">
-  jsver = 1.8;
-</script>
-<script language="Javascript1.9">
-  jsver = 1.9;
-</script>
+/* ===== SELAIN ===== */
+function getBrowserInfo() {
+    var ua = navigator.userAgent;
+    var browser = "Unknown";
+    var version = "Unknown";
 
+    if (/MSIE/.test(ua)) {
+        browser = "Internet Explorer";
+        version = ua.match(/MSIE ([0-9.]+)/)[1];
+    } else if (/Trident/.test(ua)) {
+        browser = "Internet Explorer";
+        version = ua.match(/rv:([0-9.]+)/)[1];
+    } else if (/Edg/.test(ua)) {
+        browser = "Edge";
+        version = ua.match(/Edg\/([0-9.]+)/)[1];
+    } else if (/Chrome/.test(ua)) {
+        browser = "Chrome";
+        version = ua.match(/Chrome\/([0-9.]+)/)[1];
+    } else if (/Firefox/.test(ua)) {
+        browser = "Firefox";
+        version = ua.match(/Firefox\/([0-9.]+)/)[1];
+    } else if (/Safari/.test(ua)) {
+        browser = "Safari";
+        version = ua.match(/Version\/([0-9.]+)/)[1];
+    } else if (/OPR|Opera/.test(ua)) {
+        browser = "Opera";
+        var match = ua.match(/(OPR|Opera)\/([0-9.]+)/);
+        version = match ? match[2] : "Unknown";
+    }
 
-<script type="text/javascript">
-document.getElementById("javascript_version").innerHTML = jsver; 
+    return browser + " " + version;
+}
 
-document.getElementById("jquery_version").innerHTML = $().jquery; // yields the string "1.4.2", for example
-//jQuery.fn.jquery
-document.getElementById("jquery_ui_version").innerHTML = $.ui.version;
+/* ===== JS FEATURE DETECTION ===== */
+function detectJSVersion() {
+    var version = "ES5";
 
-//alert($.ui.version);
+    try { eval("() => {}"); version = "ES6"; } catch (e) {}
+    try { eval("class A {}"); version = "ES6+"; } catch (e) {}
+    try { eval("async function f() {}"); version = "ES2017"; } catch (e) {}
+    try { eval("let x = 1 ?? 2;"); version = "ES2020"; } catch (e) {}
 
+    return version;
+}
+
+/* ===== TULOSTUS ===== */
+document.getElementById("browser_info").innerHTML = getBrowserInfo();
+document.getElementById("javascript_version").innerHTML = detectJSVersion();
+
+/* jQuery */
+if (window.jQuery) {
+    document.getElementById("jquery_version").innerHTML = jQuery.fn.jquery;
+} else {
+    document.getElementById("jquery_version").innerHTML = "Not loaded";
+}
+
+/* jQuery UI */
+if (window.jQuery && jQuery.ui) {
+    document.getElementById("jquery_ui_version").innerHTML = jQuery.ui.version;
+} else {
+    document.getElementById("jquery_ui_version").innerHTML = "Not loaded";
+}
 </script>
-
 
 </html>
