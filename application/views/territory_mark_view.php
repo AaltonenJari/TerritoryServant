@@ -36,12 +36,12 @@
       if ($exhort == "RETURN") {
         $hdr_string = "TerritoryServant - Palautuskehotukset";
         $explainer = "Alue tulisi olla lainassa samalla julistajalla korkeintaan vuoden.";
-        $terr_url = base_url("index.php/territory_controller/display/name/asc/2/4/0");
+        $terr_url = base_url("index.php/territory_controller/display?sort_by=name&sort_order=asc&code=0&chk=2&date=4");
         
       } else {
         $hdr_string = "TerritoryServant - Merkitsemiskehotukset";
         $explainer = "Alue tulisi käydä läpi neljässä kuukaudessa. Sitten siitä tulisi ilmoittaa aluepöytään, jotta alue voidaan merkitä käydyksi (km 4/07 s. 8, od s. 98).";
-        $terr_url = base_url("index.php/territory_controller/display/name/asc/2/5/0");
+        $terr_url = base_url("index.php/territory_controller/display?sort_by=name&sort_order=asc&code=0&chk=2&date=5");
       }
     ?>
 
@@ -157,7 +157,7 @@
           </td>
           <td width="15%">
 		    <div id="reportShow">
-  	  		  <input type="button" value="Näytä" class="btnAction" onclick="jsFunction3('<?php echo $terr_url; ?>')" />
+  	  		  <input type="button" value="Näytä" class="btnAction" onclick="showTerritories('<?php echo $terr_url; ?>')" />
     		</div>
           </td>
           <td width="15%">
@@ -173,7 +173,7 @@
   </div><!-- wrapper -->
 </body>
 <script>
-function jsFunction3(param) {
+function showTerritories(param) {
 	var newUrl = param;
 	  //alert(newUrl);
 	  location.replace(newUrl);

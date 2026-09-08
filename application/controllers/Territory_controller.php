@@ -60,8 +60,7 @@ class Territory_controller extends CI_Controller
         $filter = urldecode($filter);
         
         //Jos parametreja ei ole annettu, älä käytä kv-viikon alkupäivää rajauksessa
-        $numargs = func_num_args();
-        if ($numargs == 0) {
+        if ($this->input->get('sort_by') === NULL) {
             //Poista tässä myös 'kierrosviikon alusta' -asetus
             $limit_date_sw = "0";
             $territory_view_state_data = array(
@@ -73,6 +72,9 @@ class Territory_controller extends CI_Controller
             if(isset($_SESSION['error'])){
                 unset($_SESSION['error']);
             }
+            
+            //Käytä käyntitavan ylikirjauksesta oletusta: Älä ylikirjaa
+            $this->session->set_userdata('override_visit_method', false);
         }
  
         //Näytetäänkö liikeakueet?
@@ -104,6 +106,9 @@ class Territory_controller extends CI_Controller
         if (empty($this->session->userdata('initialized'))) {
             $this->Settings_model->checkInitializeSettings();
         }
+        
+        //Käytä käyntitavan ylikirjauksesta oletusta: Älä ylikirjaa
+        $this->session->set_userdata('override_visit_method', false);
             
         $sort_by = 'event_last_date_returned';
         $sort_order = 'asc';
@@ -148,8 +153,13 @@ class Territory_controller extends CI_Controller
         //Käytetäänkö rajauspäivämääränä kuluvaa päivää vai kierrosviikon alkupäivää
         $limit_date_sw = $this->session->userdata('limit_date_sw');
 
-        //Piilotetaanko alueella luukutustapahtuma?
-        $hide_visit_method_sw = $this->session->userdata('hideVisitMethodSwitch');
+        //Piilotetaanko alueen luukutustapahtumat?
+        $ignore_visit_method = $this->session->userdata('override_visit_method');
+        if ($ignore_visit_method) {
+            $hide_visit_method_sw = false;
+        } else {
+            $hide_visit_method_sw = $this->session->userdata('hideVisitMethodSwitch');
+        }
         
         //Hae tiedot
         $results = $this->Territory_model->search($data['database_fields'], $sort_by, $sort_order, $chkbox_sel, $date_sel, $code_sel, $bt_switch, $limit_date_sw, $hide_visit_method_sw);
@@ -247,6 +257,9 @@ class Territory_controller extends CI_Controller
     
     public function display_mark_exhort() 
     {
+        //Ylikirjaa käyntitavan määritys
+        $this->session->set_userdata('override_visit_method', true);
+        
         //Aseta näyttöparametrit
         $sort_by = 'name';
         $sort_order = 'asc';
@@ -287,6 +300,9 @@ class Territory_controller extends CI_Controller
     
     public function display_return_exhort()
     {
+        //Ylikirjaa käyntitavan määritys
+        $this->session->set_userdata('override_visit_method', true);
+        
         //Aseta näyttöparametrit
         $sort_by = 'name';
         $sort_order = 'asc';
@@ -333,6 +349,9 @@ class Territory_controller extends CI_Controller
     
     public function display_co_report()
     {
+        //Ylikirjaa käyntitavan määritys
+        $this->session->set_userdata('override_visit_method', true);
+        
         //Setting parameters to view page
         $data['report_date'] = $this->session->userdata('circuitWeekStart');
         

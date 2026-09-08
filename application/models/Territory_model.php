@@ -77,7 +77,6 @@ class Territory_model extends CI_Model {
                 break;
             
             case 1: // event_last_date < 12 monhts
-            case 4: // event_last_date < 12 monhts
             case 6: //Circuot overseer's report
                 $date_12_months_ago = strtotime($srchDate ." -12 months");
                 $limit_date = date ('Y-m-d' , $date_12_months_ago);
@@ -105,6 +104,15 @@ class Territory_model extends CI_Model {
                 ->group_end();
                 break;
 
+            case 4: // event_last_date < 12 monhts
+                $date_12_months_ago = strtotime($srchDate ." -12 months");
+                $limit_date = date ('Y-m-d' , $date_12_months_ago);
+                $this->db->group_start()
+                ->where('e.event_date <=', $limit_date)
+                ->or_where('e.event_date IS NULL', null, false)
+                ->group_end();
+                break;
+                
             case 5: // event_last_date < 4 monhts && alue_lastdate < 4 monhts
                 $date_4_months_ago = strtotime($srchDate ." -4 months");
                 $limit_date = date ('Y-m-d' , $date_4_months_ago);
@@ -293,7 +301,7 @@ class Territory_model extends CI_Model {
                 $date_4_months = strtotime($srchDate ." -4 months");
                 $limit_date = date ('Y-m-d' , $date_4_months);
                 $this->db->where('event_last_date <=', $limit_date);
-                 $this->db->where('alue_lastdate <=', $limit_date);
+                $this->db->where('alue_lastdate <=', $limit_date);
                 break;
  
             default: //Ei rajausta

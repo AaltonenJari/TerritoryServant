@@ -41,7 +41,7 @@
     <?php } ?>
     </div>
  
-    <?php $terr_url = base_url("index.php/territory_controller/display/lainassa/asc/0/1/0"); ?>
+    <?php $terr_url = base_url("index.php/territory_controller/display?sort_by=lainassa&sort_order=asc&code=0&chk=0&date=1"); ?>
 
     <h2 class="coReportSubHdr">
     <?php if ($is_cw_coming) { ?>
@@ -163,7 +163,7 @@
           </td>
           <td width="15%">
 		    <div id="reportPrint">
-  	  		  <input type="button" value="Näytä" class="btnAction" onclick='jsFunction3("<?php echo $terr_url; ?>")'" />
+  	  		  <input type="button" value="Näytä" class="btnAction" onclick='showTerritories("<?php echo $terr_url; ?>")'" />
     		</div>
           </td>
           <td width="15%">
@@ -178,7 +178,7 @@
   </div><!-- wrapper -->
 </body>
 <script>
-function jsFunction3(param) {
+function showTerritories(param) {
 	var newUrl = param;
 	  //alert(newUrl);
 	  location.replace(newUrl);
