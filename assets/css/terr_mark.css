@@ -378,3 +378,33 @@ input.submit_btn_disabled {
 .bold-area {
     font-weight: bold;
 }
+
+.table3 .tooltip-group {
+    position: relative;
+}
+
+.table3 .tooltip-group::after {
+    content: attr(data-tooltip);
+    display: none;
+    position: absolute;
+
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+
+    background: rgba(51, 51, 51, 0.8);
+    color: white;
+    padding: 5px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+    z-index: 1000;
+}
+
+.table3 .tooltip-group:hover::after {
+    display: block;
+}
+
+.table3 .tooltip-group:not([data-tooltip])::after {
+    display: none !important;
+}
+

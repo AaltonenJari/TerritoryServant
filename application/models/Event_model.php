@@ -191,6 +191,10 @@ class Event_model extends CI_Model
                     $event_result_row->code = $value;
                     break;
                     
+                case "visit_method";
+                    $event_result_row->visit_method = $event_row->visit_method;
+                    break;
+                
                 case "event_type":
                     if ($event_date_order == "ASC") { //Jos näytetään vanhin tapahtuma ensin,
                         if (empty($prev_event_type)) {
@@ -228,7 +232,7 @@ class Event_model extends CI_Model
                     
                 case "person_name":
                     break;
-                    
+                
                 case "person_lastname":
                     if (empty($event_row->person_name) && empty($event_row->person_lastname)) {
                         $event_result_row->name = " ";
@@ -309,6 +313,7 @@ class Event_model extends CI_Model
         {
             $tabrow_names = array();
             $tabrow_events = array();
+            $tabrow_method = array();
             $tabrow = array();
             
             for($ai=0;$ai<$terr_count;$ai++) {
@@ -316,6 +321,7 @@ class Event_model extends CI_Model
                 $names_key = 'name_' . $ai;
                 $taken_key = 'taken_' . $ai;
                 $returned_key = 'returned_' . $ai;
+                $visit_method_key = 'visit_method_' . $ai;
                 
                 //Jos aluetta vastaava tieto löytyy, asetetaan se arvoksi, muuten käytetään tyhjää
                 if ($idx < count($events_data[$ai])) {
@@ -332,16 +338,24 @@ class Event_model extends CI_Model
                     } else {
                         $returned_value = "";
                     }
+
+                    if (property_exists($events_data[$ai][$idx], 'visit_method')) {
+                        $visit_method_value = $events_data[$ai][$idx]->visit_method;
+                    } else {
+                        $visit_method_value = "";
+                    }
                 } else {
                     $names_value = "";
                     $taken_value = "";
                     $returned_value = "";
+                    $visit_method_value = "";
                 }
                 
                 //Lisätään avain ja arvo taulukkoon
                 $tabrow_names[$names_key] = $names_value;
                 $tabrow_events[$taken_key] = $taken_value;
                 $tabrow_events[$returned_key] = $returned_value;
+                $tabrow_method[$visit_method_key] = $visit_method_value;
             }
             //Lisätään rivikohtaiset tiedot taulukoksi
             $tabrow_names_key = 'names';
@@ -349,6 +363,9 @@ class Event_model extends CI_Model
             
             $tabrow_events_key = 'dates';
             $tabrow[$tabrow_events_key] = $tabrow_events;
+            
+            $tabrow_method_key = 'method';
+            $tabrow[$tabrow_method_key] = $tabrow_method;
             
             //Lisätään rivin tiedot tulostaulukkoon
             $tab_result_rows[] = $tabrow;

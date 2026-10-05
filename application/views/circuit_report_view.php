@@ -163,7 +163,7 @@
           </td>
           <td width="15%">
 		    <div id="reportPrint">
-  	  		  <input type="button" value="Näytä" class="btnAction" onclick='showTerritories("<?php echo $terr_url; ?>")'" />
+  	  		  <input type="button" value="Näytä" class="btnAction" onclick="showTerritories('<?php echo $terr_url; ?>')" />
     		</div>
           </td>
           <td width="15%">

@@ -49,33 +49,48 @@
                     <th class="table3HdrRow" width="5%"></th>
                 </tr>
               </thead>
-              
-              <tbody class="table3body">
-                  <?php $rowidx = 0; ?>
-                  <?php foreach ($event_data as $row_key => $row_value) { ?>
-                    <?php foreach ($row_value as $row_item_key => $row_item_value) { ?>
-                      <tr>
-                        <?php if ($row_item_key == "names") { ?>
-                          <?php foreach ($row_item_value as $name_key => $name_value) { ?>
-                            <td class="event_nimi" colspan="4"><?php echo $name_value; ?></td>
-                          <?php } ?>
-                        <?php } else if ($row_item_key == "dates") { ?>
-                          <?php $colidx = 0; ?>
-                          <?php foreach ($row_item_value as $date_key => $date_value) {
-                            if ($colidx % 2 == 0) { ?>
-                              <td class="event_lainattu" colspan="2"><?php echo $date_value; ?></td>
-                            <?php } else { ?>
-                              <td class="event_palautettu" colspan="2"><?php echo $date_value; ?></td>
-                            <?php }
-                              $colidx++;
-                            ?>
-                         <?php } ?>
-                       <?php } ?>
-                    </tr>
-                    <?php }
-                    $rowidx++; ?>
-                  <?php } ?>
-              </tbody>
+
+			  <?php foreach ($event_data as $row_value) { ?>
+			    <?php  
+			    $luukutus = $row_value['method']['visit_method_0'];
+			    if ($luukutus == 1) {
+			        $tooltip = 'Alue käyty luukuttamalla'; 
+			    } else {
+			        $tooltip = '';
+			    }
+			    
+			    ?>
+    			<tbody class="tooltip-group"
+    			  <?php if ($tooltip != '') { ?>
+        			data-tooltip="<?php echo htmlspecialchars($tooltip); ?>"
+                  <?php } ?>>
+
+        		  <tr>
+            		<?php foreach ($row_value['names'] as $name_value) { ?>
+                	  <td class="event_nimi" colspan="4">
+                    	<?php echo $name_value; ?>
+                	  </td>
+            		<?php } ?>
+        		  </tr>
+
+        		  <tr>
+                	<?php $colidx = 0; ?>
+		            <?php foreach ($row_value['dates'] as $date_value) { ?>
+
+        		      <?php if ($colidx % 2 == 0) { ?>
+                	    <td class="event_lainattu" colspan="2">
+                    	  <?php echo $date_value; ?>
+                    	</td>
+                	  <?php } else { ?>
+                    	<td class="event_palautettu" colspan="2">
+                        	<?php echo $date_value; ?>
+                    	</td>
+                		<?php } ?>
+		              <?php $colidx++; ?>
+	            	<?php } ?>
+        		  </tr>
+    			</tbody>
+			  <?php } ?>
             </table>
 
             <?php

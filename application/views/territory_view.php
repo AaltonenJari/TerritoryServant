@@ -109,60 +109,119 @@
 	<div id="content" class="contentResizable" style="<?php echo $saved_height ? 'height:'.$saved_height.'px;' : ''; ?>">
 	  <div class="scrollInner">
           <table id="table2" class="order-table table">
+            <?php $hide_visit_method = $this->session->userdata('hideVisitMethodSwitch'); ?>
             <thead>
+              <?php if ($hide_visit_method == 0) {
+           	          $tooltip = 'Luukutus näkyvissä';
+         	        } 
+         	        else if ($hide_visit_method == 1) {
+         	          $tooltip = 'Luukutus piilossa';
+         	        }
+         	        else {
+         	          $tooltip = '';
+         	        }
+              ?>
+ 
               <tr>
     			<?php foreach ($display_fields as $field_name => $field_display) { ?>
-    			    <th <?php if ($sort_by == $field_name) echo "class=\"sort_" . $sort_order . "\"" ?>><span>
-						<?php $hdrurl = base_url("index.php/territory_controller/display")
-                                  . "?sort_by=" . $field_name
-                                  . "&sort_order=" . (($sort_order == 'asc' && $sort_by == $field_name) ? 'desc' : 'asc')
-                                  . "&code=" . $code_sel
-                                  . "&chk=" . $chkbox_sel
-                                  . "&date=" . $date_sel
-                                  . "&filter=" . urlencode($filter);
-						?>
-						<?php 
-                        $field_name_old = $field_display . "old";
-                        $new_order = ($sort_order == 'asc' && $sort_by == $field_name) ? 'desc' : 'asc';
-                        ?>
+    	 		  <?php switch ($field_name) {
+    	 		      case "event_visit_method":
+    	 		          break;
+    	 		      default: ?>
+    			        <th class="tooltip-cell <?php if ($sort_by == $field_name) echo "sort_" . $sort_order . "\"" ?>>
+    			          <span>
+						    <?php $hdrurl = base_url("index.php/territory_controller/display")
+                                    . "?sort_by=" . $field_name
+                                    . "&sort_order=" . (($sort_order == 'asc' && $sort_by == $field_name) ? 'desc' : 'asc')
+                                    . "&code=" . $code_sel
+                                    . "&chk=" . $chkbox_sel
+                                    . "&date=" . $date_sel
+                                    . "&filter=" . urlencode($filter);
+	  	 	  			    ?>
+						    <?php 
+                              $field_name_old = $field_display . "old";
+                              $new_order = ($sort_order == 'asc' && $sort_by == $field_name) ? 'desc' : 'asc';
+                            ?>
 
-						<a id="<?php echo $field_display; ?>"
-						   href="#"
-						   onclick="return sortBy('<?php echo $field_name; ?>', '<?php echo $new_order; ?>')">
-						   <?php echo $field_display; ?>
-						</a>
+						    <a id="<?php echo $field_display; ?>"
+						      href="#"
+						      onclick="return sortBy('<?php echo $field_name; ?>', '<?php echo $new_order; ?>')">
+						      <?php echo $field_display; ?>
+						    </a>
 
-						<input type="hidden" id="<?php echo $field_name_old; ?>" value="<?php echo $hdrurl; ?>" />
-    			    </span></th>
+						    <input type="hidden" id="<?php echo $field_name_old; ?>" value="<?php echo $hdrurl; ?>" />
+    			          </span>
+
+                          <?php if ($field_name == 'alue_detail') { ?>
+                            <span class="tooltip-text">
+                              <?php echo htmlspecialchars($tooltip); ?>
+                            </span>
+                          <?php } ?>
+    			        
+    			        </th>
+	     		      <?php
+    	       		    break;
+   				    } ?>
     			<?php } ?>
               </tr>
             </thead>
             <tbody>
 		      <?php $rowidx = 0; ?>
        		  <?php foreach ($alueet as $alue) { ?>
+         	  <?php if ($hide_visit_method == 0 && $alue->event_visit_method == 1) {
+           	          $tooltip = 'Käyty viimeksi ' . $aluedata_alt[$rowidx]['event_last_date_returned'];
+         	        } 
+         	        else if ($hide_visit_method == 1 && $aluedata_alt[$rowidx]['event_visit_method'] == 1) {
+         	            $tooltip = 'Käyty luukuttamalla ' . $aluedata_alt[$rowidx]['event_last_date_returned'];
+         	        }
+         	        else {
+         	            $tooltip = '';
+         	        }
+           	        $rowidx++;
+              ?>
                	<tr>
-               		<?php $rowidx++; ?>
 	    			<?php foreach ($display_fields as $field_name => $field_display) { ?>
 	    				<?php $field_name_data = $field_display . $rowidx ?>
    			    	    <?php $field_input_name_id = $field_display . "input". $rowidx ?>
-	    				<?php if ($field_name == "lainassa") { ?>
-     			    	  <td id="<?php echo $field_name_data; ?>">
-	    				    <input type="checkbox" name="<?php echo $field_input_name_id; ?>" value="Lainassa" disabled
-	    				      <?php if ($alue->$field_name == "1") { ?>checked<?php } ?>
-	    				    >
-     			    	  </td>
- 	    				<?php } else if ($field_name == "alue_code") { ?>
-    			    	  <?php $terr_url = base_url("index.php/Territory_controller/update") . "?terr=" . $alue->$field_name . "&filter=" . urlencode($filter); ?>
-    			    	  <td id="<?php echo $field_name_data; ?>"> 
-    			    	    <a href="#"
-   							  onclick="return openTerritory('<?php echo $alue->$field_name; ?>')">
-   							  <?php echo $alue->$field_name; ?>
-							</a>
-    			    	  </td>
- 	    				<?php } else { ?>
-    			    	  <td id="<?php echo $field_name_data; ?>"> <?php echo $alue->$field_name; ?> </td>
-    			    	<?php } ?>
-   					<?php } ?>
+   			    	    <?php switch ($field_name) {
+   			    	        case "lainassa": ?>
+  	    			    	  <td id="<?php echo $field_name_data; ?>">
+		   				    	<input type="checkbox" name="<?php echo $field_input_name_id; ?>" value="Lainassa" disabled
+	    				          <?php if ($alue->$field_name == "1") { ?>checked<?php } ?>
+	    				        >
+     			    	  	  </td>
+		                      <?php    
+		                      break;
+                            case "alue_code": ?>
+    			    	      <?php $terr_url = base_url("index.php/Territory_controller/update") . "?terr=" . $alue->$field_name . "&filter=" . urlencode($filter); ?>
+    			    	      <td id="<?php echo $field_name_data; ?>"> 
+    	   			    	    <a href="#"
+   								  onclick="return openTerritory('<?php echo $alue->$field_name; ?>')">
+   								  <?php echo $alue->$field_name; ?>
+								</a>
+    			    		  </td>
+    			    	      <?php 
+    			    	      break;
+                            case "alue_detail": ?>
+                              <td class="tooltip-cell" id="<?php echo $field_name_data; ?>">
+                                <?php echo $alue->$field_name; ?>
+
+                                <?php if ($tooltip != '') { ?>
+                                  <span class="tooltip-text">
+                                    <?php echo htmlspecialchars($tooltip); ?>
+                                  </span>
+                                <?php } ?>
+                              </td>
+    	       				  <?php
+    	       				  break;
+                            case "event_visit_method":
+                              break;
+                            default: ?>
+    			    	      <td id="<?php echo $field_name_data; ?>"> <?php echo $alue->$field_name; ?> </td>
+    	       				  <?php
+    	       				  break;
+   					     } ?>
+  				  <?php } ?>
        			</tr>
              <?php } ?>
 	        </tbody>

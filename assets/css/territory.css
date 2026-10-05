@@ -34,6 +34,7 @@
   /* With border-collapse, we must use box-shadow or psuedo elements
   for the header borders */
   box-shadow: 0px 0px 0 2px #e8e8e8;
+  overflow: visible;
 }
 
 /* Basic Table Styling */
@@ -55,9 +56,6 @@ table {
   color: rgba(0, 0, 0, 0.85);
 }
 
-#table2 tbody tr:hover {
-  background: #e6f7ff;
-}
 
 .filterArea {
   border: 1px solid black;
@@ -147,19 +145,48 @@ h2 {
 }
 
 #table2 tr th:nth-child(5), #table2 tr th:nth-child(6) {
-  text-align: right;
+  text-align: center;
 }
+
 
 #table2 tr td:nth-child(5), #table2 tr td:nth-child(6) {
   text-align: right;
 }
 
 #table2 tr:hover {
-  background: #e6f7ff !important;
+    background: #e6f7ff !important;
 }
 
-#table2 tr:hover td {
-  background: transparent;
+
+#table2 th:hover {
+    background: #009999 !important;
+    color: white;
+    z-index: 1000;
+}
+
+.tooltip-cell {
+    position: relative;
+    z-index: 1;
+}
+
+.tooltip-cell .tooltip-text {
+    visibility: hidden !important;
+    position: absolute;
+    left: 40%;
+    top: 50%;
+    transform: translateY(-50%);
+
+    background: rgba(51, 51, 51, 0.8);
+    color: white;
+    padding: 5px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+    z-index: 1001;
+}
+
+.tooltip-cell:hover .tooltip-text {
+    visibility: visible !important;
+    text-transform: none !important;
 }
 
 #totalcount
@@ -201,12 +228,22 @@ button {
   text-transform: uppercase;
 }
 
+.sort_asc,
+.sort_desc {
+    position: relative;
+    padding-right: 20px;
+}
+
 .sort_asc:after {
-  content: "▲";
+    content: "▲";
+    position: absolute;
+    right: 5px;
 }
 
 .sort_desc:after {
-	content: "▼";
+    content: "▼";
+    position: absolute;
+    right: 5px;
 }
 
 /* Set header to stick to the top of the container. */

@@ -77,7 +77,7 @@ class Territory_model extends CI_Model {
                 break;
             
             case 1: // event_last_date < 12 monhts
-            case 6: //Circuot overseer's report
+            case 6: // Circuot overseer's report
                 $date_12_months_ago = strtotime($srchDate ." -12 months");
                 $limit_date = date ('Y-m-d' , $date_12_months_ago);
                 $this->db->group_start()
@@ -95,7 +95,7 @@ class Territory_model extends CI_Model {
                 ->group_end();
                 break;
         
-            case 3: //alue_lastdate < 6 monhts
+            case 3: // alue_lastdate < 6 monhts
                 $date_6_months_ago = strtotime($srchDate ." -6 months");
                 $limit_date = date ('Y-m-d' , $date_6_months_ago);
                 $this->db->group_start()

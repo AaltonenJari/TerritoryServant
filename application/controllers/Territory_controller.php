@@ -168,6 +168,10 @@ class Territory_controller extends CI_Controller
         
         $data['num_results'] = $results['num_rows'];
         
+        //Hae tiedot
+        $results_alt = $this->Territory_model->search($data['database_fields'], $sort_by, $sort_order, $chkbox_sel, $date_sel, $code_sel, $bt_switch, $limit_date_sw, !$hide_visit_method_sw);
+        $data['aluedata_alt']  = $this->create_alternative_table($results_alt);
+        
         $data['pagination'] = "";
         
         //Parameters back to view page
@@ -495,6 +499,7 @@ class Territory_controller extends CI_Controller
         $row->alue_detail   = isset($aluerivi->alue_detail) ? $aluerivi->alue_detail : "";
         $row->alue_location = isset($aluerivi->alue_location) ? $aluerivi->alue_location : "";
         $row->lainassa      = isset($aluerivi->lainassa) ? $aluerivi->lainassa : "0";
+        $row->event_visit_method = isset($aluerivi->event_visit_method) ? $aluerivi->event_visit_method : "0";
         
         // Nimi
         $row->name = "";
@@ -567,6 +572,7 @@ class Territory_controller extends CI_Controller
             'alue_location' => 'alue_tietoja',
             'lainassa' => 'alue_lainassa',
             'alue_lastdate'	    => 'merkitty',
+            'e2.visit_method AS event_visit_method' => 'luukutettu',
             'e2.event_date AS event_last_date_returned' => 'palautettu',
             'e.event_date AS event_last_date_lent' => 'lainattu',
             'person_name' => 'etunimi',
@@ -582,12 +588,37 @@ class Territory_controller extends CI_Controller
             'alue_detail'	=> 'alue_nimi',
             'alue_location'	=> 'lisätieto',
             'lainassa'		=> 'lainassa',
+            'event_visit_method' => 'luukutettu',
             'event_last_date_returned'	=> 'käyty',
             'event_last_date_lent'	=> 'lainattu',
             'name'	        => 'kenellä'
         );
         
         return $display_fields;
+    }
+    
+    private function create_alternative_table($results) {
+        $filtered_results = array();
+        
+        foreach ($results['rows'] as $row) {
+            $last_date_returned = $this->formatDate($row->event_last_date_returned);
+            $visit_method = $row->event_visit_method;
+            
+            // Jos alueella ei ole tapahtumia, käytä alueen viimeisintä käyntipäivää.
+            if ($visit_method == null && $row->lainassa == 0) {
+                $last_date_returned = $this->formatDate($row->alue_lastdate);
+                $visit_method = 0;
+            }
+            
+            $filtered_results[] = array(
+                'alue_id' => $row->alue_id,
+                'alue_code' => $row->alue_code,
+                'event_visit_method' => $visit_method,
+                'event_last_date_returned' => $last_date_returned
+            );
+        }
+        
+        return $filtered_results;
     }
     
     private function create_terr_mark_rows($results)
@@ -918,7 +949,7 @@ class Territory_controller extends CI_Controller
             }
         }  //Lainaus
                
-        if ($alue_kayty) {
+        if ($alue_kayty && $visit_method == 0) {
             $data = array(
                 'lainassa' => $this->session->userdata('lainassa_uusi'),
                 'alue_lastdate' => $new_lastdate
@@ -1271,6 +1302,7 @@ class Territory_controller extends CI_Controller
         $event_fields = array(
             'alue_code'		=> 'alue_koodi',
             'event_type'	=> 'event_tyyppi',
+            'visit_method'  => 'luukutettu',
             'event_date'	=> 'event_date',
             'person_name'	=> 'etunimi',
             'person_lastname'	=> 'sukunimi'
