@@ -128,8 +128,17 @@
     	 		      case "event_visit_method":
     	 		          break;
     	 		      default: ?>
-    			        <th class="tooltip-cell <?php if ($sort_by == $field_name) echo "sort_" . $sort_order . "\"" ?>>
-    			          <span>
+    	 		        <?php
+						  $th_class = 'tooltip-cell';
+
+						  if ($sort_by == $field_name) {
+    						$th_class .= ' sort_' . $sort_order;
+						  }
+						?>
+
+						<th class="<?php echo $th_class; ?>">
+
+    			        <span>
 						    <?php $hdrurl = base_url("index.php/territory_controller/display")
                                     . "?sort_by=" . $field_name
                                     . "&sort_order=" . (($sort_order == 'asc' && $sort_by == $field_name) ? 'desc' : 'asc')

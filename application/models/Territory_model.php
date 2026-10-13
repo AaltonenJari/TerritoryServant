@@ -272,36 +272,51 @@ class Territory_model extends CI_Model {
                 $limit_date = "";
                 break;
                 
-            case 1: // alue_lastdate < 12 monhts
-            case 6: //Circuot overseer's report    
-                $date_12_months = strtotime($srchDate ." -12 months");
-                $limit_date = date ('Y-m-d' , $date_12_months);
-                $this->db->where('alue_lastdate <=', $limit_date);
+            case 1: // event_last_date < 12 monhts
+            case 6: // Circuot overseer's report
+                $date_12_months_ago = strtotime($srchDate ." -12 months");
+                $limit_date = date ('Y-m-d' , $date_12_months_ago);
+                $this->db->group_start()
+                ->where('e2.event_date <=', $limit_date)
+                ->or_where('e2.event_date IS NULL', null, false)
+                ->group_end();
                 break;
                 
             case 2: // alue_lastdate < 4 monhts
-                $date_4_months = strtotime($srchDate ." -4 months");
-                $limit_date = date ('Y-m-d' , $date_4_months);
-                $this->db->where('alue_lastdate <=', $limit_date);
+                $date_4_months_ago = strtotime($srchDate ." -4 months");
+                $limit_date = date ('Y-m-d' , $date_4_months_ago);
+                $this->db->group_start()
+                ->where('e2.event_date <=', $limit_date)
+                ->or_where('e2.event_date IS NULL', null, false)
+                ->group_end();
                 break;
-                
-            case 3: //alue_lastdate < 6 monhts
-                $date_6_months = strtotime($srchDate ." -6 months");
-                $limit_date = date ('Y-m-d' , $date_6_months);
-                $this->db->where('alue_lastdate <=', $limit_date);
+            
+            case 3: // alue_lastdate < 6 monhts
+                $date_6_months_ago = strtotime($srchDate ." -6 months");
+                $limit_date = date ('Y-m-d' , $date_6_months_ago);
+                $this->db->group_start()
+                ->where('e2.event_date <=', $limit_date)
+                ->or_where('e2.event_date IS NULL', null, false)
+                ->group_end();
                 break;
-                
+            
             case 4: // event_last_date < 12 monhts
-                $date_12_months = strtotime($srchDate ." -12 months");
-                $limit_date = date ('Y-m-d' , $date_12_months);
-                $this->db->where('event_last_date <=', $limit_date);
+                $date_12_months_ago = strtotime($srchDate ." -12 months");
+                $limit_date = date ('Y-m-d' , $date_12_months_ago);
+                $this->db->group_start()
+                ->where('e.event_date <=', $limit_date)
+                ->or_where('e.event_date IS NULL', null, false)
+                ->group_end();
                 break;
                 
             case 5: // event_last_date < 4 monhts && alue_lastdate < 4 monhts
-                $date_4_months = strtotime($srchDate ." -4 months");
-                $limit_date = date ('Y-m-d' , $date_4_months);
-                $this->db->where('event_last_date <=', $limit_date);
-                $this->db->where('alue_lastdate <=', $limit_date);
+                $date_4_months_ago = strtotime($srchDate ." -4 months");
+                $limit_date = date ('Y-m-d' , $date_4_months_ago);
+                $this->db->where('e.event_date <=', $limit_date);
+                $this->db->group_start()
+                ->where('e2.event_date <=', $limit_date)
+                ->or_where('e2.event_date IS NULL', null, false)
+                ->group_end();
                 break;
  
             default: //Ei rajausta
@@ -405,6 +420,24 @@ class Territory_model extends CI_Model {
 	    $result_array = $this->db->get()->result_array();
 	    if (!empty($result_array)) {
 	        $terr_id = $result_array[0]['alue_id'];
+	    } else {
+	        $terr_id = -1;
+	    }
+	    return $terr_id;
+	}
+	
+	public function get_terr_aditional_info($terr_code)
+	{
+	    $terr_id = -1;
+	    // Results query
+	    $query = $this->db->select('alue_location')
+	    ->from('alue');
+	    
+	    $this->db->where('alue_code', $terr_code);
+	    
+	    $result_array = $this->db->get()->result_array();
+	    if (!empty($result_array)) {
+	        $terr_id = $result_array[0]['alue_location'];
 	    } else {
 	        $terr_id = -1;
 	    }

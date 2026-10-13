@@ -356,32 +356,23 @@ class Territory_controller extends CI_Controller
         //Ylikirjaa käyntitavan määritys
         $this->session->set_userdata('override_visit_method', true);
         
-        //Setting parameters to view page
-        $data['report_date'] = $this->session->userdata('circuitWeekStart');
-        
         $data['circuit_week_start'] = $this->session->userdata('circuitWeekStart');
         $data['circuit_week_end'] = $this->session->userdata('circuitWeekEnd');
         
-        //Käytä raportin vertailupäivänä kierrosviikon alkupäivää
-        $date_sw = '1';
         
         $limit_date_sw = $this->session->userdata('limit_date_sw');
-        //Jos Kierrosviikon alusta -täppä on päällä, käytä kv-viikon alkupäivää vaikka se olisi jo mennyt
+
+        //Jos Kierrosviikon alusta -täppä on päällä, käytä kv-viikon alkupäivää
         if (!empty($limit_date_sw)) {
             $data['is_cw_coming'] = true;
+            $date_sw = '1';
         } else {
-            $isCwComing = false;
-            $data['is_cw_coming'] = $isCwComing;
-            
-            if (!$isCwComing) {
-                //Jos kierrosviikko on mennyt, raporttipäiväksi kuluva päivä.
-                //Vierailun ajankohtaa ei mäytetä.
-                $today = date("Y-m-d");
-                $unixDate = strtotime($today);
-                $data['report_date'] = date('j.n.Y', $unixDate);
-                $date_sw = '0'; //Vertailupäiväksi kuluva päivä
-            }
+            // muuten kuluva päivää
+            $data['is_cw_coming'] = false;
+            $date_sw = '0';
         }
+        
+        $data['report_date'] = $this->getReportDate($limit_date_sw);
         
         //Total count query
         $territory_total = $this->Territory_model->getTerritoryCount('0', '0', '0', '1', $date_sw);
@@ -429,6 +420,26 @@ class Territory_controller extends CI_Controller
         $this->load->view('circuit_report_view', $data);
     }
 
+    private function getReportDate($limit_date_sw) {
+        
+        //Jos Kierrosviikon alusta -täppä on päällä,
+        if (!empty($limit_date_sw)) {
+            // käytä kv-viikon alkupäivää
+            $report_date = $this->session->userdata('circuitWeekStart');
+            
+            $data['is_cw_coming'] = true;
+            
+        } else {
+            // käytä kuluvaa päivää
+            $today = date("Y-m-d");
+            $unixDate = strtotime($today);
+            $report_date = date('j.n.Y', $unixDate);
+        
+            $data['is_cw_coming'] = false;
+        }
+        return $report_date;
+    }
+    
     public function kierrosviikon_alusta($param_checked) 
     {
       
@@ -478,6 +489,84 @@ class Territory_controller extends CI_Controller
                 $this->session->userdata('filter'));
                 break;
         }
+    }
+    
+    public function display_statistics() {
+        //Setting parameters to view page
+        $limit_date_sw = $this->session->userdata('limit_date_sw');
+        
+        //Jos Kierrosviikon alusta -täppä on päällä, käytä kv-viikon alkupäivää
+        if (!empty($limit_date_sw)) {
+            $data['is_cw_coming'] = true;
+            $date_sw = '1';
+        } else {
+            // muuten kuluva päivää
+            $data['is_cw_coming'] = false;
+            $date_sw = '0';
+        }
+        
+        $data['report_date'] = $this->getReportDate($limit_date_sw);
+        
+        
+        //Näytetäänkö myäs liikeakueet?
+        $bt_switch = $this->session->userdata('btSwitch');
+        
+        $statistic_results = array();
+        
+        //Hae aluekoodit
+        $territoryCodes = $this->Event_model->get_terr_codes();
+        foreach ($territoryCodes['rows'] as $alueKoodi) {
+            $group_code = $alueKoodi->letter;
+            
+            if (($bt_switch == '0') && ($group_code == 'L')) {
+                continue;
+            }
+            
+            $terr_code = $group_code . '1'; //Ryhmän 1. alue
+            $group_name = $this->Territory_model->get_terr_aditional_info($terr_code);
+            
+            if ($group_name == '-1') {
+                // Jos ei löydy, kokeillaan neljättä riviä
+                $terr_code = $group_code . '4'; //Ryhmän 4. alue
+                $group_name = $this->Territory_model->get_terr_aditional_info($terr_code);
+            }
+            
+            //Alueryhmän alueiden kokonaismäärä
+            $group_total = $this->Territory_model->getTerritoryCount('0', '0', $group_code, $bt_switch, '0');
+            
+            //Alueryhmän alueista vuosi käymättä
+            $group_uncovered = $this->Territory_model->getTerritoryCount('0', '4', $group_code, $bt_switch, '0');
+            
+            $statistic_results[] = array(
+                'code' => $group_code,
+                'name' => $group_name,
+                'uncovered' => $group_uncovered,
+                'uncovered_pc' => (int)($group_uncovered / $group_total * 100),
+                'total' => $group_total
+            );
+        }
+        
+        $data['statistic_data'] =  $statistic_results;
+        
+        // Etsitään suurin total-arvo, jota käytetään leveyksien laskennassa.
+        $max_total = 0;
+        
+        foreach ($data['statistic_data'] as $row) {
+            $max_total = max($max_total, (int)$row['total']);
+        }
+        $data['max_total'] = $max_total;
+        
+        // Raja, jonka alapuolella teksti tulostetaan pylvään ulkopuolelle.
+        $data['text_width_limit'] = 15;
+        
+        //Total count of territories
+        $territory_uncovered = $this->Territory_model->getTerritoryCount('0', '4', '0', '0', '0');
+        
+        $territory_total = $this->Territory_model->getTerritoryCount('0', '0', '0', '0', '0');
+        $data['num_results'] = (int)($territory_uncovered / $territory_total * 100);
+        
+        $data['saved_height'] = $this->session->userdata('table_height');
+        $this->load->view('statistics_view', $data);
     }
     
     private function create_terr_displayrows($results) 
