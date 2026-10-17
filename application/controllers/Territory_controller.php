@@ -427,15 +427,11 @@ class Territory_controller extends CI_Controller
             // käytä kv-viikon alkupäivää
             $report_date = $this->session->userdata('circuitWeekStart');
             
-            $data['is_cw_coming'] = true;
-            
         } else {
             // käytä kuluvaa päivää
             $today = date("Y-m-d");
             $unixDate = strtotime($today);
             $report_date = date('j.n.Y', $unixDate);
-        
-            $data['is_cw_coming'] = false;
         }
         return $report_date;
     }
@@ -464,8 +460,6 @@ class Territory_controller extends CI_Controller
             $this->session->set_userdata($territory_view_state_data);
         }
         
-        $limit_date_sw = $this->session->userdata('limit_date_sw');
-                
         $date_sel = $this->session->userdata('date_sel');
         switch ($date_sel) {
             case 4: //takaisin palautuskehoitus-sivulle
@@ -480,6 +474,10 @@ class Territory_controller extends CI_Controller
                 $this->display_co_report();
                 break;
                 
+            case 7: //Tilasto
+                $this->display_statistics();
+                break;
+            
             default: //Palaa pääsivulle
                 $this->display($this->session->userdata('sort_by'),
                 $this->session->userdata('sort_order'),
@@ -532,10 +530,10 @@ class Territory_controller extends CI_Controller
             }
             
             //Alueryhmän alueiden kokonaismäärä
-            $group_total = $this->Territory_model->getTerritoryCount('0', '0', $group_code, $bt_switch, '0');
+            $group_total = $this->Territory_model->getTerritoryCount('0', '0', $group_code, $bt_switch, $date_sw);
             
             //Alueryhmän alueista vuosi käymättä
-            $group_uncovered = $this->Territory_model->getTerritoryCount('0', '4', $group_code, $bt_switch, '0');
+            $group_uncovered = $this->Territory_model->getTerritoryCount('0', '4', $group_code, $bt_switch, $date_sw);
             
             $statistic_results[] = array(
                 'code' => $group_code,
@@ -560,11 +558,17 @@ class Territory_controller extends CI_Controller
         $data['text_width_limit'] = 15;
         
         //Total count of territories
-        $territory_uncovered = $this->Territory_model->getTerritoryCount('0', '4', '0', '0', '0');
+        $territory_uncovered = $this->Territory_model->getTerritoryCount('0', '4', '0', '0', $date_sw);
         
-        $territory_total = $this->Territory_model->getTerritoryCount('0', '0', '0', '0', '0');
+        $territory_total = $this->Territory_model->getTerritoryCount('0', '0', '0', '0', $date_sw);
         $data['num_results'] = (int)($territory_uncovered / $territory_total * 100);
         
+        $date_sel = '7';
+        $territory_view_state_data = array(
+                'date_sel'          => $date_sel
+        );
+        $this->session->set_userdata($territory_view_state_data);
+            
         $data['saved_height'] = $this->session->userdata('table_height');
         $this->load->view('statistics_view', $data);
     }
