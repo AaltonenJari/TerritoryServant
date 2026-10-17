@@ -347,25 +347,6 @@ a slight movement of the header row */
   margin: auto;
 }
 
-.coReportSubHdr {
-  padding:10px 10px 0px 40px; 
-  font-family: Verdana,Arial,Helvetica,sans-serif;
-  font-size: 18px;
-  color: #228;
-}
-
-.coReportRow {
-  height: 15px;
-  padding:5px 5px 5px 100px; 
-  font-family: "Arial", Times, serif;
-}
-
-.coReportRow2 {
-  height: 15px;
-  padding:5px 5px 5px 130px; 
-  font-family: "Arial", Times, serif;
-}
-
 .about_desc {
   padding-left: 60px;
   padding-right: 60px;

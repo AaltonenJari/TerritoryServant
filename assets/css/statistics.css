@@ -51,6 +51,29 @@ h2 {
   color: #228;
 }
 
+.coReportSubHdr {
+  padding: 5px 10px 0px 40px; 
+  font-family: Verdana,Arial,Helvetica,sans-serif;
+  font-size: 18px;
+  color: #228;
+}
+
+.coReportRow {
+  height: 15px;
+  padding:5px 5px 5px 65px; 
+  font-family: "Arial", Times, serif;
+}
+
+.coReportRow2 {
+  height: 15px;
+  padding:5px 5px 5px 90px; 
+  font-family: "Arial", Times, serif;
+}
+
+.tyhja_rivi {
+  height: 10px;
+}
+
 /* Vain tilastonäyttö skrollaa */
 .statistic-area {
     flex: 1 1 auto;
