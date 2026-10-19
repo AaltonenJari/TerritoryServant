@@ -4,7 +4,7 @@ function statisticToPDF()
 
 	var style = "<style>";
 
-	style += ".statistic-area { margin: 20px 0; padding: 2px 20px; background-color: #f1fbff; }";
+	style += ".statistic-area { margin: 20px 0; padding: 2px 20px; background-color: #ffffff; }";
 	
     style += "h1 {text-align: center; font-family: \"Arial\", Times, serif; font-size: 26px; }";
 
@@ -23,20 +23,28 @@ function statisticToPDF()
 
 	style += "</style>";
 
-	
-	//CREATE A WINDOW OBJECT
-	var win = window.open('', '', 'height=700,width=700');
-	
-	win.document.write('<!DOCTYPE html>');
-	win.document.write('<html><head>');
-	win.document.write('<title>Tilastotietoa</title>');
-	win.document.write(style);
-	win.document.write('</head>');
-	win.document.write('<body>');
-	win.document.write(sContent);
-	win.document.write('</body></html>');
-	
-	win.document.close();
-	
-	win.print();
+	contentToPDF("Tilastotietoa", style)
+}
+
+function contentToPDF(filename, style)
+{
+    var sContent = document.getElementById('content').innerHTML;
+  
+    //CREATE A WINDOW OBJECT
+    var win = window.open('', '', 'height=700,width=700');
+
+    win.document.write('<!DOCTYPE html>');
+    win.document.write('<html><head>');
+	win.document.write('<title>');
+	win.document.write(filename);
+	win.document.write('</title>');
+    win.document.write(style);
+    win.document.write('</head>');
+    win.document.write('<body>');
+    win.document.write(sContent);
+    win.document.write('</body></html>');
+
+    win.document.close();
+
+    win.print();
 }

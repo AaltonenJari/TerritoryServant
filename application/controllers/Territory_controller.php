@@ -483,6 +483,10 @@ class Territory_controller extends CI_Controller
                 $this->display_statistics();
                 break;
             
+            case 8: //Piirakkadiagrammi
+                $this->display_pie_chart();
+                break;
+            
             default: //Palaa pääsivulle
                 $this->display($this->session->userdata('sort_by'),
                 $this->session->userdata('sort_order'),
@@ -495,6 +499,44 @@ class Territory_controller extends CI_Controller
     }
     
     public function display_statistics() {
+        //Hae tilastotiedot
+        $data = $this->get_statistic_data();
+        
+        // Näytetään tilastonäyttö uudelleen, jos kv-täppä vaihtuu
+        $date_sel = '7';
+        $territory_view_state_data = array(
+            'date_sel'          => $date_sel
+        );
+        $this->session->set_userdata($territory_view_state_data);
+        
+        // näytä tiedot
+        $this->load->view('statistics_view', $data);
+    }
+    
+    public function display_pie_chart() {
+        //Hae tilastotiedot
+        $data = $this->get_statistic_data();
+        
+        // Näytetään piirakkakuvioäyttö uudelleen, jos kv-täppä vaihtuu
+        $date_sel = '8';
+        $territory_view_state_data = array(
+            'date_sel'          => $date_sel
+        );
+        $this->session->set_userdata($territory_view_state_data);
+        
+        $pie_segments = array();
+        $data['legend_items'] = $this->get_pie_legend_items($data['statistic_data'], $data['uncovered_total'], $pie_segments);
+        
+        $data['pie_background'] = ($data['uncovered_total'] > 0)
+        ? 'conic-gradient(' . implode(', ', $pie_segments) . ')'
+            : '#dbe7ed';
+
+
+        // näytä tiedot
+        $this->load->view('pie_chart_view', $data);
+    }
+    
+    private function get_statistic_data() {
         //Setting parameters to view page
         $limit_date_sw = $this->session->userdata('limit_date_sw');
         
@@ -560,22 +602,64 @@ class Territory_controller extends CI_Controller
         $data['max_total'] = $max_total;
         
         // Raja, jonka alapuolella teksti tulostetaan pylvään ulkopuolelle.
-        $data['text_width_limit'] = 15;
+        $data['text_width_limit'] = 20;
         
         //Total count of territories
-        $territory_uncovered = $this->Territory_model->getTerritoryCount('0', '4', '0', '0', $date_sw);
+        $territory_uncovered_total = $this->Territory_model->getTerritoryCount('0', '4', '0', '0', $date_sw);
+        $data['uncovered_total'] = $territory_uncovered_total;
         
         $territory_total = $this->Territory_model->getTerritoryCount('0', '0', '0', '0', $date_sw);
-        $data['num_results'] = (int)($territory_uncovered / $territory_total * 100);
+        $data['num_results'] = (int)($territory_uncovered_total / $territory_total * 100);
         
-        $date_sel = '7';
-        $territory_view_state_data = array(
-                'date_sel'          => $date_sel
-        );
-        $this->session->set_userdata($territory_view_state_data);
-            
+       
         $data['saved_height'] = $this->session->userdata('table_height');
-        $this->load->view('statistics_view', $data);
+        
+        return $data;
+    }
+    
+    private function get_pie_legend_items($statistic_data, $uncovered_total, &$pie_segments) {
+        $pie_colors = array(
+            '#247BA0', // Sininen
+            '#70C1B3', // Turkoosi
+            '#F3A712', // Meripihka
+            '#8064A2', // Violetti
+            '#E76F8A', // Roosa
+            '#008F95', // Tumma turkoosi
+            '#577590', // Sinertävä harmaa
+            '#E07A5F', // Terrakotta
+            '#7A9E45'  // Vihreä
+        );
+        
+        $legend_items = array();
+        $current_degree = 0;
+        
+        foreach ($statistic_data as $index => $item) {
+            $uncovered = (int) $item['uncovered'];
+            
+            $percentage = ($uncovered_total > 0)
+            ? $uncovered / $uncovered_total * 100
+            : 0;
+            
+            $next_degree = $current_degree + $percentage * 3.6;
+            $color = $pie_colors[$index % count($pie_colors)];
+            
+            if ($percentage > 0) {
+                $pie_segments[] = $color . ' '
+                    . $current_degree . 'deg '
+                        . $next_degree . 'deg';
+            }
+            
+            $legend_items[] = array(
+                'name'       => $item['name'],
+                'uncovered'  => $uncovered,
+                'percentage' => $percentage,
+                'color'      => $color
+            );
+            
+            $current_degree = $next_degree;
+        }
+        
+        return $legend_items;
     }
     
     private function create_terr_displayrows($results) 

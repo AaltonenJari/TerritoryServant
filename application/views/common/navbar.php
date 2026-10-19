@@ -43,6 +43,7 @@
                   <li><a class="nav-sub-link" href="<?php echo base_url("index.php/territory_controller/display_return_exhort"); ?>">Palauttamiskehotuslistat</a></li>
                   <li><a class="nav-sub-link" href="<?php echo base_url("index.php/territory_controller/display_co_report"); ?>">Kv-raportti</a></li>
                   <li><a class="nav-sub-link" href="<?php echo base_url("index.php/territory_controller/display_statistics"); ?>">Tilastotiedot</a></li>
+                  <li><a class="nav-sub-link" href="<?php echo base_url("index.php/territory_controller/display_pie_chart"); ?>">Piirakkakuvio</a></li>
                   <?php 
                     $todayDate = new DateTime(); // today
                     $cvwEndDate = new DateTime($this->session->userdata('circuitWeekEnd'));

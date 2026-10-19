@@ -21,10 +21,10 @@ function exhortListToPDF(filename)
 	style += ".alue_lastdate, .event_last_date { text-align: right; padding-right: 15px;	width: 20%; } ";
 	style += "</style>";
 
-	tableToPDF(filename, style)
+	contentToPDF(filename, style)
 }
 
-function tableToPDF(filename, style)
+function contentToPDF(filename, style)
 {
     var sContent = document.getElementById('content').innerHTML;
   

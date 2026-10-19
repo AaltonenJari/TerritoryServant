@@ -39,7 +39,11 @@
       </div>
     
       <div class="statistic-area">
-        <?php foreach ($statistic_data as $row): ?>
+        <h3 class="statistic-chart-title">
+          Alueiden käyntitilanne alueryhmittäin
+        </h3>
+ 
+          <?php foreach ($statistic_data as $row): ?>
           <?php
           $code = htmlspecialchars($row['code'], ENT_QUOTES, 'UTF-8');
           $name = htmlspecialchars($row['name'], ENT_QUOTES, 'UTF-8');
