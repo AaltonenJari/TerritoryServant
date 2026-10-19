@@ -290,6 +290,8 @@ class Territory_controller extends CI_Controller
         
         //Käytetäänkö rajauspäivämääränä kuluvaa päivää vai kierrosviikon alkupäivää
         $limit_date_sw = $this->session->userdata('limit_date_sw');
+        $data['report_date'] = $this->getReportDate($limit_date_sw);
+        
         //Hae tiedot
         $results = $this->Territory_model->search($data['database_fields'], $sort_by, $sort_order, $chkbox_sel, $date_sel, $code_sel, $bt_switch, $limit_date_sw);
         
@@ -333,6 +335,7 @@ class Territory_controller extends CI_Controller
         
         //Käytetäänkö rajauspäivämääränä kuluvaa päivää vai kierrosviikon alkupäivää
         $limit_date_sw = $this->session->userdata('limit_date_sw');
+        $data['report_date'] = $this->getReportDate($limit_date_sw);
         
         //Hae tiedot
         $results = $this->Territory_model->search($data['database_fields'], $sort_by, $sort_order, $chkbox_sel, $date_sel, $code_sel, $bt_switch, $limit_date_sw);
@@ -425,7 +428,9 @@ class Territory_controller extends CI_Controller
         //Jos Kierrosviikon alusta -täppä on päällä,
         if (!empty($limit_date_sw)) {
             // käytä kv-viikon alkupäivää
-            $report_date = $this->session->userdata('circuitWeekStart');
+            $startDate = $this->session->userdata('circuitWeekStart');
+            $unixDate = strtotime($startDate);
+            $report_date = date('j.n.Y', $unixDate);
             
         } else {
             // käytä kuluvaa päivää

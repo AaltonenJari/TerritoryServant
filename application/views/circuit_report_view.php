@@ -171,20 +171,15 @@
       </div>
 
       <div class="bottomButtons">
-        <div id="reportPrint">
-            <input type="button"
-                   value="Raportti"
-                   class="btnAction"
-                   onclick="coReportToPDF()" />
-        </div>
+        <input type="button"
+               value="Raportti"
+               class="btnAction"
+               onclick="coReportToPDF()" />
 
-        <div id="reportPrint">
-            <input type="button"
-                   value="Näytä"
-                   class="btnAction"
-                   onclick="showTerritories('<?php echo $terr_url; ?>')" />
-        </div>
-
+        <input type="button"
+               value="Näytä"
+               class="btnAction"
+               onclick="showTerritories('<?php echo $terr_url; ?>')" />
       </div>
     </div>
 

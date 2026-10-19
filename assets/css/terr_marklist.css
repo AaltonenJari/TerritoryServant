@@ -1,0 +1,191 @@
+html,
+body {
+    height: 100%;
+    margin: 0;
+}
+
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+    margin: 0 8px;
+}
+
+/* Yläpalkki pysyy paikallaan. Ylikirjataan tässä navbar.css:ssä oleva tyylimäärittely */
+.alue_navbar {
+    flex: 0 0 68px;
+    width: 100%;
+    box-sizing: border-box;
+    padding-top: 16px;
+}
+
+/* Sisältöalue vie jäljelle jäävän tilan */
+#content {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: hidden;
+}
+
+/* Otsikko ei skrollaa */
+.headerArea {
+    flex: 0 0 auto;
+    padding: 0 10px 0 40px;
+    text-align: left;
+
+    border-bottom: 1px solid #cbdfe8;
+    box-shadow: 0 2px 5px rgba(50, 90, 110, 0.06);
+}
+
+h1 {
+  font-family: Verdana,Arial,Helvetica,sans-serif;
+  font-size: 24px;
+  padding-top: 10px;
+}
+
+/* Vain tilastonäyttö skrollaa */
+.content-area {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: auto;
+
+    padding: 2px 25px 2px 40px;
+    background: #fdffff !important;
+    box-sizing: border-box;
+}
+
+/* If we use border,
+we must use table-collapse to avoid
+a slight movement of the header row */
+.table4 {
+ border-collapse: collapse;
+   page-break-inside: avoid;
+   border: 1px solid #cbdfe8;
+}
+
+/* Because we must set sticky on th,
+ we have to apply background styles here
+ rather than on thead */
+.table4 th {
+  text-align: left;
+  background: white;	
+}
+
+.table4 tbody tr td {
+  border-collapse: collapse;
+}
+
+.table4 tbody tr {
+  text-align: left;
+}
+
+.table4 tbody tr:hover {
+  background: #e6f7ff;
+}
+
+.table4 tr:hover {
+  background: #e6f7ff !important;
+}
+
+.table4 tr:hover td {
+  background: transparent;
+}
+
+.tyhja_rivi {
+  height: 15px;
+}
+
+.kehotus_selite {
+  height: 25px;
+  padding:8px 5px 5px 30px; 
+  font-family: "Arial", Times, serif;
+  font-size: 12px;
+}
+
+.julistaja {
+  padding-left: 20px;
+  padding-top: 15px;
+  font-family: "Arial", Times, serif;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.ohjeteksti {
+  padding-left: 30px;	
+}
+
+.otsikko_numero {
+  padding-left: 45px;	
+  font-weight: bold;
+  text-align: left;
+  width: 10%;
+}
+
+.otsikko_nimi {
+  font-weight: bold;
+  width: 50%;
+}
+
+.otsikko_kayty, .otsikko_otettu {
+  text-align: right;
+  font-weight: bold;
+  padding-right: 15px;	
+  width: 20%;
+}
+
+.alue_number {
+  padding-left: 45px;	
+  text-align: left;
+  width: 10%;
+}
+
+.alue_name {
+  text-align: left;
+  width: 50%;
+}
+
+.alue_lastdate, .event_last_date_lent {
+  text-align: right;
+  padding-right: 15px;	
+  width: 20%;
+}
+
+
+/* Painikkeet pysyvät alareunassa */
+.bottomArea {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 12px 20px 8px 5px;
+    background: #ffffff;
+
+    border-top: 2px solid #b8d5e3;
+    border-radius: 8px 10px 0 0;
+    box-shadow: 0 -2px 6px rgba(50, 90, 110, 0.08);
+}
+
+.totalcount {
+    font-size: 16px;
+    padding: 2px 0 10px 10px;
+}
+
+.bottomButtons {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 120px;
+}
+
+.btnAction {
+    padding: 8px 12px;
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+    text-transform: uppercase;
+}
+

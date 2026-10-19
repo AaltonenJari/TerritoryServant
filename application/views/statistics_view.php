@@ -110,19 +110,15 @@
       </div>
 
       <div class="bottomButtons">
-        <div id="reportPrint">
-            <input type="button"
-                   value="Raportti"
-                   class="btnAction"
-                   onclick="statisticToPDF()" />
-        </div>
+        <input type="button"
+               value="Raportti"
+               class="btnAction"
+               onclick="statisticToPDF()" />
 
-        <div id="returnToMain">
-            <input type="button"
-                   value="Paluu"
-                   class="btnAction"
-                   onclick="showTerritories('<?php echo $terr_url; ?>')" />
-        </div>
+        <input type="button"
+               value="Paluu"
+               class="btnAction"
+               onclick="showTerritories('<?php echo $terr_url; ?>')" />
       </div>
     </div>
   
