@@ -148,7 +148,7 @@ class Event_model extends CI_Model
             
         } // foreach $event_results['rows']
        
-        //Tarkistetaan viimeinen rivi. Jos se pn 'pariton', lisätään se mukaan
+        //Tarkistetaan viimeinen rivi. Jos se on 'pariton', lisätään se mukaan
         if (count($event_results['rows']) > 0) {
             $last_row = end ($event_results['rows']);
             $this->tabulate_event_row($last_row, $event_date_order, $event_result_row, $prev_event_type, $ev, true);
@@ -192,7 +192,16 @@ class Event_model extends CI_Model
                     break;
                     
                 case "visit_method";
-                    $event_result_row->visit_method = $event_row->visit_method;
+                    switch ($event_row->event_type) {
+                      case 2:
+                      case 4:
+                          //Set visit_method only for returned events
+                          $event_result_row->visit_method = $event_row->visit_method;
+                          break;
+                        
+                      default:
+                          break;
+                    } //switch
                     break;
                 
                 case "event_type":
@@ -255,7 +264,6 @@ class Event_model extends CI_Model
                         }
                     }
  
-                    //print_r($event_result_row);
                     
                     if ($event_date_order == "DESC") {
                         if ($last) {
@@ -288,7 +296,7 @@ class Event_model extends CI_Model
                 default:
                     break;
             } // switch
-        } // foreach aluerivi
+        } // foreach event row
         return ;
     }
     
@@ -327,6 +335,7 @@ class Event_model extends CI_Model
                 if ($idx < count($events_data[$ai])) {
                     $names_value = $events_data[$ai][$idx]->name;
                     
+                    $visit_method_value = ""; //Default
                     if (property_exists($taken_value = $events_data[$ai][$idx], 'taken')) {
                         $taken_value = $events_data[$ai][$idx]->taken;
                     } else {
@@ -335,15 +344,14 @@ class Event_model extends CI_Model
                     
                     if (property_exists($events_data[$ai][$idx], 'returned')) {
                         $returned_value = $events_data[$ai][$idx]->returned;
+                        //Visit method poimitaan vain, jos alue on käyty
+                        if (property_exists($events_data[$ai][$idx], 'visit_method')) {
+                            $visit_method_value = $events_data[$ai][$idx]->visit_method;
+                        }
                     } else {
                         $returned_value = "";
                     }
 
-                    if (property_exists($events_data[$ai][$idx], 'visit_method')) {
-                        $visit_method_value = $events_data[$ai][$idx]->visit_method;
-                    } else {
-                        $visit_method_value = "";
-                    }
                 } else {
                     $names_value = "";
                     $taken_value = "";

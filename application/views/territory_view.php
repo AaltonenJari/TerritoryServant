@@ -178,10 +178,10 @@
 		      <?php $rowidx = 0; ?>
        		  <?php foreach ($alueet as $alue) { ?>
          	  <?php if ($hide_visit_method == 0 && $alue->event_visit_method == 1) {
-           	          $tooltip = 'Käyty viimeksi ' . $aluedata_alt[$rowidx]['event_last_date_returned'];
+         	            $tooltip = 'Käyty viimeksi ' . $alue->alt_event_last_date_returned;
          	        } 
-         	        else if ($hide_visit_method == 1 && $aluedata_alt[$rowidx]['event_visit_method'] == 1) {
-         	            $tooltip = 'Käyty luukuttamalla ' . $aluedata_alt[$rowidx]['event_last_date_returned'];
+         	        else if ($hide_visit_method == 1 && $alue->alt_event_visit_method == 1) {
+         	            $tooltip = 'Käyty luukuttamalla ' . $alue->alt_event_last_date_returned;
          	        }
          	        else {
          	            $tooltip = '';

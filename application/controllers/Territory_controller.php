@@ -14,7 +14,6 @@ class Territory_controller extends CI_Controller
         $this->load->model('Maintenance_model');
         $this->load->model('Person_model');
         $this->load->model('Settings_model');
-        $this->load->model('Log_model');
         $this->load->model('UndoRedoStack');
     }
     
@@ -164,13 +163,16 @@ class Territory_controller extends CI_Controller
         //Hae tiedot
         $results = $this->Territory_model->search($data['database_fields'], $sort_by, $sort_order, $chkbox_sel, $date_sel, $code_sel, $bt_switch, $limit_date_sw, $hide_visit_method_sw);
         //Tiedot näytölle sopiviksi
-        $data['alueet'] = $this->create_terr_displayrows($results);
+        $data_alueet = $this->create_terr_displayrows($results);
         
         $data['num_results'] = $results['num_rows'];
         
-        //Hae tiedot
-        $results_alt = $this->Territory_model->search($data['database_fields'], $sort_by, $sort_order, $chkbox_sel, $date_sel, $code_sel, $bt_switch, $limit_date_sw, !$hide_visit_method_sw);
-        $data['aluedata_alt']  = $this->create_alternative_table($results_alt);
+        //Hae tiedot toisella luukutustapahtumatiedolla, älä rajaa päivämäärällä.
+        $results_alt = $this->Territory_model->search($data['database_fields'], $sort_by, $sort_order, $chkbox_sel, '0', $code_sel, $bt_switch, $limit_date_sw, !$hide_visit_method_sw);
+        $data_alueet_alt  = $this->create_alternative_table($results_alt);
+
+        // Yhdistä haetut tiedot
+        $data['alueet'] = $this->addAltAreaData($data_alueet, $data_alueet_alt);
         
         $data['pagination'] = "";
         
@@ -188,6 +190,35 @@ class Territory_controller extends CI_Controller
         
         $data['saved_height'] = $this->session->userdata('table_height');
         $this->load->view('territory_view', $data);
+    }
+    
+    private function addAltAreaData($data_alueet, $data_alueet_alt)
+    {
+        // Muodostetaan hakemisto alt-taulukosta alue_id:n perusteella.
+        $alt_index = [];
+        
+        foreach ($data_alueet_alt as $row) {
+            $alt_index[$row['alue_id']] = $row;
+        }
+        
+        // Lisätään alt-taulukon tiedot alkuperäisiin olioihin.
+        foreach ($data_alueet as $row) {
+            $alue_id = $row->alue_id;
+            
+            if (isset($alt_index[$alue_id])) {
+                $row->alt_event_visit_method =
+                $alt_index[$alue_id]['event_visit_method'];
+                
+                $row->alt_event_last_date_returned =
+                $alt_index[$alue_id]['event_last_date_returned'];
+            } else {
+                echo " Puuttuu " . $alue_id . " "  .$row->alue_code;
+                $row->alt_event_visit_method = 0;
+                $row->alt_event_last_date_returned = '1.1.2000';
+            }
+        }
+        
+        return $data_alueet;
     }
     
     public function display_frontpage_terr_groups()
@@ -1183,48 +1214,10 @@ class Territory_controller extends CI_Controller
             case "1": //Lisäys
             case "3": //Lisäys, undo
                 $this->Event_model->insert($event_data);
-
-                //Jos lokitus on päällä,
-                if ($this->session->userdata('logging') != '0') {
-                    //Hae lisäty tapahtumarivi
-                    $results = $this->Event_model->get_latest_event_data($columns_event, $alue_id, $event_save_switch);
-                    $resultrow = $results['rows'][0];
-                    
-                    //lisää lokitapahtuma
-                    $log_data = array(
-                        'log_event_id' => $resultrow->event_id,
-                        'log_event_type' => $resultrow->event_type,
-                        'log_event_date' => $resultrow->event_date,
-                        'log_event_person' => $resultrow->event_user,
-                        'log_event_terr' => $alue_id,
-                        'log_user_id' => $this->session->userdata('user_id'),
-                        'log_operation_code' => $operation
-                    );
-                    $this->Log_model->insert($log_data);
-                }
                 break;
                 
             case "2": //Poisto
             case "4": //Poisto, redo
-                //Jos lokitus on päällä,
-                if ($this->session->userdata('logging') != '0') {
-                    //Hae tapahtumarivi ennen poistoa
-                    $results = $this->Event_model->get_latest_event_data($columns_event, $alue_id, $event_save_switch);
-                    $resultrow = $results['rows'][0];
-                    
-                    //lisää lokitapahtuma ennen poistoa
-                    $log_data = array(
-                        'log_event_id' => $resultrow->event_id,
-                        'log_event_type' => $resultrow->event_type,
-                        'log_event_date' => $resultrow->event_date,
-                        'log_event_person' => $resultrow->event_user,
-                        'log_event_terr' => $alue_id,
-                        'log_user_id' => $this->session->userdata('user_id'),
-                        'log_operation_code' => $operation
-                    );
-                    $this->Log_model->insert($log_data);
-                }
-                 
                 $this->Event_model->delete($event_data['event_id']);
                 break;
                 
@@ -1493,6 +1486,7 @@ class Territory_controller extends CI_Controller
         $event_results = $this->Event_model->search_event_data($event_fields, $resultrow['alue_id'],
             $this->session->userdata('archiveYears'),
             $event_order);
+        
         $events_alue = $this->Event_model->tabulate_alue_events($event_results, $event_order);
         $events_data = array();
         $events_data[] = $events_alue;
@@ -1836,20 +1830,6 @@ class Territory_controller extends CI_Controller
                             $this->Territory_model->update($data, $territory_id);
                             $alue_lastdate = $event_date;
                         }
-                    }
-                    //Jos lokitus on päällä,
-                    if ($this->session->userdata('logging') != '0') {
-                        //lisää lokitapahtuma ennen poistoa
-                        $log_data = array(
-                            'log_event_id' => $resultrow2->event_id,
-                            'log_event_type' => $resultrow2->event_type,
-                            'log_event_date' => $resultrow2->event_date,
-                            'log_event_person' => $resultrow2->event_user,
-                            'log_event_terr' => $alue_id,
-                            'log_user_id' => $this->session->userdata('user_id'),
-                            'log_operation_code' => $operation
-                        );
-                        $this->Log_model->insert($log_data);
                     }
                     //Poista tapahtuma
                     $this->Event_model->delete($resultrow2->event_id);
