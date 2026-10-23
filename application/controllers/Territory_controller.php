@@ -1865,12 +1865,7 @@ class Territory_controller extends CI_Controller
             $this->session->unset_userdata('initialized');
         }
         $this->Settings_model->checkInitializeSettings(); //Tsekataan tässä asetukset
-        if (!empty($this->session->userdata('useSignIn'))) {
-            $new_url = base_url("index.php/LoginController");
-            header('Location: ' . $new_url);
-        } else {
-            $this->display_frontpage();
-        }
+        $this->display_frontpage();
     }
     
     public function display_about() 

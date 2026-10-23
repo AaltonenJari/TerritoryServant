@@ -38,12 +38,8 @@
     <?php 
       // Asetetaan navigointipalkki ja sivu aktiiviseksi
       if ($sivu_tunnus == "1") { ?>
-      <?php if (!empty($this->session->userdata('useSignIn')) && !empty($this->session->userdata('user_lastname'))) { ?>
-        <h1>Tervetuloa TerritoryServant-aluetietojärjestelmään, <?php echo $this->session->userdata('username') ?>! </h1>
-      <?php } else { ?>
         <h1>Tervetuloa käyttämään TerritoryServant-aluetietojärjestelmää!</h1>
-      <?php } ?>
-      <h2>Suosittele näitä alueita tänään</h2>
+        <h2>Suosittele näitä alueita tänään</h2>
     <?php } else { ?>
       <h1>TerritoryServant - Aluekorttien merkintä ja seuranta</h1>
     <?php } ?>
@@ -184,6 +180,9 @@
          	            $tooltip = 'Käyty luukuttamalla ' . $alue->alt_event_last_date_returned;
          	        }
          	        else {
+         	            $tooltip = '';
+         	        }
+         	        if ($alue->lainassa == '1') { // Lainassa oleville alueille ei näytetä tooltippiä
          	            $tooltip = '';
          	        }
            	        $rowidx++;
