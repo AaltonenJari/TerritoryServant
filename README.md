@@ -1,16 +1,54 @@
 # TerritoryServant
-TerritoryServant is a card-based system for managing territories or task areas represented by cards. It can be used for sales territories, distribution areas, or property maintenance tracking.
 
-# Version 1.x
+TerritoryServant is a full stack web application for territory and workflow management.
 
-Version 1.x provides core territory card management. The main view displays a sortable and filterable list of cards, showing key information such as card number, description, last assignment date, last completion date, and current holder. Cards can be borrowed and returned via a simple dialog, and visible data can be exported to PDF reports.
+The application is designed to manage task areas, territories, or other assignable resources represented as cards. It supports assignment tracking, reporting, filtering, and lifecycle management through a browser-based interface.
 
-From the main view, users can also generate follow-up reports. These reports identify cards that have not been handled for over a year or cards that have been borrowed for more than four months.
+## Features
 
-Cards and persons can be created, updated, and deleted through dedicated views that also support sorting, filtering, and PDF export. Event data is automatically updated whenever cards are borrowed or returned. The database consists of tables for cards, persons, and events.
+### Territory and Assignment Management
+- Create, update, archive, and manage territory cards
+- Assign and return cards through a simple workflow
+- Track assignment history and activity events
+- Manage persons and related event data
 
-The original version was completed in 2020. The production system runs in a LAMP environment, with development done on Windows using WAMP. The application is built using PHP, MySQL, JavaScript, HTML/CSS, and the CodeIgniter framework.
+### Reporting
+- PDF export for filtered card views
+- Follow-up reports for overdue or inactive territories
+- Reporting for long-term assignments and unused cards
 
-# Version 2.x
+### Data Management
+- Sorting and filtering across views
+- Soft delete support for safer data handling
+- Cleanup tools for outdated event and personal data
 
-Version 2.x focuses on refactoring and usability improvements. The user interface was refreshed, PDF reports were visually improved, and several bugs were fixed. Logical deletion (soft delete) was added for cards, along with tools to remove outdated event and personal data.
+## Architecture
+
+The application uses:
+- PHP (CodeIgniter)
+- MySQL
+- JavaScript
+- HTML/CSS
+
+The production environment runs on LAMP, while development has been performed using WAMP.
+
+## Development History
+
+### Version 1.x
+The original version was completed in 2020 and introduced the core territory and assignment management functionality.
+
+### Version 2.x
+Further development in 2025–2026 focused on:
+- refactoring
+- usability improvements
+- UI refresh
+- report improvements
+- maintainability enhancements
+- bug fixes
+
+## Key Learning Areas
+- Full stack web development
+- Relational database design
+- CRUD application architecture
+- Reporting and PDF generation
+- Refactoring and maintainable software design
