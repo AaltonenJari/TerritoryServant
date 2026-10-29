@@ -107,10 +107,6 @@ class Settings_controller extends CI_Controller
             '6'     => '6 vuotta',
             '7'     => '7 vuotta',
             '8'     => '8 vuotta',
-            '9'     => '9 vuotta',
-            '10'    => '10 vuotta',
-            '11'    => '11 vuotta',
-            '12'    => '12 vuotta',
             '99'    => 'kaikki'
         );
         $data['archiveYearsOptions'] = $archiveYearsOptions;
@@ -214,25 +210,6 @@ class Settings_controller extends CI_Controller
         
         for ($i = 0; $i < sizeof($field_settings); $i++) {
             if (($field_setting_values[$i] != $field_old_setting_values[$i])) {
- 
-                //Jos käyttäjä- tai asetustaulu on poissa, älä anna muuttaa kirjautumista päälle
-                if (!$this->Settings_model->tableExists('users') || !$this->Settings_model->tableExists('settings')) {
-                    if ($keys[$i] == "useSignIn") {
-                        if ($field_setting_values[$i] != '0') {
-                            $field_setting_values[$i] = '0';
-                        }
-                    }
-                }
-                
-                //Jos loki-taulu on poissa, älä anna muuttaa lokitusta päälle
-                if (!$this->Settings_model->tableExists('event_log') || !$this->Settings_model->tableExists('settings')) {
-                    if ($keys[$i] == "logging") {
-                        if ($field_setting_values[$i] != '0') {
-                            $field_setting_values[$i] = '0';
-                        }
-                    }
-                }
-                
                 $update_data = array(
                     'setting_value'	=> $field_setting_values[$i]
                 );
@@ -246,10 +223,6 @@ class Settings_controller extends CI_Controller
                 $setting_data_new = array(
                     'setting_value'	=> $field_setting_values[$i]
                 );
-                
-                //echo "i: ". $i;
-                //echo " vanha: ". $field_old_setting_values[$i];
-                //echo " uusi: ". $field_setting_values[$i];
                 
                 $setting_edit_info = array(
                     'operation'	=> 'edit',

@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <title>TerritoryServant - Seuranta</title>
   <link rel="stylesheet" type="text/css" href="<?php echo base_url("assets/css/navbar.css"); ?>">
-  <link rel="stylesheet" type="text/css" href="<?php echo base_url("assets/css/territory.css"); ?>">
+  <link rel="stylesheet" type="text/css" href="<?php echo base_url("assets/css/terr_marklist.css"); ?>">
   
   <script src="<?php echo base_url("assets/javascript/markExhortToPDF.js"); ?>"></script> 
   <script src="<?php echo base_url('assets/javascript/resizableHeight.js'); ?>"></script>
@@ -21,7 +21,7 @@
 
 <body>
 
-  <div id="wrapper">
+  <div class="wrapper">
     <!-- Asetetaan navigointipalkki ja tämä sivu aktiiviseksi -->
     <?php $sivu_tunnus = "2"; ?>
     <?php $session_data = array(
@@ -34,23 +34,26 @@
     <!-- Asetetaan sivun pääotsikko -->
     <?php 
       if ($exhort == "RETURN") {
-        $hdr_string = "TerritoryServant - Palautuskehotukset";
+        $hdr_string = "TerritoryServant - Palautuskehotukset " . $report_date;
         $explainer = "Alue tulisi olla lainassa samalla julistajalla korkeintaan vuoden.";
-        $terr_url = base_url("index.php/territory_controller/display/name/asc/2/4/0");
+        $terr_url = base_url("index.php/territory_controller/display?sort_by=name&sort_order=asc&code=0&chk=2&date=4");
+        $report_file_name = "KehotuksetPalautus";
         
       } else {
-        $hdr_string = "TerritoryServant - Merkitsemiskehotukset";
+        $hdr_string = "TerritoryServant - Merkitsemiskehotukset " . $report_date;
         $explainer = "Alue tulisi käydä läpi neljässä kuukaudessa. Sitten siitä tulisi ilmoittaa aluepöytään, jotta alue voidaan merkitä käydyksi (km 4/07 s. 8, od s. 98).";
-        $terr_url = base_url("index.php/territory_controller/display/name/asc/2/5/0");
+        $terr_url = base_url("index.php/territory_controller/display?sort_by=name&sort_order=asc&code=0&chk=2&date=5");
+        $report_file_name = "KehotuksetMerkinta";
       }
     ?>
 
-    <div id="listhdr" class="headerArea">
-      <h1><?php echo $hdr_string; ?></h1>
-    </div>
+    <div id="content">
+     <!-- Asetetaan sivun pääotsikko -->
+      <div class="headerArea">
+        <h1><?php echo $hdr_string; ?></h1>
+      </div>
 
-	<div id="content" class="contentResizable" style="<?php echo $saved_height ? 'height:'.$saved_height.'px;' : ''; ?>">
-	  <div class="scrollInner">
+	  <div class="content-area">
     	<?php $rowidx = 0;
     	foreach ($terr_mark_list as $publisher) { ?>
     	  <table class="table4">
@@ -141,39 +144,35 @@
     		</tbody>
           </table>
     	<?php }?>
-      </div>
+      </div> <!-- content-area -->
     </div><!-- content -->
 
-    <div class="middleArea">
-    </div>
 
-    <div id="bottomArea" class="bottomArea">
-      <table id="bottomtable">
-        <tr>
-          <td width="60%">
-	 	    <div id="totalcount">
-  		      <span>Löytyi: <span id="tableRowCount"> <?php echo $num_results; ?></span> aluetta</span>
-    	    </div>
-          </td>
-          <td width="15%">
-		    <div id="reportShow">
-  	  		  <input type="button" value="Näytä" class="btnAction" onclick="jsFunction3('<?php echo $terr_url; ?>')" />
-    		</div>
-          </td>
-          <td width="15%">
-		    <div id="reportPrint">
-  	  		  <input type="button" value="Raportti" class="btnAction" onclick="exhortListToPDF()" />
-    		</div>
-          </td>
-        </tr>
-      </table>
-    </div>
+    <div class="bottomArea">
+      <div class="totalcount">
+        <span>
+            Löytyi:
+            <span id="tableRowCount"><?php echo $num_results; ?></span> aluetta.
+        </span>
+      </div>
 
+      <div class="bottomButtons">
+        <input type="button"
+               value="Raportti"
+               class="btnAction"
+               onclick="exhortListToPDF('<?php echo $report_file_name; ?>')" />
+
+        <input type="button"
+               value="Näytä"
+               class="btnAction"
+               onclick="showTerritories('<?php echo $terr_url; ?>')" />
+      </div>
+    </div>
 
   </div><!-- wrapper -->
 </body>
 <script>
-function jsFunction3(param) {
+function showTerritories(param) {
 	var newUrl = param;
 	  //alert(newUrl);
 	  location.replace(newUrl);

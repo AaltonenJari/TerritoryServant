@@ -75,6 +75,7 @@
           <li>Mahdollisuus merkitä alue poistetuksi ilman pysyvää poistamista</li>
           <li>Mahdollisuus poistaa vanhentuneita tapahtumia ja henkilötietoja</li>
           <li>Erillistoiminta luukutustapahtumille</li>
+          <li>Tilastotiedon näyttäminen alueryhmittäin</li>
         </ul>
 
       </div><!-- about_desc -->

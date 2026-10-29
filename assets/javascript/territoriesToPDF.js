@@ -21,7 +21,6 @@ function territoryListToPDF()
 	}
 	`;
 
-	
 	style = style + "th {padding: 10px; font-weight: bold; text-align: left; text-transform: uppercase; } ";
 	style = style + "tr th:nth-child(1) { padding-left: 0px; width: 5%; } ";
 	style = style + "tr th:nth-child(2), tr th:nth-child(3) { width: 20%; } ";
@@ -34,6 +33,7 @@ function territoryListToPDF()
 	style = style + "tr td:nth-child(5), tr td:nth-child(6) {text-align: right; padding-right: 10px; } ";
 	style = style + "tr td:nth-child(7) {padding-left: 0px; }";
 	
+	style = style + ".tooltip-text { display: none !important; } ";
 	style = style + "</style>";
 
 	tableToPDF("Aluelista", "Alueluettelo", style)

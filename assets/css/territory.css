@@ -34,6 +34,8 @@
   /* With border-collapse, we must use box-shadow or psuedo elements
   for the header borders */
   box-shadow: 0px 0px 0 2px #e8e8e8;
+  overflow: visible;
+  z-index: 1000;
 }
 
 /* Basic Table Styling */
@@ -55,9 +57,6 @@ table {
   color: rgba(0, 0, 0, 0.85);
 }
 
-#table2 tbody tr:hover {
-  background: #e6f7ff;
-}
 
 .filterArea {
   border: 1px solid black;
@@ -107,10 +106,6 @@ table {
 }
 
 
-#bottomArea {
-  /* border: 1px solid black; */
-}
-
 .bottomArea {
 	padding-top: 5px;
 }
@@ -147,19 +142,48 @@ h2 {
 }
 
 #table2 tr th:nth-child(5), #table2 tr th:nth-child(6) {
-  text-align: right;
+  text-align: center;
 }
+
 
 #table2 tr td:nth-child(5), #table2 tr td:nth-child(6) {
   text-align: right;
 }
 
 #table2 tr:hover {
-  background: #e6f7ff !important;
+    background: #e6f7ff !important;
 }
 
-#table2 tr:hover td {
-  background: transparent;
+
+#table2 th:hover {
+    background: #009999 !important;
+    color: white;
+    z-index: 1001;
+}
+
+.tooltip-cell {
+    position: relative;
+    z-index: 1;
+}
+
+.tooltip-cell .tooltip-text {
+    visibility: hidden !important;
+    position: absolute;
+    left: 40%;
+    top: 50%;
+    transform: translateY(-50%);
+
+    background: rgba(51, 51, 51, 0.8);
+    color: white;
+    padding: 5px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+    z-index: 1002;
+}
+
+.tooltip-cell:hover .tooltip-text {
+    visibility: visible !important;
+    text-transform: none !important;
 }
 
 #totalcount
@@ -201,135 +225,31 @@ button {
   text-transform: uppercase;
 }
 
+.sort_asc,
+.sort_desc {
+    position: relative;
+    padding-right: 20px;
+}
+
 .sort_asc:after {
-  content: "▲";
+    content: "▲";
+    position: absolute;
+    right: 5px;
 }
 
 .sort_desc:after {
-	content: "▼";
-}
-
-/* Set header to stick to the top of the container. */
-#table4 thead tr th {
-  position: sticky;
-  top: 0;
-}
-
-/* If we use border,
-we must use table-collapse to avoid
-a slight movement of the header row */
-.table4 {
- border-collapse: collapse;
-   page-break-inside: avoid;
-}
-
-/* Because we must set sticky on th,
- we have to apply background styles here
- rather than on thead */
-.table4 th {
-  text-align: left;
-  background: white;	
-}
-
-.table4 tbody tr td {
-  border-collapse: collapse;
-}
-
-.table4 tbody tr {
-  text-align: left;
-}
-
-.table4 tbody tr:hover {
-  background: #e6f7ff;
-}
-
-.table4 tr:hover {
-  background: #e6f7ff !important;
-}
-
-.table4 tr:hover td {
-  background: transparent;
+    content: "▼";
+    position: absolute;
+    right: 5px;
 }
 
 .tyhja_rivi {
   height: 15px;
 }
 
-.kehotus_selite {
-  height: 25px;
-  padding:8px 5px 5px 30px; 
-  font-family: "Arial", Times, serif;
-  font-size: 12px;
-}
-
-.julistaja {
-  padding-left: 20px;	
-  font-family: "Arial", Times, serif;
-  font-size: 18px;
-  font-weight: bold;
-}
-
-.ohjeteksti {
-  padding-left: 30px;	
-}
-
-.otsikko_numero {
-  padding-left: 45px;	
-  font-weight: bold;
-  text-align: left;
-  width: 10%;
-}
-
-.otsikko_nimi {
-  font-weight: bold;
-  width: 50%;
-}
-
-.otsikko_kayty, .otsikko_otettu {
-  text-align: right;
-  font-weight: bold;
-  padding-right: 15px;	
-  width: 20%;
-}
-
-.alue_number {
-  padding-left: 45px;	
-  text-align: left;
-  width: 10%;
-}
-
-.alue_name {
-  text-align: left;
-  width: 50%;
-}
-
-.alue_lastdate, .event_last_date_lent {
-  text-align: right;
-  padding-right: 15px;	
-  width: 20%;
-}
 
 #settings_content {
   margin: auto;
-}
-
-.coReportSubHdr {
-  padding:10px 10px 0px 40px; 
-  font-family: Verdana,Arial,Helvetica,sans-serif;
-  font-size: 18px;
-  color: #228;
-}
-
-.coReportRow {
-  height: 15px;
-  padding:5px 5px 5px 100px; 
-  font-family: "Arial", Times, serif;
-}
-
-.coReportRow2 {
-  height: 15px;
-  padding:5px 5px 5px 130px; 
-  font-family: "Arial", Times, serif;
 }
 
 .about_desc {
@@ -363,3 +283,4 @@ a slight movement of the header row */
 .about-chapter {
 	padding-bottom: 15px;
 }
+

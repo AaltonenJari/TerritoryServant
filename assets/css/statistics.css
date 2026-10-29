@@ -1,0 +1,185 @@
+html,
+body {
+    height: 100%;
+    margin: 0;
+}
+
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+    margin: 0 8px;
+}
+
+/* Yläpalkki pysyy paikallaan. Ylikirjataan tässä navbar.css:ssä oleva tyylimäärittely */
+.alue_navbar {
+    flex: 0 0 68px;
+    width: 100%;
+    box-sizing: border-box;
+    padding-top: 16px;
+}
+
+/* Sisältöalue vie jäljelle jäävän tilan */
+#content {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: hidden;
+}
+
+/* Otsikko ei skrollaa */
+.headerArea {
+    flex: 0 0 auto;
+    padding: 0 10px 0 40px;
+    text-align: left;
+
+    border-bottom: 1px solid #cbdfe8;
+    box-shadow: 0 2px 5px rgba(50, 90, 110, 0.06);
+}
+
+h1 {
+  font-family: Verdana,Arial,Helvetica,sans-serif;
+  font-size: 24px;
+  padding-top: 10px;
+}
+
+h2 {
+  font-family: Verdana,Arial,Helvetica,sans-serif;
+  font-size: 18px;
+  color: #228;
+}
+
+.coReportSubHdr {
+  padding: 5px 10px 0px 40px; 
+  font-family: Verdana,Arial,Helvetica,sans-serif;
+  font-size: 18px;
+  color: #228;
+}
+
+.coReportRow {
+  height: 15px;
+  padding:5px 5px 5px 65px; 
+  font-family: "Arial", Times, serif;
+}
+
+.coReportRow2 {
+  height: 15px;
+  padding:5px 5px 5px 90px; 
+  font-family: "Arial", Times, serif;
+}
+
+.tyhja_rivi {
+  height: 10px;
+}
+
+.statistic-chart-title {
+    margin: 5px 0 5px 0;
+    color: #294451;
+    font-size: 26px;
+    font-weight: 600;
+    text-align: center;
+}
+
+/* Vain tilastonäyttö skrollaa */
+.statistic-area {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: auto;
+
+    padding: 2px 25px 2px 40px;
+    background: #f1fbff !important;
+    box-sizing: border-box;
+}
+
+.statistic-row {
+    margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+.statistic-title {
+    font-weight: bold;
+    margin-bottom: 5px;
+    padding-left: 8px;
+}
+
+.statistic-bar {
+    box-sizing: border-box;
+    min-height: 28px;
+    margin-bottom: 4px;
+    padding: 5px 8px;
+    color: #fff;
+    font-size: 14px;
+    line-height: 18px;
+    white-space: nowrap;
+    overflow: visible;
+}
+
+.uncovered-bar {
+    background-color: #d93025;
+}
+
+.total-bar {
+    background-color: #258739;
+}
+
+
+.statistic-bar-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+}
+
+.statistic-bar-row .statistic-bar {
+    flex-shrink: 0;
+    margin-bottom: 0;
+}
+
+.bar-text-inside {
+    color: #fff;
+}
+
+.bar-text-outside {
+    color: #000;
+    white-space: nowrap;
+}
+
+/* Painikkeet pysyvät alareunassa */
+.bottomArea {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 8px 20px 8px 5px;
+    background: #ffffff;
+    margin-top: 8px;
+
+    border-top: 2px solid #b8d5e3;
+    border-radius: 10px 10px 0 0;
+    box-shadow: 0 -2px 6px rgba(50, 90, 110, 0.08);
+}
+
+.totalcount {
+    font-size: 16px;
+    padding: 2px 0 10px 10px;
+}
+
+.bottomButtons {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 120px;
+}
+
+.btnAction {
+    padding: 8px 12px;
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+    text-transform: uppercase;
+}
+

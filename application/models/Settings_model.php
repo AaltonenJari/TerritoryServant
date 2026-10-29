@@ -245,19 +245,6 @@ class Settings_model extends CI_Model
     
     public function checkInitializeSettings()
     {
-        //Jos käyttäjätaulu on poissa, älä käytä kirjautumista
-        if (!$this->tableExists('users')) {
-            $update_data = array(
-                'setting_value'	=> 0
-            );
-            $this->update($update_data, "useSignIn");
-            
-            if ($this->Settings_model->tableExists('settings')) {
-                //Nollaa asetukset vain, jos ne ovat kannassa
-                $this->session->unset_userdata('initialized');
-            }
-        }
-        
         //Jos asetuksia ei ole alustettu, haetaan asetukset
         if (empty($this->session->userdata('initialized'))) {
             
@@ -282,24 +269,14 @@ class Settings_model extends CI_Model
             //Merkitään asetukset alustetuksi
             $session_initialized = array(
                 'eventSaveSwitchOld' => $this->session->userdata('eventSaveSwitch'),
-                'version' => 'V2.2',
-                'version_date' => '2.4.2026',
+                'version' => 'V2.3',
+                'version_date' => '23.10.2026',
                 'author' => 'Jari Aaltonen',
                 'initialized'     => 'K'
             );
             $this->session->set_userdata($session_initialized);
         }
 
-        //Jos loki-taulu on poissa, älä anna muuttaa lokitusta päälle
-        if (!$this->Settings_model->tableExists('event_log') || !$this->Settings_model->tableExists('settings')) {
-            if ($this->session->userdata('logging') != '0') {
-                $settings_data = array(
-                    'logging' => '0' //Lokiin kirjoitus ei käytössä
-                );
-                $this->session->set_userdata($settings_data);
-            }
-        }
-        
     }
 
     public function default_settings() 
@@ -308,7 +285,6 @@ class Settings_model extends CI_Model
         $settings_data = array(
             'congregationName' => 'Kankaanpää',
             'congregationNumber' => '38703',
-            'useSignIn' => '0', //Kirjautuminen ei käytössä
  
             'namePresentation'  => '1',  //0 = firstname lsatname, 1 = lastmame, firstname; (default)
             'eventOrder' => 'DESC',
@@ -316,12 +292,10 @@ class Settings_model extends CI_Model
             'btSwitch' => '0',  //Liikealueet: 0 = ei näytetä (default), 1 = näytetään
             'eventSaveSwitch' => '1', //Kaikki merkitsemiset
             'hideVisitMethodSwitch' => '1',
-            'circuitWeekStart' => '15.9.2026',
-            'circuitWeekEnd' => '20.9.2026',
-            'terrCodePresentation' => 'X999',
+            'circuitWeekStart' => '23.2.2027',
+            'circuitWeekEnd' => '28.2.2027',
             'useTerritoryDetaiTable' => '0', //Alue_detail-taulu ei käytössä
 
-            'logging' => '0', //Lokiin kirjoitus ei käytössä
             'terrCodePresentation' => 'X999',
             'useTerritoryDetaiTable' => '0' //Alue_detail-taulu ei käytössä
         );
