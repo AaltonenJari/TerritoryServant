@@ -262,15 +262,27 @@ class Territory_controller extends CI_Controller
         //Käytetäänkö rajauspäivämääränä kuluvaa päivää vai kierrosviikon alkupäivää
         $limit_date_sw = $this->session->userdata('limit_date_sw');
 
-        //Piilotetaanko alueella luukutustapahtuma?
-        $hide_visit_method_sw = $this->session->userdata('hideVisitMethodSwitch');
+        //Piilotetaanko alueen luukutustapahtumat?
+        $ignore_visit_method = $this->session->userdata('override_visit_method');
+        if ($ignore_visit_method) {
+            $hide_visit_method_sw = false;
+        } else {
+            $hide_visit_method_sw = $this->session->userdata('hideVisitMethodSwitch');
+        }
         
         //Hae tiedot
         $results = $this->Territory_model->search($data['database_fields'], $sort_by, $sort_order, $chkbox_sel, $date_sel, $code_sel, $bt_switch, $limit_date_sw, $hide_visit_method_sw);
         //Tiedot näytölle sopiviksi
-        $data['alueet'] = $this->create_terr_displayrows($results);
+        $data_alueet = $this->create_terr_displayrows($results);
         
         $data['num_results'] = $results['num_rows'];
+        
+        //Hae tiedot toisella luukutustapahtumatiedolla, älä rajaa päivämäärällä.
+        $results_alt = $this->Territory_model->search($data['database_fields'], $sort_by, $sort_order, $chkbox_sel, '0', $code_sel, $bt_switch, $limit_date_sw, !$hide_visit_method_sw);
+        $data_alueet_alt  = $this->create_alternative_table($results_alt);
+        
+        // Yhdistä haetut tiedot
+        $data['alueet'] = $this->addAltAreaData($data_alueet, $data_alueet_alt);
         
         $data['pagination'] = "";
         
@@ -555,13 +567,10 @@ class Territory_controller extends CI_Controller
         );
         $this->session->set_userdata($territory_view_state_data);
         
-        $pie_segments = array();
-        $data['legend_items'] = $this->get_pie_legend_items($data['statistic_data'], $data['uncovered_total'], $pie_segments);
-        
-        $data['pie_background'] = ($data['uncovered_total'] > 0)
-        ? 'conic-gradient(' . implode(', ', $pie_segments) . ')'
-            : '#dbe7ed';
-
+        $data['legend_items'] = $this->get_pie_legend_items(
+            $data['statistic_data'],
+            $data['uncovered_total'],
+            );
 
         // näytä tiedot
         $this->load->view('pie_chart_view', $data);
@@ -648,7 +657,7 @@ class Territory_controller extends CI_Controller
         return $data;
     }
     
-    private function get_pie_legend_items($statistic_data, $uncovered_total, &$pie_segments) {
+    private function get_pie_legend_items($statistic_data, $uncovered_total) {
         $pie_colors = array(
             '#247BA0', // Sininen
             '#70C1B3', // Turkoosi
@@ -662,7 +671,6 @@ class Territory_controller extends CI_Controller
         );
         
         $legend_items = array();
-        $current_degree = 0;
         
         foreach ($statistic_data as $index => $item) {
             $uncovered = (int) $item['uncovered'];
@@ -671,14 +679,7 @@ class Territory_controller extends CI_Controller
             ? $uncovered / $uncovered_total * 100
             : 0;
             
-            $next_degree = $current_degree + $percentage * 3.6;
             $color = $pie_colors[$index % count($pie_colors)];
-            
-            if ($percentage > 0) {
-                $pie_segments[] = $color . ' '
-                    . $current_degree . 'deg '
-                        . $next_degree . 'deg';
-            }
             
             $legend_items[] = array(
                 'name'       => $item['name'],
@@ -686,8 +687,6 @@ class Territory_controller extends CI_Controller
                 'percentage' => $percentage,
                 'color'      => $color
             );
-            
-            $current_degree = $next_degree;
         }
         
         return $legend_items;

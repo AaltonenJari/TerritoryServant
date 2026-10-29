@@ -98,63 +98,75 @@ h2 {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 30px;
     padding: 20px;
 }
 
 /* Piirakkakuvio */
 .pie-chart {
+    display: block;
     width: 250px;
     height: 250px;
     flex-shrink: 0;
-    border-radius: 50%;
-    border: 1px solid #d3e6ef;
-    box-shadow: 0 2px 6px rgba(42, 87, 110, 0.12);
+    overflow: visible;
+    filter: drop-shadow(0 2px 4px rgba(42, 87, 110, 0.12));
 }
 
-/* Selite */
+/* Piirakan ja selitteen väli */
 .pie-chart-legend {
     display: flex;
     flex-direction: column;
-    gap: 9px;
     min-width: 0;
+    margin-left: 30px;
 }
 
 .pie-chart-legend-item {
-    display: grid;
-    grid-template-columns: 14px minmax(150px, 1fr) 55px 65px;
+    display: flex;
     align-items: center;
-    gap: 8px;
+    margin-bottom: 9px;
     font-size: 20px;
     color: #294451;
 }
 
 .pie-chart-color {
+    display: inline-block;
     width: 12px;
     height: 12px;
+    flex: 0 0 12px;
+    margin-right: 8px;
     border-radius: 3px;
 }
 
 .pie-chart-name {
-    min-width: 0;
+    flex: 1 1 auto;
+    min-width: 150px;
+    margin-right: 8px;
+}
+
+.pie-chart-count {
+    flex: 0 0 65px;
+    text-align: right;
+    margin-right: 8px;
+}
+
+.pie-chart-percentage {
+    flex: 0 0 75px;
+    text-align: right;
+    font-weight: 600;
 }
 
 .pie-chart-count,
 .pie-chart-percentage {
-    text-align: right;
     white-space: nowrap;
     font-variant-numeric: tabular-nums;
 }
 
-.pie-chart-percentage {
-    font-weight: 600;
-}
 
-/* Pienemmät näytöt */
+/* Responsiivisuus */
 @media (max-width: 650px) {
+
     .pie-chart-area {
         flex-direction: column;
-        gap: 20px;
+        padding: 15px 5px;
     }
 
     .pie-chart {
@@ -164,11 +176,24 @@ h2 {
 
     .pie-chart-legend {
         width: 100%;
+        margin-left: 0;
+        margin-top: 20px;
     }
 
     .pie-chart-legend-item {
-        grid-template-columns: 14px minmax(0, 1fr) 50px 60px;
-        gap: 6px;
+        font-size: 14px;
+    }
+
+    .pie-chart-name {
+        min-width: 0;
+    }
+
+    .pie-chart-count {
+        flex-basis: 50px;
+    }
+
+    .pie-chart-percentage {
+        flex-basis: 60px;
     }
 }
 
@@ -197,7 +222,11 @@ h2 {
     flex-direction: row;
     align-items: center;
     justify-content: flex-end;
-    gap: 120px;
+}
+
+/* Väli kaikkien muiden paitsi ensimmäisen painikkeen eteen */
+.bottomButtons > * + * {
+    margin-left: 120px;
 }
 
 .btnAction {

@@ -182,7 +182,11 @@ a slight movement of the header row */
     flex-direction: row;
     align-items: center;
     justify-content: flex-end;
-    gap: 120px;
+}
+
+/* Väli kaikkien muiden paitsi ensimmäisen painikkeen eteen */
+.bottomButtons > * + * {
+    margin-left: 120px;
 }
 
 .btnAction {

@@ -45,11 +45,65 @@
         
         <div class="pie-chart-area">
 
-          <div class="pie-chart"
-             style="background: <?php echo $pie_background; ?>;"
-             role="img"
-             aria-label="Käymättömien alueiden prosenttijakauma alueryhmittäin">
-          </div>
+          <svg class="pie-chart"
+               viewBox="0 0 200 200"
+               xmlns="http://www.w3.org/2000/svg"
+               role="img"
+               aria-label="Käymättömien alueiden prosenttijakauma alueryhmittäin">
+
+              <?php
+              $current_angle = -90;
+              $cx = 100;
+              $cy = 100;
+              $radius = 95;
+
+              foreach ($legend_items as $item):
+
+                  $percentage = $item['percentage'];
+
+                  if ($percentage <= 0) {
+                      continue;
+                  }
+
+                  $angle = $percentage * 3.6;
+
+                  // Jos osuus on 100 %, piirretään kokonainen ympyrä.
+                  if ($percentage >= 99.9999):
+              ?>
+                    <circle cx="100" cy="100" r="95"
+                            fill="<?php echo $item['color']; ?>" />
+              <?php
+                      break;
+                  endif;
+
+                  $start_rad = deg2rad($current_angle);
+                  $end_rad = deg2rad($current_angle + $angle);
+
+                  $x1 = $cx + $radius * cos($start_rad);
+                  $y1 = $cy + $radius * sin($start_rad);
+
+                  $x2 = $cx + $radius * cos($end_rad);
+                  $y2 = $cy + $radius * sin($end_rad);
+
+                  $large_arc = ($angle > 180) ? 1 : 0;
+
+                  $path = sprintf(
+                      'M %f %f L %f %f A %f %f 0 %d 1 %f %f Z',
+                      $cx, $cy,
+                      $x1, $y1,
+                      $radius, $radius,
+                      $large_arc,
+                      $x2, $y2
+                  );
+
+                  $current_angle += $angle;
+              ?>
+
+                  <path d="<?php echo $path; ?>"
+                        fill="<?php echo $item['color']; ?>" />
+
+              <?php endforeach; ?>
+          </svg>
 
           <div class="pie-chart-legend">
             <?php foreach ($legend_items as $item): ?>

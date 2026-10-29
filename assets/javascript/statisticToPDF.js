@@ -14,9 +14,13 @@ function statisticToPDF()
 	style += ".statistic-bar { box-sizing: border-box; min-height: 28px; margin-bottom: 4px; padding: 5px 8px; color: #ffffff !important; font-size: 14px; line-height: 18px; white-space: nowrap; }";
 
 	style += ".uncovered-bar { background-color: #d93025 !important; color: #ffffff !important; }";
-	style += ".total-bar { background-color: #258739 !important; color: #ffffff !important;  }";
+	style += ".total-bar { background-color: #258739 !important; color: #ffffff !important; }";
 
-	style += ".statistic-bar-row { margin-bottom: 4px; }";
+	style += ".statistic-bar-row { display: flex; align-items: center; margin-bottom: 8px; }";
+
+	/* 8 px väli palkin ja sitä seuraavan elementin välille */
+	style += ".statistic-bar-row > * + * { margin-left: 8px; } ";
+	
 	style += ".statistic-bar-row .statistic-bar { display: inline-block; vertical-align: middle; }";
 	style += ".bar-text-inside { color: #ffffff !important; }";
 	style += ".bar-text-outside { color: #000000 !important; white-space: nowrap; }";

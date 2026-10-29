@@ -57,6 +57,7 @@
         <ul class="about-list">
           <li>WAMP/LAMP web server version: <?php echo $_SERVER['SERVER_SOFTWARE']; ?></li>
           <li>Ohjelmistokehys: CodeIgniter version: <?php echo CI_VERSION; ?></li>
+          <li>PHP-versio: <?php echo PHP_VERSION; ?></li>
           <li>Tietokanta: MySQL version: <?php echo $mysql_version; ?></li>
         </ul>
       
