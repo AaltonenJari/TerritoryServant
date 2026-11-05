@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <title>TerritoryServant - Seuranta</title>
   <link rel="stylesheet" type="text/css" href="<?php echo base_url("assets/css/navbar.css"); ?>">
+  <link rel="stylesheet" type="text/css" href="<?php echo base_url("assets/css/territoryServant.css"); ?>">
   <link rel="stylesheet" type="text/css" href="<?php echo base_url("assets/css/statistics.css"); ?>">
 
   <script src="<?php echo base_url("assets/javascript/coReportToPDF.js"); ?>"></script> 
@@ -43,7 +44,7 @@
  
       <?php $terr_url = base_url("index.php/territory_controller/display?sort_by=lainassa&sort_order=asc&code=0&chk=0&date=1"); ?>
 
-      <div class="statistic-area">
+      <div class="content-area">
         <h2 class="coReportSubHdr">
         <?php if ($is_cw_coming) { ?>
  	      Kierrosvalvojan vierailuaika: 
@@ -163,7 +164,7 @@
  	      Alueita hoitavat veljet
 	    </p>
 	  
-	  </div> <!-- statistic-area -->
+	  </div> <!-- content-area -->
  	</div><!-- content -->
 
     <div class="bottomArea">

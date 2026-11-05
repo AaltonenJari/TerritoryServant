@@ -4,7 +4,7 @@ function pieChartToPDF()
 
 	var style = "<style>";
 
-	style += ".statistic-area { margin: 20px 0; padding: 2px 20px; background-color: #ffffff; }";
+	style += ".content-area { margin: 20px 0; padding: 2px 20px; background-color: #ffffff; }";
 	
     style += "h1 {text-align: center; font-family: \"Arial\", Times, serif; font-size: 26px; }";
 

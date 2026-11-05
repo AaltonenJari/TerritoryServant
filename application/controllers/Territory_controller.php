@@ -569,7 +569,7 @@ class Territory_controller extends CI_Controller
         
         $data['legend_items'] = $this->get_pie_legend_items(
             $data['statistic_data'],
-            $data['uncovered_total'],
+            $data['uncovered_total']
             );
 
         // näytä tiedot

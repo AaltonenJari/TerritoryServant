@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <title>TerritoryServant - Asetukset</title>
   <link rel="stylesheet" type="text/css" href="<?php echo base_url("assets/css/navbar.css"); ?>">
+  <link rel="stylesheet" type="text/css" href="<?php echo base_url("assets/css/territoryServant.css"); ?>">
   <link rel="stylesheet" type="text/css" href="<?php echo base_url("assets/css/settings.css"); ?>">
   
   <!--link jquery ui css-->
@@ -18,7 +19,7 @@
 
 <body>
 
-  <div id="wrapper">
+  <div class="wrapper">
     <!-- Asetetaan navigointipalkki ja tämä sivu aktiiviseksi -->
     <?php $sivu_tunnus = "5"; ?>
     <?php $session_data = array(
@@ -28,17 +29,19 @@
     ?>
     <?php $this->load->view('common/navbar.php')?>
 
-   <div class="headerArea">
-      <!-- Asetetaan sivun pääotsikko -->
-      <h1>TerritoryServant - Asetukset</h1>
-    </div>
-
+    <?php $terr_url = base_url("index.php/territory_controller/display"); ?>
     <div id="content">
-      <?php 
-        $form_open_parameter = "Settings_controller/check_update";
-        $attributes = ['id' => 'settings_form'];
-        echo form_open($form_open_parameter,$attributes);
-      ?>
+      <div class="headerArea">
+        <!-- Asetetaan sivun pääotsikko -->
+        <h1>TerritoryServant - Asetukset</h1>
+      </div>
+
+      <div class="content-area">
+        <?php 
+          $form_open_parameter = "Settings_controller/check_update";
+          $attributes = ['id' => 'settings_form'];
+          echo form_open($form_open_parameter,$attributes);
+        ?>
         <div class="tableWrap">
           <table id="table2" class="order-table table">
             <thead>
@@ -291,8 +294,10 @@
               <?php } //foreach settings ?>
             </tbody>
           </table>
-          <p>
-            <?php
+        </div><!-- tableWrap -->
+        
+        <p>
+          <?php
             $data_hidden = [
                 'type'  => 'hidden',
                 'id'    => 'submit_action',
@@ -301,14 +306,13 @@
                 'class' => 'submit_action_btn'
             ];
             echo form_input($data_hidden);
-            ?>
-          </p>
-      </div><!-- tableWrap -->
+          ?>
+        </p>
       
-      <div class="footer-area">
-        <div class="button-group">
-          <div class="button-left">
-            <?php
+        <div class="form-footer-area">
+          <div class="button-group">
+            <div class="button-left">
+             <?php
               $data = [
                 'type'  => 'submit',
                 'id'    => 'submit_remove',
@@ -318,11 +322,11 @@
               ];
               $js = ['onClick' => 'jsFunction_update(this);'];
               echo form_input($data, ' ', $js);
-            ?>
-          </div>
+             ?>
+            </div> <!-- button-leftbutton-left -->
   
-          <div class="button-center">
-            <?php if ($can_undo) {
+            <div class="button-center">
+             <?php if ($can_undo) {
               $data = [
                 'type'  => 'image',
                 'id'    => 'submit_undo',
@@ -369,10 +373,10 @@
                 'disabled' => 'true'
               ]);
             } ?>
-          </div>
+            </div> <!-- button-center -->
 
-          <div class="button-right">
-            <?php
+            <div class="button-right">
+              <?php
               $data = [
                 'type'  => 'submit',
                 'id'    => 'submit_return_history',
@@ -382,24 +386,29 @@
               ];
               $js = ['onClick' => 'jsFunction_return(this);'];
               echo form_input($data, ' ', $js);
-            ?>
+              ?>
+            </div> <!-- button-right -->
+          </div> <!-- button-group -->
+
+          <div class="form-error">
+            <?php echo $table_not_found; ?>
+            <?php echo $this->session->flashdata("error"); ?>
           </div>
-        </div>
-
-        <div class="form-error">
-          <?php echo $table_not_found; ?>
-          <?php echo $this->session->flashdata("error"); ?>
-        </div>
-      </div>
+        </div><!-- form-footer-area -->
      
-    <?php echo form_close(); ?>
+        <?php echo form_close(); ?>
+      </div><!-- content-area -->
+    
+      <div class="bottomArea">
+        <div class="bottomButtons">
+          <input type="button"
+                 value="Paluu"
+                 class="btnAction"
+                 onclick="showTerritories('<?php echo $terr_url; ?>')" />
+        </div>
+      </div> <!-- bottom-area -->
+
     </div><!-- content -->
-
-    <div class="middleArea">
-    </div>
-
- 
-
   </div><!-- wrapper -->
 </body>
 
@@ -455,11 +464,9 @@ function jsDropdownChance(selectObject,fieldObject) {
 	document.getElementById(fieldObject.id).value = selectedValue;
 }
 
-function jsFunction4() {
-	var myselect = document.getElementById("terrCodeChkBoxChooser");
-	document.getElementById("selCodeOld").value = myselect.options[myselect.selectedIndex].value;
-    var newUrl = document.getElementById("displayBaseUrl").value;
-	location.replace(newUrl);
+function showTerritories(param) {
+	var newUrl = param;
+	  location.replace(newUrl);
 }
 
 function jsFunction_update(me) {

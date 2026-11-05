@@ -3,7 +3,7 @@ function exhortListToPDF(filename)
 	var style = "<style>";
 	
 	style += "h1 {text-align: center; font-family: \"Arial\", Times, serif; font-size: 26px; }";
-	style += ".statistic-area { margin: 20px 0; padding: 2px 20px; background-color: #ffffff; }";
+	style += ".content-area { margin: 20px 0; padding: 2px 20px; background-color: #ffffff; }";
 	
 	style += "thead tr th {position: sticky; top: 0; }";
 	style += "table { width: 100%; border-collapse: collapse; page-break-inside: avoid; }";

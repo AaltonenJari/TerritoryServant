@@ -63,12 +63,14 @@ form {
   padding: 20px;
   background: linear-gradient(#fff, #ABDBFF);
   border: 1px solid #ccc;
-  box-shadow: 0 0 5px;
   font-family: 'Marcellus', serif;
-  margin: 40px auto 0 auto; 
+  margin: 15px auto 0 auto; 
   position: relative;
   min-height: 480px;
   box-sizing: border-box;
+  box-shadow: 0 -2px 6px rgba(50, 90, 110, 0.08);
+  border-radius: 10px 10px 0 0;
+  
 }
 
 /* Test styling */
@@ -140,7 +142,7 @@ label {
 
 
 /* Footer pysyy formin alalaidassa */
-.footer-area {
+.form-footer-area {
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
@@ -227,3 +229,25 @@ input.submit_btn_disabled {
   margin: 10px 0px 5px 0px;
   color: red;
 }
+
+.bottomArea {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+
+    padding: 8px 20px 8px 5px;
+    background: #ffffff;
+    margin-top: 8px;
+
+    border-top: 2px solid #b8d5e3;
+    border-radius: 10px 10px 0 0;
+    box-shadow: 0 -2px 6px rgba(50, 90, 110, 0.08);
+}
+
+.bottomButtons {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+

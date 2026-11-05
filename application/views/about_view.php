@@ -4,7 +4,8 @@
   <meta charset="utf-8">
   <title>TerritoryServant - Tietoja</title>
   <link rel="stylesheet" type="text/css" href="<?php echo base_url("assets/css/navbar.css"); ?>">
-  <link rel="stylesheet" type="text/css" href="<?php echo base_url("assets/css/territory.css"); ?>">
+  <link rel="stylesheet" type="text/css" href="<?php echo base_url("assets/css/territoryServant.css"); ?>">
+  <link rel="stylesheet" type="text/css" href="<?php echo base_url("assets/css/about.css"); ?>">
   
   <!--link jquery ui css-->
   <link type="text/css" rel="stylesheet" href="<?php echo base_url('assets/jquery-ui-1.12.1/jquery-ui.css'); ?>" />
@@ -17,7 +18,7 @@
 
 <body>
 
-  <div id="wrapper">
+  <div class="wrapper">
     <!-- Asetetaan navigointipalkki ja tämä sivu aktiiviseksi -->
     <?php $sivu_tunnus = "7"; ?>
     <?php $session_data = array(
@@ -27,63 +28,73 @@
     ?>
     <?php $this->load->view('common/navbar.php')?>
 
-   <div class="headerArea">
-      <!-- Asetetaan sivun pääotsikko -->
-      <h1>TerritoryServant - Tietoja</h1>
-    </div>
-  
+    <?php $terr_url = base_url("index.php/territory_controller/display"); ?>
     <div id="content">
-      <div class="version_desc">
-        <span>Ohjelmaversio: <?php echo $version; ?></span>
-	    <br/>
-        <span>Versiopäivä: <?php echo $version_date; ?></span>
-	    <br/>
-        <br/>
+      <div class="headerArea">
+        <!-- Asetetaan sivun pääotsikko -->
+        <h1>TerritoryServant - Tietoja</h1>
       </div>
-      <div class="about_desc">
-        <div class="about-chapter">
-    	  <span class="about-sub-hdr">TerritoryServant - alueidenhoito-ohjelma</span> on kehitetty helpottamaan alueiden hoitoa.
-	      <br/>Ohjelman avulla voit kirjata alueiden lainaukset, palautukset ja merkkaukset.
-	      Ohjelmalla voit seurata myös alueiden käyntiä ja kiertoa.
-	      Seurantaa helpottavat myös erilaiset raportit, jotka voi tarvittaessa tulostaa.
+  
+       
+      <div class="content-area">
+        <div class="version_desc">
+          <span>Ohjelmaversio: <?php echo $version; ?></span>
+	      <br/>
+          <span>Versiopäivä: <?php echo $version_date; ?></span>
+	      <br/>
+          <br/>
         </div>
+ 
+          <div class="about-sub-hdr">TerritoryServant - alueidenhoito-ohjelma</div>
+ 
+          <div class="about-chapter">
+    	    Ohjelmisto on kehitetty helpottamaan alueiden hoitoa.
+	        Sen avulla voit kirjata alueiden lainaukset, palautukset ja merkkaukset.
+  	        Voit seurata myös alueiden käyntiä ja kiertoa.
+	        Seurantaa helpottavat myös erilaiset raportit, jotka voi tarvittaessa tulostaa.
+          </div>
 
-        <div class="about-chapter">
-          Ohjelma on kehitetty Kankaanpäässä. Se käyttää olemassa olevaa tietokantaa,
-          jota voi käyttää rinnakkain myös aikaisemman alueidenhoito-ohjelman kanssa.
-        </div>
-
-        <div class="about-sub-hdr">Toimintaympäristö</div>
-        <ul class="about-list">
-          <li>WAMP/LAMP web server version: <?php echo $_SERVER['SERVER_SOFTWARE']; ?></li>
-          <li>Ohjelmistokehys: CodeIgniter version: <?php echo CI_VERSION; ?></li>
-          <li>PHP-versio: <?php echo PHP_VERSION; ?></li>
-          <li>Tietokanta: MySQL version: <?php echo $mysql_version; ?></li>
-        </ul>
+          <div class="about-sub-hdr">Toimintaympäristö</div>
+          <ul class="about-list">
+            <li>WAMP/LAMP web server version: <?php echo $_SERVER['SERVER_SOFTWARE']; ?></li>
+            <li>Ohjelmistokehys: CodeIgniter version: <?php echo CI_VERSION; ?></li>
+            <li>PHP-versio: <?php echo PHP_VERSION; ?></li>
+            <li>Tietokanta: MySQL version: <?php echo $mysql_version; ?></li>
+          </ul>
       
-        <div class="about-sub-hdr">Käyttöliittymä</div>
-        <ul class="about-list">
-          <li>Browser: <label id="browser_info"></label></li>
-          <li>javaScript version: <label id="javascript_version"></label></li>
-          <li>jQuery version: <label id="jquery_version"></label></li>
-          <li>jQuery UI version: <label id="jquery_ui_version"></label> (kalenteri on suomalainen)</li>
-        </ul>
+          <div class="about-sub-hdr">Käyttöliittymä</div>
+          <ul class="about-list">
+            <li>Browser: <label id="browser_info"></label></li>
+            <li>javaScript version: <label id="javascript_version"></label></li>
+            <li>jQuery version: <label id="jquery_version"></label></li>
+            <li>jQuery UI version: <label id="jquery_ui_version"></label> (kalenteri on suomalainen)</li>
+          </ul>
         
-        <div class="about-sub-hdr">Uutta versiossa 2.x:</div>
-        <ul class="about-list">
-          <li>Uudistettu käyttöliittymä ja pienet bugikorjaukset parantavat yleisilmettä</li>
-          <li>Siistimpi PDF-raporttien ulkoasu</li>
-          <li>Mahdollisuus merkitä alue poistetuksi ilman pysyvää poistamista</li>
-          <li>Mahdollisuus poistaa vanhentuneita tapahtumia ja henkilötietoja</li>
-          <li>Erillistoiminta luukutustapahtumille</li>
-          <li>Tilastotiedon näyttäminen alueryhmittäin</li>
-        </ul>
+          <div class="about-sub-hdr">Uutta versiossa 2.x:</div>
+          <ul class="about-list">
+            <li>Uudistettu käyttöliittymä ja pienet bugikorjaukset parantavat yleisilmettä</li>
+            <li>Siistimpi PDF-raporttien ulkoasu</li>
+            <li>Mahdollisuus merkitä alue poistetuksi ilman pysyvää poistamista</li>
+            <li>Mahdollisuus poistaa vanhentuneita tapahtumia ja henkilötietoja</li>
+            <li>Erillistoiminta luukutustapahtumille</li>
+            <li>Tilastotiedon näyttäminen alueryhmittäin</li>
+          </ul>
 
-      </div><!-- about_desc -->
+  
+        <div class="version_desc">
+  	      <span>Tekijä: <?php echo $author; ?></span>
+        </div>
+      </div> <!-- content-area -->
 
-      <div class="version_desc">
-  	    <span>Tekijä: <?php echo $author; ?></span>
-      </div>
+      <div class="bottomArea">
+        <div class="bottomButtons">
+          <input type="button"
+                 value="Paluu"
+                 class="btnAction"
+                 onclick="showTerritories('<?php echo $terr_url; ?>')" />
+        </div>
+      </div> <!-- bottom-area -->
+      
     </div><!-- content -->
   </div><!-- wrapper -->
 </body>
@@ -151,6 +162,12 @@ if (window.jQuery && jQuery.ui) {
 } else {
     document.getElementById("jquery_ui_version").innerHTML = "Not loaded";
 }
+
+function showTerritories(param) {
+	var newUrl = param;
+	  location.replace(newUrl);
+}
+
 </script>
 
 </html>

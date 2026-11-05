@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <title>TerritoryServant - Seuranta</title>
   <link rel="stylesheet" type="text/css" href="<?php echo base_url("assets/css/navbar.css"); ?>">
+  <link rel="stylesheet" type="text/css" href="<?php echo base_url("assets/css/territoryServant.css"); ?>">
   <link rel="stylesheet" type="text/css" href="<?php echo base_url("assets/css/pie_chart.css"); ?>">
 
   <script src="<?php echo base_url("assets/javascript/pieChartToPDF.js"); ?>"></script> 
@@ -38,7 +39,7 @@
         <h1>TerritoryServant - Vuosi käymättä, prosenttijakauma <?php echo $report_date; ?></h1>
       </div>
     
-      <div class="statistic-area">
+      <div class="content-area">
         <h3 class="pie-chart-title">
           Käymättömät alueet alueryhmittäin
         </h3>
@@ -137,7 +138,7 @@
             <?php endforeach; ?>
           </div><!-- pie-chart-legend -->
         </div><!--  pie-chart-area -->    
-      </div><!--  statistic-area -->
+      </div><!--  content-area -->
    	</div><!-- content -->
    	
     <div class="bottomArea">

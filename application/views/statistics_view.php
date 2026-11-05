@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <title>TerritoryServant - Seuranta</title>
   <link rel="stylesheet" type="text/css" href="<?php echo base_url("assets/css/navbar.css"); ?>">
+  <link rel="stylesheet" type="text/css" href="<?php echo base_url("assets/css/territoryServant.css"); ?>">
   <link rel="stylesheet" type="text/css" href="<?php echo base_url("assets/css/statistics.css"); ?>">
 
   <script src="<?php echo base_url("assets/javascript/statisticToPDF.js"); ?>"></script> 
@@ -38,7 +39,7 @@
         <h1>TerritoryServant - Vuosi käymättä <?php echo $report_date; ?></h1>
       </div>
     
-      <div class="statistic-area">
+      <div class="content-area">
         <h3 class="statistic-chart-title">
           Alueiden käyntitilanne alueryhmittäin
         </h3>
@@ -101,7 +102,7 @@
             </div>
 	      </div>
         <?php endforeach; ?>
-      </div> <!-- statistic-area -->
+      </div> <!-- content-area -->
     
    	</div><!-- content -->
    	

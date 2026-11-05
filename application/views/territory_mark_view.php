@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <title>TerritoryServant - Seuranta</title>
   <link rel="stylesheet" type="text/css" href="<?php echo base_url("assets/css/navbar.css"); ?>">
+  <link rel="stylesheet" type="text/css" href="<?php echo base_url("assets/css/territoryServant.css"); ?>">
   <link rel="stylesheet" type="text/css" href="<?php echo base_url("assets/css/terr_marklist.css"); ?>">
   
   <script src="<?php echo base_url("assets/javascript/markExhortToPDF.js"); ?>"></script> 

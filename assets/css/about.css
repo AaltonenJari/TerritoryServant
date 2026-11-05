@@ -1,0 +1,47 @@
+.version_desc {
+  font-family: Verdana, Arial, Helvetica, sans-serif;
+  font-size: 13px;
+}
+
+.about-sub-hdr {
+  padding: 0 10px 0 40px; 
+  font-family: Verdana,Arial,Helvetica,sans-serif;
+  font-size: 18px;
+  color: #228;
+  font-weight: bold;
+}
+
+.about-list {
+  font-family: Verdana, Arial, Helvetica, sans-serif;
+  font-size: 14px;
+  color: #000;
+  list-style-type: disc;    /* näyttää luetelmapallot */
+  padding: 0 5px 0 85px; 
+}
+
+.about-chapter {
+  margin: 14px 10px 14px 65px; 
+  font-family: Verdana, Arial, Helvetica, sans-serif;
+  font-size:16px
+}
+
+.bottomArea {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+
+    padding: 8px 20px 8px 5px;
+    background: #ffffff;
+    margin-top: 8px;
+
+    border-top: 2px solid #b8d5e3;
+    border-radius: 10px 10px 0 0;
+    box-shadow: 0 -2px 6px rgba(50, 90, 110, 0.08);
+}
+
+.bottomButtons {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
