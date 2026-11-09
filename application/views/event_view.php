@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <title>TerritoryServant - Tapahtumat</title>
   <link rel="stylesheet" type="text/css" href="<?php echo base_url("assets/css/navbar.css"); ?>">
+  <link rel="stylesheet" type="text/css" href="<?php echo base_url("assets/css/territoryServant.css"); ?>">
   <link rel="stylesheet" type="text/css" href="<?php echo base_url("assets/css/territory.css"); ?>">
   <link rel="stylesheet" type="text/css" href="<?php echo base_url("assets/css/events.css"); ?>">
 
@@ -22,7 +23,7 @@
 
 <body>
 
-  <div id="wrapper">
+  <div class="wrapper">
     <!-- Asetetaan navigointipalkki ja tämä sivu aktiiviseksi -->
     <?php $sivu_tunnus = "3"; ?>
     <?php $session_data = array(
@@ -37,6 +38,8 @@
       <h1>TerritoryServant - Alueiden tapahtuma- ja käyntihistoria</h1>
     </div>
 
+    <?php $terr_main_url = base_url("index.php/territory_controller/display"); ?>
+
     <div id="selector_area">
       <div class="selector-container">
         <div class="selector-left">
@@ -45,7 +48,7 @@
           <input type="hidden" id="displayBaseUrl" value="<?php echo $display_baseurl; ?>" />
           <input type="hidden" id="selCodeOld" value="<?php echo $code_sel; ?>" />
 
-          <select name="terrCodeChkBoxChooser" id="terrCodeChkBoxChooser" onChange="jsFunction4()">
+          <select name="terrCodeChkBoxChooser" id="terrCodeChkBoxChooser" onChange="changeSelectedTerrCodes()">
             <?php
             foreach ($sel_data as $terrgroup_selection) {
               $sel_string = "";
@@ -80,9 +83,10 @@
         </div>
       </div>
     </div>
-         
-	<div id="content" class="contentResizable" style="<?php echo $saved_height ? 'height:'.$saved_height.'px;' : ''; ?>">
-	  <div class="scrollInner">
+
+    <div id="content">
+	  <div class="content-area">
+	
         <table class="table3">
           <thead class="table3Header">
             <tr>
@@ -176,38 +180,37 @@
             <?php } ?>
           </tbody>
         </table> <!-- table3 -->
-      </div> <!-- scrollInner -->
-    </div><!-- content -->
     
-    <div class="middleArea">
-    </div>
-    <div id="bottomArea" class="bottomArea">
-      <table id="bottomtable">
-        <tr>
-          <td width="43%">
-            <div id="totalcount">
-              <?php if ($num_headers == 1) {?>
-                <span>Ryhmässä <?php echo substr($code_sel,0,1); ?> yhteensä: <span id="tableRowCount"> <?php echo $num_headers; ?></span> alue</span>
-              <?php } else { ?>
-                <span>Ryhmässä <?php echo substr($code_sel,0,1); ?> yhteensä: <span id="tableRowCount"> <?php echo $num_headers; ?></span> aluetta</span>
-              <?php } ?>
-            </div>
-          </td>
-          <td width="42%">
-            <div id="sivutusotsake">
-              <span>Valitse ryhmä ja sivu</span>
-            </div>
-          </td>
-          <td width="15%">
-            <div id="reportPrint">
-              <input type="button" value="Raportti" class="btnAction" onclick="bookKeepingToPDF()" />
-            </div>
-          </td>
-        </tr>
-      </table>
-    </div>
-    <div class="middleArea">
-    </div>
+      </div><!-- content-area -->
+    </div><!-- content -->
+
+    <div class="bottomArea">
+      <div class="totalcount">
+        <?php if ($num_headers == 1) {?>
+          <span>Ryhmässä <?php echo substr($code_sel,0,1); ?> yhteensä: <span id="tableRowCount"> <?php echo $num_headers; ?></span> alue</span>
+        <?php } else { ?>
+          <span>Ryhmässä <?php echo substr($code_sel,0,1); ?> yhteensä: <span id="tableRowCount"> <?php echo $num_headers; ?></span> aluetta</span>
+        <?php } ?>
+      </div>
+      
+      <div class="sivutusotsake">
+          <span>Valitse ryhmä ja sivu</span>
+      </div>
+
+      <div class="bottomButtons">
+        <input type="button"
+               value="Tulosta"
+               class="btnAction"
+               onclick="bookKeepingToPDF()" />
+
+        <input type="button"
+               value="Paluu"
+               class="btnAction"
+               onclick="showTerritories('<?php echo $terr_main_url; ?>')" />
+      </div>
+
+    </div><!-- bottomArea -->
+    
     <div class="paginationArea">
       <?php print_r ($terr_codes) ?>
     
@@ -220,7 +223,13 @@
 </body>
 
 <script>
-function jsFunction4() {
+function showTerritories(param) {
+	var newUrl = param;
+	  //alert(newUrl);
+	  location.replace(newUrl);
+}
+
+function changeSelectedTerrCodes() {
 	var myselect = document.getElementById("terrCodeChkBoxChooser");
 	document.getElementById("selCodeOld").value = myselect.options[myselect.selectedIndex].value;
 

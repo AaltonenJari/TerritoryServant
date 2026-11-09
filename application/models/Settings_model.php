@@ -269,8 +269,8 @@ class Settings_model extends CI_Model
             //Merkitään asetukset alustetuksi
             $session_initialized = array(
                 'eventSaveSwitchOld' => $this->session->userdata('eventSaveSwitch'),
-                'version' => 'V2.5',
-                'version_date' => '5.11.2026',
+                'version' => 'V2.6',
+                'version_date' => '9.11.2026',
                 'author' => 'Jari Aaltonen',
                 'initialized'     => 'K'
             );

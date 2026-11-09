@@ -30,15 +30,14 @@
     ?>
     <?php $this->load->view('common/navbar.php')?>
     
+    <!-- Asetetaan sivun pääotsikko -->
+    <div class="headerArea">
+      <h1>TerritoryServant - Vuosi käymättä, prosenttijakauma <?php echo $report_date; ?></h1>
+    </div>
+
+    <?php $terr_url = base_url("index.php/territory_controller/display"); ?>
+
  	<div id="content">
-
-      <?php $terr_url = base_url("index.php/territory_controller/display"); ?>
-
-      <!-- Asetetaan sivun pääotsikko -->
-      <div class="headerArea">
-        <h1>TerritoryServant - Vuosi käymättä, prosenttijakauma <?php echo $report_date; ?></h1>
-      </div>
-    
       <div class="content-area">
         <h3 class="pie-chart-title">
           Käymättömät alueet alueryhmittäin

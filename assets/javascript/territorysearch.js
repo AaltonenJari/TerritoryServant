@@ -49,11 +49,11 @@
     	    const filterEl = document.getElementById('filterString');
 
     	    if (!paramEl) {
-    	      console.warn('#filter_param puuttuu DOMista.');
+    	      // console.warn('#filter_param puuttuu DOMista.');
     	      return;
     	    }
     	    if (!filterEl) {
-    	      console.warn('#filterString puuttuu DOMista.');
+    	      // console.warn('#filterString puuttuu DOMista.');
     	      return;
     	    }
 

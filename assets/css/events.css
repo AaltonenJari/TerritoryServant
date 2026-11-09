@@ -2,8 +2,12 @@
 we must use table-collapse to avoid
 a slight movement of the header row */
 .table3 {
+  width: 100%;
   border-collapse: collapse;
-  background-color: #ffff;
+  background-color: #fff;
+
+  flex-shrink: 0;
+  margin-bottom: 20px;
 }
 
 /* Set header to stick to the top of the container. */
@@ -152,6 +156,7 @@ a slight movement of the header row */
   font-weight: 500;
   font-size: 20px;
   padding: 0px 0px 5px 2px;
+  flex: 0 0 auto;
 }
 
 /* --- Pääasettelu --- */
@@ -159,7 +164,7 @@ a slight movement of the header row */
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 3px 8px 3px 8px;  /* vastaa alkuperäisen taulun solupaddingeja */
+  padding: 8px 3px 3px 15px; 
   border-collapse: collapse;
   width: 100%;
 }
@@ -182,7 +187,7 @@ a slight movement of the header row */
   display: flex;
   align-items: center;
   text-align: right;
-  padding-right: 10px;
+  padding-right: 35px;
 }
 
 .selector-right > *:not(:last-child) {
@@ -195,6 +200,18 @@ a slight movement of the header row */
   font-family: sans-serif;
   font-weight: 500;
   font-size: 16px;
+}
+
+.sivutusotsake
+{
+  font-size: 16px;
+  font-weight: bold;
+}
+
+
+.paginationArea {
+  padding: 8px 20px 20px 5px;
+  flex: 0 0 auto;
 }
 
 .pagination {

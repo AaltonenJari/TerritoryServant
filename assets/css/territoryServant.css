@@ -24,7 +24,7 @@ body {
 #content {
     display: flex;
     flex-direction: column;
-    flex: 1 1 auto;
+    flex: 1 1 0;
     min-height: 0;
     overflow: hidden;
 }
@@ -54,13 +54,13 @@ h2 {
 
 /* Vain sisältönäyttö skrollaa */
 .content-area {
-    flex: 1 1 auto;
+    flex: 1 1 0;
     min-height: 0;
     overflow-y: auto;
     overflow-x: auto;
 
     padding: 2px 25px 2px 40px;
-    background: #fdffff !important;
+    background: #fdffff;
     box-sizing: border-box;
 }
 
@@ -71,7 +71,9 @@ h2 {
     align-items: center;
     justify-content: space-between;
 
+    flex: 0 0 auto;
     padding: 8px 20px 8px 5px;
+
     background: #ffffff;
     margin-top: 8px;
 

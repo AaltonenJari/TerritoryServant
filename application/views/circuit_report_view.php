@@ -31,18 +31,18 @@
     ?>
     <?php $this->load->view('common/navbar.php')?>
     
- 	<div id="content">
-
-      <!-- Asetetaan sivun pääotsikko -->
-      <div class="headerArea">
-      <?php if ($is_cw_coming) { ?>
-        <h1>Raportti kierrosvalvojalle alueista <?php echo $report_date; ?></h1>
-      <?php } else { ?>
-        <h1>TerritoryServant - alueiden käyntitilanne <?php echo $report_date; ?></h1>
-      <?php } ?>
-      </div>
+    <!-- Asetetaan sivun pääotsikko -->
+    <div class="headerArea">
+    <?php if ($is_cw_coming) { ?>
+      <h1>Raportti kierrosvalvojalle alueista <?php echo $report_date; ?></h1>
+    <?php } else { ?>
+      <h1>TerritoryServant - alueiden käyntitilanne <?php echo $report_date; ?></h1>
+    <?php } ?>
+    </div>
  
-      <?php $terr_url = base_url("index.php/territory_controller/display?sort_by=lainassa&sort_order=asc&code=0&chk=0&date=1"); ?>
+    <?php $terr_url = base_url("index.php/territory_controller/display?sort_by=lainassa&sort_order=asc&code=0&chk=0&date=1"); ?>
+
+ 	<div id="content">
 
       <div class="content-area">
         <h2 class="coReportSubHdr">

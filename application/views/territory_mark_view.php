@@ -48,12 +48,12 @@
       }
     ?>
 
-    <div id="content">
-     <!-- Asetetaan sivun pääotsikko -->
-      <div class="headerArea">
-        <h1><?php echo $hdr_string; ?></h1>
-      </div>
+    <!-- Asetetaan sivun pääotsikko -->
+    <div class="headerArea">
+      <h1><?php echo $hdr_string; ?></h1>
+    </div>
 
+    <div id="content">
 	  <div class="content-area">
     	<?php $rowidx = 0;
     	foreach ($terr_mark_list as $publisher) { ?>

@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <title>TerritoryServant - Tapahtumat</title>
   <link rel="stylesheet" type="text/css" href="<?php echo base_url("assets/css/navbar.css"); ?>">
+  <link rel="stylesheet" type="text/css" href="<?php echo base_url("assets/css/territoryServant.css"); ?>">
   <link rel="stylesheet" type="text/css" href="<?php echo base_url("assets/css/territory.css"); ?>">
   <link rel="stylesheet" type="text/css" href="<?php echo base_url("assets/css/events.css"); ?>">
 
@@ -22,7 +23,7 @@
 
 <body>
 
-  <div id="wrapper">
+  <div class="wrapper">
     <!-- Asetetaan navigointipalkki ja tämä sivu aktiiviseksi -->
     <?php $sivu_tunnus = "3"; ?>
     <?php $session_data = array(
@@ -31,6 +32,7 @@
           $this->session->set_userdata($session_data);
     ?>
     <?php $this->load->view('common/navbar.php')?>
+    <?php $terr_url = base_url("index.php/territory_controller/display"); ?>
     
     <div class="headerArea">
       <!-- Asetetaan sivun pääotsikko -->
@@ -48,9 +50,11 @@
       </div>
     </div>
   
-    <div id="content" class="contentResizable" style="<?php echo $saved_height ? 'height:'.$saved_height.'px;' : ''; ?>">
-      <div class="scrollInner">
+    <div id="content">
+	  <div class="content-area">
+	  
         <?php foreach ($bookkeeping as $bookkeeping_row) { ?>
+        
         <table class="table3">
           <?php 
           foreach ($bookkeeping_row as $key => $value) {
@@ -154,34 +158,35 @@
         } ?>  <!-- foreach $bookkeeping_row  -->
         </table> <!-- table3 -->
         <?php } ?> <!-- foreach $bookkeeping  -->
-      </div> <!-- scrollInner -->
+     </div><!-- content-area -->
     </div><!-- content -->
     
-    <div class="middleArea">
+    <div class="bottomArea">
+      <div class="totalcount">
+      </div>
+
+      <div class="bottomButtons">
+        <input type="button"
+               value="Tulosta"
+               class="btnAction"
+               onclick="bookKeepingToPDF()" />
+
+        <input type="button"
+               value="Paluu"
+               class="btnAction"
+               onclick="showTerritories('<?php echo $terr_url; ?>')" />
+      </div>
     </div>
-    <div id="bottomArea" class="bottomArea">
-      <table id="bottomtable">
-        <tr>
-          <td width="43%">
-            <div id="totalcount">
-            </div>
-          </td>
-          <td width="42%">
-            <div id="sivutusotsake">
-            </div>
-          </td>
-          <td width="15%">
-            <div id="reportPrint">
-              <input type="button" value="Raportti" class="btnAction" onclick="bookKeepingToPDF()" />
-            </div>
-          </td>
-        </tr>
-      </table>
-    </div>
+    
   </div><!-- wrapper -->
 </body>
 
 <script>
+function showTerritories(param) {
+	var newUrl = param;
+	  //alert(newUrl);
+	  location.replace(newUrl);
+}
 
 document.addEventListener('DOMContentLoaded', function () {
 	  enableResizableSave(
